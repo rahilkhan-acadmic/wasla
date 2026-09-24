@@ -246,6 +246,16 @@
         "iam:UpdateOpenIDConnectProviderThumbprint"
       ],
       "Resource": "arn:aws:iam::<account-id>:oidc-provider/token.actions.githubusercontent.com"
+    },
+    {
+      "Sid": "InspectOwnDeployPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:ListPolicyVersions"
+      ],
+      "Resource": "arn:aws:iam::<account-id>:policy/FinanceDistressDeployPolicy"
     }
   ]
 }
