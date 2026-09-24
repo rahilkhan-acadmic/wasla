@@ -1,0 +1,11 @@
+{
+  "AlarmName": "ModelDriftAlarm",
+  "Namespace": "DistressModel",
+  "MetricName": "PredictionDistributionShift",
+  "Statistic": "Average",
+  "Period": 86400,
+  "EvaluationPeriods": 1,
+  "Threshold": 0.15,
+  "ComparisonOperator": "GreaterThanThreshold",
+  "TreatMissingData": "notBreaching"
+}

@@ -1,0 +1,28 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/predict/demo/SYN027",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "host": "test",
+    "content-type": "application/json"
+  },
+  "requestContext": {
+    "http": {
+      "method": "POST",
+      "path": "/predict/demo/SYN027",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "test"
+    },
+    "domainName": "test",
+    "requestId": "test-request-id-2",
+    "routeKey": "$default",
+    "stage": "$default",
+    "time": "17/Sep/2026:00:00:00 +0000",
+    "timeEpoch": 0
+  },
+  "body": "",
+  "isBase64Encoded": false
+}

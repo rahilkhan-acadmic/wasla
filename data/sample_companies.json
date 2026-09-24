@@ -1,0 +1,2292 @@
+[
+  {
+    "ticker": "SYN027",
+    "financials": {
+      "total_assets": 12768987.64,
+      "total_liabilities": 17020675.3,
+      "current_assets": 2590740.56,
+      "current_liabilities": 6670878.93,
+      "retained_earnings": -9189734.15,
+      "ebit": -1134677.49,
+      "sales": 3075769.94,
+      "market_value_equity": -4021009.68,
+      "book_value_equity": -4251687.65
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN001",
+    "financials": {
+      "total_assets": 7234791.46,
+      "total_liabilities": 7019562.82,
+      "current_assets": 1816446.74,
+      "current_liabilities": 2218432.99,
+      "retained_earnings": -2453942.55,
+      "ebit": -1537184.17,
+      "sales": 2694748.13,
+      "market_value_equity": 272489.22,
+      "book_value_equity": 215228.63
+    },
+    "headlines": [
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN029",
+    "financials": {
+      "total_assets": 14811474.55,
+      "total_liabilities": 20571492.22,
+      "current_assets": 2700374.65,
+      "current_liabilities": 6079501.23,
+      "retained_earnings": -10278677.71,
+      "ebit": -2817538.17,
+      "sales": 2309656.02,
+      "market_value_equity": -9129475.52,
+      "book_value_equity": -5760017.67
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Company announces layoffs and facility closures to cut costs.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN055",
+    "financials": {
+      "total_assets": 66674818.86,
+      "total_liabilities": 60543827.82,
+      "current_assets": 22813290.23,
+      "current_liabilities": 30596826.11,
+      "retained_earnings": -52012700.66,
+      "ebit": -15123659.87,
+      "sales": 21185495.14,
+      "market_value_equity": 6770673.52,
+      "book_value_equity": 6130991.03
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN053",
+    "financials": {
+      "total_assets": 28396793.33,
+      "total_liabilities": 34716244.33,
+      "current_assets": 9701326.21,
+      "current_liabilities": 11334966.55,
+      "retained_earnings": -19892246.03,
+      "ebit": -1959353.74,
+      "sales": 12645296.75,
+      "market_value_equity": -10145127.91,
+      "book_value_equity": -6319451.0
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN017",
+    "financials": {
+      "total_assets": 75163568.04,
+      "total_liabilities": 87495932.86,
+      "current_assets": 18380063.38,
+      "current_liabilities": 37292769.28,
+      "retained_earnings": -57518762.48,
+      "ebit": -7336150.54,
+      "sales": 11159189.73,
+      "market_value_equity": -12757004.62,
+      "book_value_equity": -12332364.81
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN065",
+    "financials": {
+      "total_assets": 302492066.59,
+      "total_liabilities": 105899581.49,
+      "current_assets": 118624492.57,
+      "current_liabilities": 32982085.04,
+      "retained_earnings": 116773454.21,
+      "ebit": 13577367.36,
+      "sales": 328646557.3,
+      "market_value_equity": 119045341.82,
+      "book_value_equity": 196592485.1
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN094",
+    "financials": {
+      "total_assets": 444432725.7,
+      "total_liabilities": 176214279.73,
+      "current_assets": 212800600.99,
+      "current_liabilities": 59200696.79,
+      "retained_earnings": 32055138.95,
+      "ebit": 68255223.68,
+      "sales": 541518554.46,
+      "market_value_equity": 182847227.98,
+      "book_value_equity": 268218445.97
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance.",
+      "Company beats earnings estimates for third consecutive quarter."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN033",
+    "financials": {
+      "total_assets": 7904345.57,
+      "total_liabilities": 8764966.86,
+      "current_assets": 1501150.36,
+      "current_liabilities": 4186243.98,
+      "retained_earnings": -3515543.83,
+      "ebit": -2016668.06,
+      "sales": 4234053.75,
+      "market_value_equity": -1168760.83,
+      "book_value_equity": -860621.29
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN099",
+    "financials": {
+      "total_assets": 418312561.86,
+      "total_liabilities": 164803740.3,
+      "current_assets": 165900992.95,
+      "current_liabilities": 92847797.51,
+      "retained_earnings": 55028824.11,
+      "ebit": 61138592.4,
+      "sales": 464234655.07,
+      "market_value_equity": 452205358.93,
+      "book_value_equity": 253508821.56
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "New product line drives double-digit revenue growth.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN014",
+    "financials": {
+      "total_assets": 46235269.51,
+      "total_liabilities": 46040209.66,
+      "current_assets": 15002725.78,
+      "current_liabilities": 18761555.03,
+      "retained_earnings": -16101836.88,
+      "ebit": -8545388.48,
+      "sales": 21497806.8,
+      "market_value_equity": 176574.26,
+      "book_value_equity": 195059.86
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN116",
+    "financials": {
+      "total_assets": 483775851.7,
+      "total_liabilities": 125857003.35,
+      "current_assets": 235552192.82,
+      "current_liabilities": 81765150.76,
+      "retained_earnings": 140954632.32,
+      "ebit": 40771614.63,
+      "sales": 383653892.47,
+      "market_value_equity": 381677317.18,
+      "book_value_equity": 357918848.35
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN012",
+    "financials": {
+      "total_assets": 62188310.01,
+      "total_liabilities": 71308752.19,
+      "current_assets": 19012539.47,
+      "current_liabilities": 26901942.65,
+      "retained_earnings": -12462557.68,
+      "ebit": -8149094.84,
+      "sales": 6824443.85,
+      "market_value_equity": -5247015.16,
+      "book_value_equity": -9120442.18
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN015",
+    "financials": {
+      "total_assets": 79636201.75,
+      "total_liabilities": 96155372.55,
+      "current_assets": 18923155.6,
+      "current_liabilities": 34195304.05,
+      "retained_earnings": -22672660.54,
+      "ebit": -8455320.7,
+      "sales": 21425545.19,
+      "market_value_equity": -8414008.11,
+      "book_value_equity": -16519170.8
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Company delays quarterly filing amid accounting review.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN085",
+    "financials": {
+      "total_assets": 312556057.71,
+      "total_liabilities": 104359499.8,
+      "current_assets": 131518477.23,
+      "current_liabilities": 54587942.94,
+      "retained_earnings": 79422055.71,
+      "ebit": 20262467.45,
+      "sales": 304465284.08,
+      "market_value_equity": 347392839.78,
+      "book_value_equity": 208196557.91
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Company beats earnings estimates for third consecutive quarter."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN086",
+    "financials": {
+      "total_assets": 243321562.65,
+      "total_liabilities": 73159757.76,
+      "current_assets": 94080168.91,
+      "current_liabilities": 27027985.21,
+      "retained_earnings": 92664752.25,
+      "ebit": 43347189.96,
+      "sales": 162840236.49,
+      "market_value_equity": 272070876.5,
+      "book_value_equity": 170161804.89
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN058",
+    "financials": {
+      "total_assets": 19329231.76,
+      "total_liabilities": 18995721.87,
+      "current_assets": 4470573.45,
+      "current_liabilities": 8481551.95,
+      "retained_earnings": -7117540.29,
+      "ebit": -3267090.11,
+      "sales": 8812606.6,
+      "market_value_equity": 294324.57,
+      "book_value_equity": 333509.9
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN034",
+    "financials": {
+      "total_assets": 34884948.39,
+      "total_liabilities": 34997685.51,
+      "current_assets": 5717090.15,
+      "current_liabilities": 17209849.48,
+      "retained_earnings": -15551789.89,
+      "ebit": -6186895.1,
+      "sales": 15340972.08,
+      "market_value_equity": -184905.77,
+      "book_value_equity": -112737.11
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN000",
+    "financials": {
+      "total_assets": 52957009.88,
+      "total_liabilities": 45741930.55,
+      "current_assets": 10856497.55,
+      "current_liabilities": 18842246.28,
+      "retained_earnings": -37892321.33,
+      "ebit": -11606845.86,
+      "sales": 28919282.08,
+      "market_value_equity": 7564998.89,
+      "book_value_equity": 7215079.34
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN100",
+    "financials": {
+      "total_assets": 279303419.29,
+      "total_liabilities": 133920358.3,
+      "current_assets": 77501556.03,
+      "current_liabilities": 64230620.61,
+      "retained_earnings": 26849753.41,
+      "ebit": 23387846.61,
+      "sales": 309911828.82,
+      "market_value_equity": 122845453.34,
+      "book_value_equity": 145383060.99
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN081",
+    "financials": {
+      "total_assets": 457012005.29,
+      "total_liabilities": 93857313.83,
+      "current_assets": 130723190.25,
+      "current_liabilities": 105405224.09,
+      "retained_earnings": 177999265.09,
+      "ebit": 18839971.33,
+      "sales": 504254598.62,
+      "market_value_equity": 488365943.52,
+      "book_value_equity": 363154691.46
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN118",
+    "financials": {
+      "total_assets": 479947207.52,
+      "total_liabilities": 204411935.41,
+      "current_assets": 137707632.97,
+      "current_liabilities": 55395832.66,
+      "retained_earnings": 66995292.05,
+      "ebit": 26888971.92,
+      "sales": 258011368.52,
+      "market_value_equity": 314758305.68,
+      "book_value_equity": 275535272.11
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Board approves share buyback program citing strong balance sheet.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN028",
+    "financials": {
+      "total_assets": 56562284.66,
+      "total_liabilities": 74611425.56,
+      "current_assets": 14201760.9,
+      "current_liabilities": 20519683.33,
+      "retained_earnings": -47269742.27,
+      "ebit": -3546439.6,
+      "sales": 23594517.2,
+      "market_value_equity": -16851102.1,
+      "book_value_equity": -18049140.9
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN069",
+    "financials": {
+      "total_assets": 355872168.79,
+      "total_liabilities": 188589717.15,
+      "current_assets": 133494071.97,
+      "current_liabilities": 61946413.23,
+      "retained_earnings": 27813064.14,
+      "ebit": 12803966.62,
+      "sales": 280721147.44,
+      "market_value_equity": 89265991.21,
+      "book_value_equity": 167282451.64
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN002",
+    "financials": {
+      "total_assets": 65707284.25,
+      "total_liabilities": 56086050.33,
+      "current_assets": 20445731.56,
+      "current_liabilities": 31180396.19,
+      "retained_earnings": -28791313.03,
+      "ebit": -5839398.13,
+      "sales": 38018664.14,
+      "market_value_equity": 9562597.22,
+      "book_value_equity": 9621233.92
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN048",
+    "financials": {
+      "total_assets": 41423149.53,
+      "total_liabilities": 44068906.65,
+      "current_assets": 11754842.83,
+      "current_liabilities": 20692337.07,
+      "retained_earnings": -29283141.35,
+      "ebit": -10775255.42,
+      "sales": 23187469.98,
+      "market_value_equity": -3358684.43,
+      "book_value_equity": -2645757.11
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN030",
+    "financials": {
+      "total_assets": 48688217.49,
+      "total_liabilities": 45350717.21,
+      "current_assets": 8544251.66,
+      "current_liabilities": 18358602.64,
+      "retained_earnings": -40376507.87,
+      "ebit": -12124854.86,
+      "sales": 25821859.0,
+      "market_value_equity": 4562407.72,
+      "book_value_equity": 3337500.28
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN023",
+    "financials": {
+      "total_assets": 10139099.95,
+      "total_liabilities": 8997219.05,
+      "current_assets": 3268479.2,
+      "current_liabilities": 4065210.15,
+      "retained_earnings": -8710676.06,
+      "ebit": -1950953.98,
+      "sales": 3948769.09,
+      "market_value_equity": 692640.32,
+      "book_value_equity": 1141880.9
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN026",
+    "financials": {
+      "total_assets": 31175662.62,
+      "total_liabilities": 27678851.37,
+      "current_assets": 6199495.1,
+      "current_liabilities": 11573866.48,
+      "retained_earnings": -15797618.61,
+      "ebit": -5792578.11,
+      "sales": 7833152.46,
+      "market_value_equity": 5984033.13,
+      "book_value_equity": 3496811.25
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN109",
+    "financials": {
+      "total_assets": 335758989.44,
+      "total_liabilities": 148645512.72,
+      "current_assets": 86370070.06,
+      "current_liabilities": 47338847.38,
+      "retained_earnings": 106382996.73,
+      "ebit": 56484945.7,
+      "sales": 240376937.89,
+      "market_value_equity": 231312940.03,
+      "book_value_equity": 187113476.72
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN032",
+    "financials": {
+      "total_assets": 6858977.14,
+      "total_liabilities": 8608773.95,
+      "current_assets": 1484537.08,
+      "current_liabilities": 3653804.36,
+      "retained_earnings": -5223554.17,
+      "ebit": -1824597.71,
+      "sales": 3466353.23,
+      "market_value_equity": -1745079.78,
+      "book_value_equity": -1749796.81
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN093",
+    "financials": {
+      "total_assets": 238297293.31,
+      "total_liabilities": 103776072.45,
+      "current_assets": 99628571.38,
+      "current_liabilities": 44724592.47,
+      "retained_earnings": 80507800.57,
+      "ebit": 40759270.71,
+      "sales": 118555641.93,
+      "market_value_equity": 71636860.78,
+      "book_value_equity": 134521220.86
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN051",
+    "financials": {
+      "total_assets": 53881599.14,
+      "total_liabilities": 68150969.41,
+      "current_assets": 18315559.62,
+      "current_liabilities": 18849947.84,
+      "retained_earnings": -11544995.38,
+      "ebit": -4746731.08,
+      "sales": 8788653.9,
+      "market_value_equity": -15761149.86,
+      "book_value_equity": -14269370.27
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Company announces layoffs and facility closures to cut costs.",
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN095",
+    "financials": {
+      "total_assets": 474205535.78,
+      "total_liabilities": 145357086.94,
+      "current_assets": 176952714.29,
+      "current_liabilities": 54333901.15,
+      "retained_earnings": 170970423.31,
+      "ebit": 23876062.51,
+      "sales": 383290557.02,
+      "market_value_equity": 481746442.8,
+      "book_value_equity": 328848448.85
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "Analysts upgrade stock following strong guidance.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN112",
+    "financials": {
+      "total_assets": 223527091.09,
+      "total_liabilities": 92199695.12,
+      "current_assets": 79027094.3,
+      "current_liabilities": 29580534.67,
+      "retained_earnings": 51259502.33,
+      "ebit": 18279135.38,
+      "sales": 111719017.83,
+      "market_value_equity": 179560314.2,
+      "book_value_equity": 131327395.97
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "Analysts upgrade stock following strong guidance.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN071",
+    "financials": {
+      "total_assets": 232270114.12,
+      "total_liabilities": 69066633.41,
+      "current_assets": 115957688.34,
+      "current_liabilities": 38413469.77,
+      "retained_earnings": 77807173.87,
+      "ebit": 40730488.96,
+      "sales": 191160476.92,
+      "market_value_equity": 223780298.04,
+      "book_value_equity": 163203480.71
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN008",
+    "financials": {
+      "total_assets": 15472273.96,
+      "total_liabilities": 19491103.37,
+      "current_assets": 3988681.95,
+      "current_liabilities": 7531182.78,
+      "retained_earnings": -7734646.68,
+      "ebit": -3030759.02,
+      "sales": 4347681.47,
+      "market_value_equity": -4587777.43,
+      "book_value_equity": -4018829.4
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN025",
+    "financials": {
+      "total_assets": 39291842.94,
+      "total_liabilities": 53474629.81,
+      "current_assets": 13247121.37,
+      "current_liabilities": 11879058.25,
+      "retained_earnings": -24942912.93,
+      "ebit": -7494856.62,
+      "sales": 5893408.06,
+      "market_value_equity": -9533577.73,
+      "book_value_equity": -14182786.87
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Company announces layoffs and facility closures to cut costs.",
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN089",
+    "financials": {
+      "total_assets": 111263354.85,
+      "total_liabilities": 32012623.48,
+      "current_assets": 48832855.69,
+      "current_liabilities": 23935041.45,
+      "retained_earnings": 32077145.42,
+      "ebit": 5620678.19,
+      "sales": 54235048.26,
+      "market_value_equity": 43062778.24,
+      "book_value_equity": 79250731.38
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "New product line drives double-digit revenue growth.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN098",
+    "financials": {
+      "total_assets": 415611719.33,
+      "total_liabilities": 96457536.12,
+      "current_assets": 125941345.49,
+      "current_liabilities": 81428284.64,
+      "retained_earnings": 162039802.34,
+      "ebit": 15621504.85,
+      "sales": 290993970.26,
+      "market_value_equity": 244716974.65,
+      "book_value_equity": 319154183.21
+    },
+    "headlines": [
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN044",
+    "financials": {
+      "total_assets": 73014104.78,
+      "total_liabilities": 79968879.82,
+      "current_assets": 13276270.15,
+      "current_liabilities": 37629551.34,
+      "retained_earnings": -37605829.25,
+      "ebit": -17373282.51,
+      "sales": 37962328.93,
+      "market_value_equity": -9143950.22,
+      "book_value_equity": -6954775.04
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN037",
+    "financials": {
+      "total_assets": 76165586.45,
+      "total_liabilities": 103312827.22,
+      "current_assets": 20917437.42,
+      "current_liabilities": 35481499.98,
+      "retained_earnings": -21877629.47,
+      "ebit": -20946428.08,
+      "sales": 26929200.11,
+      "market_value_equity": -38179090.48,
+      "book_value_equity": -27147240.77
+    },
+    "headlines": [
+      "Lender tightens covenant terms after missed debt payment.",
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN114",
+    "financials": {
+      "total_assets": 258744957.73,
+      "total_liabilities": 90749426.0,
+      "current_assets": 73042776.67,
+      "current_liabilities": 46544945.34,
+      "retained_earnings": 33776243.51,
+      "ebit": 29447384.62,
+      "sales": 259066669.46,
+      "market_value_equity": 272202096.77,
+      "book_value_equity": 167995531.74
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN054",
+    "financials": {
+      "total_assets": 50030871.11,
+      "total_liabilities": 45857310.14,
+      "current_assets": 17349148.66,
+      "current_liabilities": 24798243.37,
+      "retained_earnings": -22165809.0,
+      "ebit": -7859574.85,
+      "sales": 14273078.98,
+      "market_value_equity": 6696262.87,
+      "book_value_equity": 4173560.97
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN102",
+    "financials": {
+      "total_assets": 40815217.71,
+      "total_liabilities": 19351696.67,
+      "current_assets": 19050308.05,
+      "current_liabilities": 7273993.5,
+      "retained_earnings": 8584047.73,
+      "ebit": 7126497.31,
+      "sales": 18560429.11,
+      "market_value_equity": 29875648.98,
+      "book_value_equity": 21463521.04
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN061",
+    "financials": {
+      "total_assets": 303001714.86,
+      "total_liabilities": 141220846.55,
+      "current_assets": 120957583.16,
+      "current_liabilities": 74864631.86,
+      "retained_earnings": 103450823.42,
+      "ebit": 22554529.4,
+      "sales": 219613510.48,
+      "market_value_equity": 138582256.18,
+      "book_value_equity": 161780868.31
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN042",
+    "financials": {
+      "total_assets": 56571680.98,
+      "total_liabilities": 75860525.64,
+      "current_assets": 18221065.98,
+      "current_liabilities": 29494568.08,
+      "retained_earnings": -42139921.84,
+      "ebit": -5923636.79,
+      "sales": 28402091.23,
+      "market_value_equity": -23621650.23,
+      "book_value_equity": -19288844.66
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Lender tightens covenant terms after missed debt payment.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN068",
+    "financials": {
+      "total_assets": 416782956.63,
+      "total_liabilities": 93773432.35,
+      "current_assets": 121484186.82,
+      "current_liabilities": 60909399.78,
+      "retained_earnings": 130092632.66,
+      "ebit": 48088858.24,
+      "sales": 274972359.53,
+      "market_value_equity": 450689177.56,
+      "book_value_equity": 323009524.28
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN016",
+    "financials": {
+      "total_assets": 58088070.99,
+      "total_liabilities": 51255785.29,
+      "current_assets": 9496241.66,
+      "current_liabilities": 17882600.83,
+      "retained_earnings": -25053381.67,
+      "ebit": -10370987.85,
+      "sales": 13896910.64,
+      "market_value_equity": 4591332.91,
+      "book_value_equity": 6832285.7
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN018",
+    "financials": {
+      "total_assets": 69787756.13,
+      "total_liabilities": 61398859.79,
+      "current_assets": 19588801.87,
+      "current_liabilities": 32210185.56,
+      "retained_earnings": -16918566.99,
+      "ebit": -16194485.89,
+      "sales": 34914553.07,
+      "market_value_equity": 6283846.2,
+      "book_value_equity": 8388896.34
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN088",
+    "financials": {
+      "total_assets": 291645928.14,
+      "total_liabilities": 128332905.98,
+      "current_assets": 127206390.87,
+      "current_liabilities": 31310126.22,
+      "retained_earnings": 76481890.98,
+      "ebit": 30479651.42,
+      "sales": 353982259.35,
+      "market_value_equity": 128152692.13,
+      "book_value_equity": 163313022.16
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN062",
+    "financials": {
+      "total_assets": 487661566.93,
+      "total_liabilities": 191980478.67,
+      "current_assets": 206941306.39,
+      "current_liabilities": 58003405.0,
+      "retained_earnings": 172613380.24,
+      "ebit": 50537248.01,
+      "sales": 578097312.89,
+      "market_value_equity": 317150325.78,
+      "book_value_equity": 295681088.26
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN115",
+    "financials": {
+      "total_assets": 40305085.55,
+      "total_liabilities": 8325399.84,
+      "current_assets": 19358154.07,
+      "current_liabilities": 9242621.23,
+      "retained_earnings": 10137362.06,
+      "ebit": 4675791.05,
+      "sales": 41858808.93,
+      "market_value_equity": 32828490.5,
+      "book_value_equity": 31979685.71
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Company beats earnings estimates for third consecutive quarter."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN006",
+    "financials": {
+      "total_assets": 23360819.39,
+      "total_liabilities": 25796024.0,
+      "current_assets": 4765363.39,
+      "current_liabilities": 12412719.87,
+      "retained_earnings": -15925382.93,
+      "ebit": -2450638.57,
+      "sales": 6123837.13,
+      "market_value_equity": -3819237.02,
+      "book_value_equity": -2435204.62
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN072",
+    "financials": {
+      "total_assets": 431711885.31,
+      "total_liabilities": 136175433.55,
+      "current_assets": 182794763.72,
+      "current_liabilities": 61835245.7,
+      "retained_earnings": 164403544.0,
+      "ebit": 65635275.56,
+      "sales": 386419673.87,
+      "market_value_equity": 244739204.97,
+      "book_value_equity": 295536451.76
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN106",
+    "financials": {
+      "total_assets": 419250506.47,
+      "total_liabilities": 97530469.87,
+      "current_assets": 114933798.43,
+      "current_liabilities": 88386140.13,
+      "retained_earnings": 140079664.72,
+      "ebit": 47566322.1,
+      "sales": 388988407.26,
+      "market_value_equity": 211981547.98,
+      "book_value_equity": 321720036.6
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN021",
+    "financials": {
+      "total_assets": 63805295.15,
+      "total_liabilities": 70202069.62,
+      "current_assets": 14968817.77,
+      "current_liabilities": 34412072.2,
+      "retained_earnings": -57220325.98,
+      "ebit": -12055505.23,
+      "sales": 29299655.53,
+      "market_value_equity": -5665752.19,
+      "book_value_equity": -6396774.47
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN087",
+    "financials": {
+      "total_assets": 115624159.57,
+      "total_liabilities": 38692773.68,
+      "current_assets": 42873671.38,
+      "current_liabilities": 15676422.45,
+      "retained_earnings": 28926036.2,
+      "ebit": 13438046.74,
+      "sales": 149550928.76,
+      "market_value_equity": 65916695.81,
+      "book_value_equity": 76931385.9
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN040",
+    "financials": {
+      "total_assets": 52470564.18,
+      "total_liabilities": 54273113.83,
+      "current_assets": 16459212.81,
+      "current_liabilities": 25594329.72,
+      "retained_earnings": -35205490.73,
+      "ebit": -5570283.83,
+      "sales": 10471286.38,
+      "market_value_equity": -1475017.92,
+      "book_value_equity": -1802549.65
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN050",
+    "financials": {
+      "total_assets": 33434466.17,
+      "total_liabilities": 42247972.09,
+      "current_assets": 10578158.8,
+      "current_liabilities": 12138980.85,
+      "retained_earnings": -8603837.05,
+      "ebit": -1833740.77,
+      "sales": 12361040.57,
+      "market_value_equity": -13357775.71,
+      "book_value_equity": -8813505.93
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN003",
+    "financials": {
+      "total_assets": 31923453.54,
+      "total_liabilities": 33174075.49,
+      "current_assets": 6477401.95,
+      "current_liabilities": 9923808.11,
+      "retained_earnings": -16651190.87,
+      "ebit": -2592393.23,
+      "sales": 17913772.08,
+      "market_value_equity": -1101962.73,
+      "book_value_equity": -1250621.96
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN117",
+    "financials": {
+      "total_assets": 212215911.83,
+      "total_liabilities": 48284739.55,
+      "current_assets": 99238761.15,
+      "current_liabilities": 44962338.88,
+      "retained_earnings": 27068186.37,
+      "ebit": 31167658.69,
+      "sales": 99474392.04,
+      "market_value_equity": 156788634.62,
+      "book_value_equity": 163931172.28
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Board approves share buyback program citing strong balance sheet.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN063",
+    "financials": {
+      "total_assets": 108494561.79,
+      "total_liabilities": 23649845.4,
+      "current_assets": 52648711.08,
+      "current_liabilities": 18624109.0,
+      "retained_earnings": 36643004.93,
+      "ebit": 9776023.61,
+      "sales": 50631586.05,
+      "market_value_equity": 131889813.42,
+      "book_value_equity": 84844716.38
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Board approves share buyback program citing strong balance sheet.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN079",
+    "financials": {
+      "total_assets": 174453128.11,
+      "total_liabilities": 46409474.47,
+      "current_assets": 74033477.67,
+      "current_liabilities": 32408095.9,
+      "retained_earnings": 22983651.17,
+      "ebit": 25528017.79,
+      "sales": 76634218.32,
+      "market_value_equity": 228550008.97,
+      "book_value_equity": 128043653.64
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance.",
+      "Company expands into new international markets.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN052",
+    "financials": {
+      "total_assets": 24218277.24,
+      "total_liabilities": 25499238.74,
+      "current_assets": 6567477.03,
+      "current_liabilities": 13100481.98,
+      "retained_earnings": -17021817.61,
+      "ebit": -5920108.75,
+      "sales": 4404890.62,
+      "market_value_equity": -683241.74,
+      "book_value_equity": -1280961.5
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN096",
+    "financials": {
+      "total_assets": 94170993.16,
+      "total_liabilities": 32508729.43,
+      "current_assets": 25873989.71,
+      "current_liabilities": 16329443.8,
+      "retained_earnings": 18159987.06,
+      "ebit": 16265988.85,
+      "sales": 40441229.97,
+      "market_value_equity": 66478371.26,
+      "book_value_equity": 61662263.73
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN103",
+    "financials": {
+      "total_assets": 255329049.99,
+      "total_liabilities": 132361376.96,
+      "current_assets": 68523341.16,
+      "current_liabilities": 28627128.38,
+      "retained_earnings": 67127053.65,
+      "ebit": 10175458.83,
+      "sales": 165329236.5,
+      "market_value_equity": 220483015.38,
+      "book_value_equity": 122967673.03
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "New product line drives double-digit revenue growth.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN104",
+    "financials": {
+      "total_assets": 274667281.97,
+      "total_liabilities": 98550729.58,
+      "current_assets": 110239553.31,
+      "current_liabilities": 31552889.97,
+      "retained_earnings": 81197910.0,
+      "ebit": 43375157.94,
+      "sales": 270773872.8,
+      "market_value_equity": 291388063.89,
+      "book_value_equity": 176116552.39
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "Analysts upgrade stock following strong guidance.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN046",
+    "financials": {
+      "total_assets": 57981435.63,
+      "total_liabilities": 51332464.82,
+      "current_assets": 13423854.67,
+      "current_liabilities": 25259773.92,
+      "retained_earnings": -28471318.02,
+      "ebit": -5897210.49,
+      "sales": 17978405.73,
+      "market_value_equity": 7447337.02,
+      "book_value_equity": 6648970.81
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN020",
+    "financials": {
+      "total_assets": 74477523.73,
+      "total_liabilities": 98070711.35,
+      "current_assets": 13648916.5,
+      "current_liabilities": 31385594.23,
+      "retained_earnings": -26039063.43,
+      "ebit": -11190998.16,
+      "sales": 9631262.07,
+      "market_value_equity": -19930674.97,
+      "book_value_equity": -23593187.62
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN066",
+    "financials": {
+      "total_assets": 135135285.28,
+      "total_liabilities": 53134827.41,
+      "current_assets": 39072091.23,
+      "current_liabilities": 21794299.34,
+      "retained_earnings": 39362192.05,
+      "ebit": 13579322.09,
+      "sales": 58023830.67,
+      "market_value_equity": 48588033.74,
+      "book_value_equity": 82000457.87
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN067",
+    "financials": {
+      "total_assets": 132043426.96,
+      "total_liabilities": 38635130.18,
+      "current_assets": 59130622.7,
+      "current_liabilities": 24886018.48,
+      "retained_earnings": 43754832.69,
+      "ebit": 7879411.84,
+      "sales": 66457281.46,
+      "market_value_equity": 157013264.02,
+      "book_value_equity": 93408296.78
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN090",
+    "financials": {
+      "total_assets": 195133391.85,
+      "total_liabilities": 48001669.4,
+      "current_assets": 93158038.05,
+      "current_liabilities": 29076410.86,
+      "retained_earnings": 38134154.37,
+      "ebit": 11731267.16,
+      "sales": 216180778.04,
+      "market_value_equity": 232411388.28,
+      "book_value_equity": 147131722.45
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN119",
+    "financials": {
+      "total_assets": 382133996.12,
+      "total_liabilities": 178058011.33,
+      "current_assets": 138418988.96,
+      "current_liabilities": 91186013.58,
+      "retained_earnings": 94605725.14,
+      "ebit": 47879382.69,
+      "sales": 367639501.36,
+      "market_value_equity": 120154253.48,
+      "book_value_equity": 204075984.79
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Board approves share buyback program citing strong balance sheet.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN031",
+    "financials": {
+      "total_assets": 31525897.6,
+      "total_liabilities": 36504969.73,
+      "current_assets": 10244105.39,
+      "current_liabilities": 17133040.84,
+      "retained_earnings": -22844747.61,
+      "ebit": -8872678.75,
+      "sales": 6884268.21,
+      "market_value_equity": -8194761.38,
+      "book_value_equity": -4979072.13
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN092",
+    "financials": {
+      "total_assets": 128295053.94,
+      "total_liabilities": 56028156.85,
+      "current_assets": 53704509.41,
+      "current_liabilities": 20477394.78,
+      "retained_earnings": 44391444.56,
+      "ebit": 14573919.47,
+      "sales": 61744892.64,
+      "market_value_equity": 86542789.06,
+      "book_value_equity": 72266897.09
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN022",
+    "financials": {
+      "total_assets": 77653202.37,
+      "total_liabilities": 90741584.4,
+      "current_assets": 20068619.1,
+      "current_liabilities": 37816635.1,
+      "retained_earnings": -18637987.03,
+      "ebit": -15223475.36,
+      "sales": 27289291.51,
+      "market_value_equity": -21029696.42,
+      "book_value_equity": -13088382.03
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN084",
+    "financials": {
+      "total_assets": 42075664.97,
+      "total_liabilities": 20139525.99,
+      "current_assets": 13604827.3,
+      "current_liabilities": 6573319.71,
+      "retained_earnings": 4247514.33,
+      "ebit": 4614646.36,
+      "sales": 38260885.56,
+      "market_value_equity": 15960518.9,
+      "book_value_equity": 21936138.98
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN010",
+    "financials": {
+      "total_assets": 69558477.67,
+      "total_liabilities": 59563937.34,
+      "current_assets": 20460234.17,
+      "current_liabilities": 32722227.17,
+      "retained_earnings": -40057282.65,
+      "ebit": -8117912.39,
+      "sales": 29248011.24,
+      "market_value_equity": 10646132.64,
+      "book_value_equity": 9994540.33
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN043",
+    "financials": {
+      "total_assets": 73810251.08,
+      "total_liabilities": 67665343.19,
+      "current_assets": 13039896.23,
+      "current_liabilities": 30716933.83,
+      "retained_earnings": -42204134.71,
+      "ebit": -14004116.56,
+      "sales": 19090946.06,
+      "market_value_equity": 6481421.38,
+      "book_value_equity": 6144907.89
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN013",
+    "financials": {
+      "total_assets": 70850719.94,
+      "total_liabilities": 97123739.42,
+      "current_assets": 11841329.74,
+      "current_liabilities": 29863409.53,
+      "retained_earnings": -17602773.72,
+      "ebit": -17014838.75,
+      "sales": 34215032.33,
+      "market_value_equity": -29369743.87,
+      "book_value_equity": -26273019.48
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN091",
+    "financials": {
+      "total_assets": 143345640.59,
+      "total_liabilities": 70044619.43,
+      "current_assets": 53104106.61,
+      "current_liabilities": 31675555.52,
+      "retained_earnings": 44622891.96,
+      "ebit": 11583372.47,
+      "sales": 72196424.18,
+      "market_value_equity": 108514607.49,
+      "book_value_equity": 73301021.16
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN105",
+    "financials": {
+      "total_assets": 218630514.16,
+      "total_liabilities": 107040784.52,
+      "current_assets": 76451274.84,
+      "current_liabilities": 45790385.07,
+      "retained_earnings": 34847937.97,
+      "ebit": 16807993.78,
+      "sales": 137606224.2,
+      "market_value_equity": 65533668.84,
+      "book_value_equity": 111589729.64
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN019",
+    "financials": {
+      "total_assets": 45221431.54,
+      "total_liabilities": 41924801.1,
+      "current_assets": 8442733.06,
+      "current_liabilities": 18796605.34,
+      "retained_earnings": -36726141.0,
+      "ebit": -3113324.72,
+      "sales": 22792104.47,
+      "market_value_equity": 5801064.56,
+      "book_value_equity": 3296630.45
+    },
+    "headlines": [
+      "Auditor flags going concern doubt in latest annual report.",
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "Company announces layoffs and facility closures to cut costs."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN097",
+    "financials": {
+      "total_assets": 133334066.35,
+      "total_liabilities": 43592254.79,
+      "current_assets": 66031286.96,
+      "current_liabilities": 20680146.19,
+      "retained_earnings": 48746091.23,
+      "ebit": 16896629.09,
+      "sales": 60599677.19,
+      "market_value_equity": 155586637.3,
+      "book_value_equity": 89741811.56
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "Company beats earnings estimates for third consecutive quarter."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN060",
+    "financials": {
+      "total_assets": 140673764.58,
+      "total_liabilities": 34075344.05,
+      "current_assets": 41941330.53,
+      "current_liabilities": 16590108.79,
+      "retained_earnings": 33417388.69,
+      "ebit": 20303225.19,
+      "sales": 79710658.64,
+      "market_value_equity": 91615960.83,
+      "book_value_equity": 106598420.53
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN077",
+    "financials": {
+      "total_assets": 204121286.36,
+      "total_liabilities": 106684776.69,
+      "current_assets": 76966017.73,
+      "current_liabilities": 47335509.59,
+      "retained_earnings": 71934265.57,
+      "ebit": 14581834.87,
+      "sales": 226779884.84,
+      "market_value_equity": 152655174.52,
+      "book_value_equity": 97436509.67
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN041",
+    "financials": {
+      "total_assets": 40635225.82,
+      "total_liabilities": 53531047.65,
+      "current_assets": 6687162.18,
+      "current_liabilities": 16400793.76,
+      "retained_earnings": -26040506.08,
+      "ebit": -4006991.23,
+      "sales": 18211778.69,
+      "market_value_equity": -8921880.82,
+      "book_value_equity": -12895821.84
+    },
+    "headlines": [
+      "Lender tightens covenant terms after missed debt payment.",
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN024",
+    "financials": {
+      "total_assets": 54302987.34,
+      "total_liabilities": 63038970.0,
+      "current_assets": 11581413.65,
+      "current_liabilities": 19830985.27,
+      "retained_earnings": -36318282.26,
+      "ebit": -6980429.95,
+      "sales": 12642129.49,
+      "market_value_equity": -11698800.15,
+      "book_value_equity": -8735982.67
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN083",
+    "financials": {
+      "total_assets": 462045967.41,
+      "total_liabilities": 253709012.41,
+      "current_assets": 201771588.94,
+      "current_liabilities": 76281812.03,
+      "retained_earnings": 39022135.72,
+      "ebit": 57784473.32,
+      "sales": 547672931.07,
+      "market_value_equity": 348850081.12,
+      "book_value_equity": 208336955.01
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN073",
+    "financials": {
+      "total_assets": 75642368.69,
+      "total_liabilities": 35581548.0,
+      "current_assets": 35266563.49,
+      "current_liabilities": 16924154.02,
+      "retained_earnings": 3812592.75,
+      "ebit": 12133423.43,
+      "sales": 61707433.99,
+      "market_value_equity": 47030250.14,
+      "book_value_equity": 40060820.68
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN107",
+    "financials": {
+      "total_assets": 189727078.22,
+      "total_liabilities": 82127005.15,
+      "current_assets": 83019079.22,
+      "current_liabilities": 43677795.88,
+      "retained_earnings": 57368011.44,
+      "ebit": 33251528.61,
+      "sales": 178413478.4,
+      "market_value_equity": 75443708.23,
+      "book_value_equity": 107600073.07
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN005",
+    "financials": {
+      "total_assets": 33509466.88,
+      "total_liabilities": 36839492.48,
+      "current_assets": 10616539.17,
+      "current_liabilities": 11415453.08,
+      "retained_earnings": -15035345.61,
+      "ebit": -7289776.55,
+      "sales": 15109758.96,
+      "market_value_equity": -3977322.1,
+      "book_value_equity": -3330025.6
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN070",
+    "financials": {
+      "total_assets": 129883719.55,
+      "total_liabilities": 56629876.91,
+      "current_assets": 60412712.93,
+      "current_liabilities": 24427028.48,
+      "retained_earnings": 7437259.93,
+      "ebit": 18795999.99,
+      "sales": 147973809.8,
+      "market_value_equity": 86047845.52,
+      "book_value_equity": 73253842.63
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Board approves share buyback program citing strong balance sheet.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN074",
+    "financials": {
+      "total_assets": 318864258.85,
+      "total_liabilities": 119405923.54,
+      "current_assets": 114953830.14,
+      "current_liabilities": 34354998.45,
+      "retained_earnings": 45747354.26,
+      "ebit": 15832243.19,
+      "sales": 210203683.4,
+      "market_value_equity": 352062084.72,
+      "book_value_equity": 199458335.31
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance.",
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN108",
+    "financials": {
+      "total_assets": 251450910.18,
+      "total_liabilities": 124856993.14,
+      "current_assets": 84871848.17,
+      "current_liabilities": 46126110.06,
+      "retained_earnings": 22683351.34,
+      "ebit": 18050461.89,
+      "sales": 151761483.17,
+      "market_value_equity": 163520525.88,
+      "book_value_equity": 126593917.04
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "Company beats earnings estimates for third consecutive quarter."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN049",
+    "financials": {
+      "total_assets": 54724981.76,
+      "total_liabilities": 49042947.33,
+      "current_assets": 12899912.47,
+      "current_liabilities": 28277100.69,
+      "retained_earnings": -17906578.72,
+      "ebit": -6295511.47,
+      "sales": 14429682.54,
+      "market_value_equity": 8463950.65,
+      "book_value_equity": 5682034.43
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN111",
+    "financials": {
+      "total_assets": 175703788.2,
+      "total_liabilities": 93033855.36,
+      "current_assets": 70115640.9,
+      "current_liabilities": 40851364.03,
+      "retained_earnings": 18352781.85,
+      "ebit": 25154699.93,
+      "sales": 78150627.87,
+      "market_value_equity": 88956722.19,
+      "book_value_equity": 82669932.84
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN076",
+    "financials": {
+      "total_assets": 330900650.62,
+      "total_liabilities": 84012330.96,
+      "current_assets": 159879038.74,
+      "current_liabilities": 47576642.09,
+      "retained_earnings": 98242441.08,
+      "ebit": 30549923.24,
+      "sales": 276053741.79,
+      "market_value_equity": 300375340.9,
+      "book_value_equity": 246888319.66
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN078",
+    "financials": {
+      "total_assets": 155762711.98,
+      "total_liabilities": 47428896.49,
+      "current_assets": 61796430.84,
+      "current_liabilities": 38915031.66,
+      "retained_earnings": 34481833.5,
+      "ebit": 8144725.16,
+      "sales": 137806779.05,
+      "market_value_equity": 118294893.36,
+      "book_value_equity": 108333815.49
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN011",
+    "financials": {
+      "total_assets": 39029277.97,
+      "total_liabilities": 53649597.11,
+      "current_assets": 12691173.27,
+      "current_liabilities": 14278754.51,
+      "retained_earnings": -21482115.78,
+      "ebit": -3694627.38,
+      "sales": 21712530.61,
+      "market_value_equity": -10215086.12,
+      "book_value_equity": -14620319.14
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Company announces layoffs and facility closures to cut costs.",
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN082",
+    "financials": {
+      "total_assets": 428847340.33,
+      "total_liabilities": 213702978.4,
+      "current_assets": 199343487.61,
+      "current_liabilities": 67329636.95,
+      "retained_earnings": 68972119.79,
+      "ebit": 59098428.65,
+      "sales": 464639637.69,
+      "market_value_equity": 284100135.48,
+      "book_value_equity": 215144361.93
+    },
+    "headlines": [
+      "Company beats earnings estimates for third consecutive quarter.",
+      "Company expands into new international markets.",
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN110",
+    "financials": {
+      "total_assets": 212376485.12,
+      "total_liabilities": 53021091.16,
+      "current_assets": 86711832.91,
+      "current_liabilities": 22214275.53,
+      "retained_earnings": 66078631.99,
+      "ebit": 13224669.29,
+      "sales": 165196888.48,
+      "market_value_equity": 144237121.55,
+      "book_value_equity": 159355393.96
+    },
+    "headlines": [
+      "Board approves share buyback program citing strong balance sheet.",
+      "New product line drives double-digit revenue growth."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN036",
+    "financials": {
+      "total_assets": 72462854.97,
+      "total_liabilities": 69168934.59,
+      "current_assets": 11512703.24,
+      "current_liabilities": 29638349.62,
+      "retained_earnings": -40865009.96,
+      "ebit": -18233662.79,
+      "sales": 32132100.41,
+      "market_value_equity": 3493817.27,
+      "book_value_equity": 3293920.38
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "Company delays quarterly filing amid accounting review.",
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN047",
+    "financials": {
+      "total_assets": 75705624.31,
+      "total_liabilities": 76783442.16,
+      "current_assets": 17260680.18,
+      "current_liabilities": 39587257.19,
+      "retained_earnings": -59429677.4,
+      "ebit": -13971862.24,
+      "sales": 35378527.53,
+      "market_value_equity": -921335.85,
+      "book_value_equity": -1077817.85
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Lender tightens covenant terms after missed debt payment.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN113",
+    "financials": {
+      "total_assets": 41800334.05,
+      "total_liabilities": 14142816.51,
+      "current_assets": 16713079.36,
+      "current_liabilities": 4228231.82,
+      "retained_earnings": 6499817.21,
+      "ebit": 2578457.66,
+      "sales": 21882948.25,
+      "market_value_equity": 18142768.59,
+      "book_value_equity": 27657517.54
+    },
+    "headlines": [
+      "New product line drives double-digit revenue growth.",
+      "Company expands into new international markets."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN004",
+    "financials": {
+      "total_assets": 52147984.96,
+      "total_liabilities": 69721775.66,
+      "current_assets": 11593905.33,
+      "current_liabilities": 18151261.12,
+      "retained_earnings": -12968609.59,
+      "ebit": -11228286.65,
+      "sales": 25371776.6,
+      "market_value_equity": -28582518.73,
+      "book_value_equity": -17573790.7
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN057",
+    "financials": {
+      "total_assets": 30229746.49,
+      "total_liabilities": 33913802.68,
+      "current_assets": 6499481.15,
+      "current_liabilities": 12753551.66,
+      "retained_earnings": -13554337.44,
+      "ebit": -3463969.28,
+      "sales": 7249977.25,
+      "market_value_equity": -4316297.06,
+      "book_value_equity": -3684056.19
+    },
+    "headlines": [
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN059",
+    "financials": {
+      "total_assets": 35330084.65,
+      "total_liabilities": 34758367.57,
+      "current_assets": 9991065.45,
+      "current_liabilities": 13858406.34,
+      "retained_earnings": -20753989.38,
+      "ebit": -4802748.69,
+      "sales": 21138545.46,
+      "market_value_equity": 487212.35,
+      "book_value_equity": 571717.08
+    },
+    "headlines": [
+      "CFO resigns abruptly as cash reserves dwindle.",
+      "Stock delisted from major exchange for failing to meet listing standards.",
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN039",
+    "financials": {
+      "total_assets": 20763701.37,
+      "total_liabilities": 26622540.06,
+      "current_assets": 5633863.14,
+      "current_liabilities": 7901882.1,
+      "retained_earnings": -10573919.32,
+      "ebit": -4545315.59,
+      "sales": 7383302.25,
+      "market_value_equity": -6855354.59,
+      "book_value_equity": -5858838.7
+    },
+    "headlines": [
+      "Company delays quarterly filing amid accounting review.",
+      "Auditor flags going concern doubt in latest annual report.",
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN009",
+    "financials": {
+      "total_assets": 61683661.82,
+      "total_liabilities": 81644901.91,
+      "current_assets": 11138111.72,
+      "current_liabilities": 20972167.47,
+      "retained_earnings": -41718933.49,
+      "ebit": -12281356.33,
+      "sales": 18035294.55,
+      "market_value_equity": -35179727.29,
+      "book_value_equity": -19961240.1
+    },
+    "headlines": [
+      "Lender tightens covenant terms after missed debt payment.",
+      "Company announces layoffs and facility closures to cut costs.",
+      "CFO resigns abruptly as cash reserves dwindle."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN064",
+    "financials": {
+      "total_assets": 475580308.33,
+      "total_liabilities": 109294688.6,
+      "current_assets": 148403759.83,
+      "current_liabilities": 87369312.71,
+      "retained_earnings": 93052474.71,
+      "ebit": 56793337.59,
+      "sales": 454928955.02,
+      "market_value_equity": 324733839.21,
+      "book_value_equity": 366285619.73
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance.",
+      "Company expands into new international markets.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN045",
+    "financials": {
+      "total_assets": 25594808.52,
+      "total_liabilities": 22846331.62,
+      "current_assets": 5301852.74,
+      "current_liabilities": 9417066.59,
+      "retained_earnings": -10846995.33,
+      "ebit": -4736013.6,
+      "sales": 4330309.66,
+      "market_value_equity": 3853734.98,
+      "book_value_equity": 2748476.89
+    },
+    "headlines": [
+      "Lender tightens covenant terms after missed debt payment."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN007",
+    "financials": {
+      "total_assets": 65378435.06,
+      "total_liabilities": 69996809.09,
+      "current_assets": 10672226.74,
+      "current_liabilities": 34538383.22,
+      "retained_earnings": -39032627.92,
+      "ebit": -15002949.63,
+      "sales": 13488438.86,
+      "market_value_equity": -3166971.79,
+      "book_value_equity": -4618374.03
+    },
+    "headlines": [
+      "Lender tightens covenant terms after missed debt payment.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN075",
+    "financials": {
+      "total_assets": 312258400.2,
+      "total_liabilities": 88604605.01,
+      "current_assets": 90428328.06,
+      "current_liabilities": 57026456.08,
+      "retained_earnings": 75968719.53,
+      "ebit": 13733555.42,
+      "sales": 403759924.32,
+      "market_value_equity": 387184745.7,
+      "book_value_equity": 223653795.19
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN035",
+    "financials": {
+      "total_assets": 24591139.73,
+      "total_liabilities": 28755018.57,
+      "current_assets": 8525996.87,
+      "current_liabilities": 7612538.94,
+      "retained_earnings": -15187484.91,
+      "ebit": -3354767.0,
+      "sales": 12128696.58,
+      "market_value_equity": -2707934.96,
+      "book_value_equity": -4163878.84
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN101",
+    "financials": {
+      "total_assets": 80844100.98,
+      "total_liabilities": 28080082.42,
+      "current_assets": 22507994.25,
+      "current_liabilities": 8855153.97,
+      "retained_earnings": 16726347.39,
+      "ebit": 6815630.33,
+      "sales": 75532596.34,
+      "market_value_equity": 91231116.38,
+      "book_value_equity": 52764018.57
+    },
+    "headlines": [
+      "Company expands into new international markets.",
+      "Board approves share buyback program citing strong balance sheet."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN038",
+    "financials": {
+      "total_assets": 46580935.83,
+      "total_liabilities": 44508645.53,
+      "current_assets": 13181747.43,
+      "current_liabilities": 18389516.2,
+      "retained_earnings": -33710352.72,
+      "ebit": -4355635.92,
+      "sales": 17912821.26,
+      "market_value_equity": 1854777.38,
+      "book_value_equity": 2072290.29
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Auditor flags going concern doubt in latest annual report."
+    ],
+    "label_distressed": 1
+  },
+  {
+    "ticker": "SYN080",
+    "financials": {
+      "total_assets": 400348957.14,
+      "total_liabilities": 171432085.96,
+      "current_assets": 115311040.86,
+      "current_liabilities": 97974864.37,
+      "retained_earnings": 37707344.72,
+      "ebit": 69982214.18,
+      "sales": 279761943.0,
+      "market_value_equity": 144131832.41,
+      "book_value_equity": 228916871.17
+    },
+    "headlines": [
+      "Analysts upgrade stock following strong guidance."
+    ],
+    "label_distressed": 0
+  },
+  {
+    "ticker": "SYN056",
+    "financials": {
+      "total_assets": 66930094.88,
+      "total_liabilities": 78700491.01,
+      "current_assets": 14353889.5,
+      "current_liabilities": 24186782.2,
+      "retained_earnings": -57174050.69,
+      "ebit": -8013678.29,
+      "sales": 21779119.81,
+      "market_value_equity": -16109493.94,
+      "book_value_equity": -11770396.13
+    },
+    "headlines": [
+      "Company announces layoffs and facility closures to cut costs.",
+      "Stock delisted from major exchange for failing to meet listing standards."
+    ],
+    "label_distressed": 1
+  }
+]

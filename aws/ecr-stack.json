@@ -1,0 +1,20 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "ECR repository for the distress model API's Lambda container images. Deploy with: aws cloudformation deploy --template-file aws/ecr-stack.json --stack-name distress-model-ecr --profile finance-distress --region ap-south-1",
+
+  "Resources": {
+    "ApiRepository": {
+      "Type": "AWS::ECR::Repository",
+      "Properties": {
+        "RepositoryName": "distress-model-api"
+      }
+    }
+  },
+
+  "Outputs": {
+    "RepositoryUri": {
+      "Description": "Push images here, e.g. docker push <RepositoryUri>:latest",
+      "Value": { "Fn::GetAtt": ["ApiRepository", "RepositoryUri"] }
+    }
+  }
+}

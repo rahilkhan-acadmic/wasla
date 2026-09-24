@@ -1,0 +1,38 @@
+# AWS Lambda container image for the MCP server, using the Streamable HTTP
+# transport (mcp_server.py's `http_app` / `handler`). Deploy behind API
+# Gateway or a Lambda Function URL, same pattern as Dockerfile.lambda for the
+# FastAPI service -- this just points at a different handler.
+#
+# IMPORTANT: unlike local stdio (which only your own machine can reach), this
+# makes the MCP server internet-reachable. See the README's "Securing a
+# remote MCP server" section before deploying -- add auth in front of it.
+#
+# Build & push:
+#   docker build --platform linux/amd64 --provenance=false -f Dockerfile.lambda-mcp -t distress-model-mcp .
+#   aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account>.dkr.ecr.<region>.amazonaws.com
+#   docker tag distress-model-mcp:latest <account>.dkr.ecr.<region>.amazonaws.com/distress-model-mcp:latest
+#   docker push <account>.dkr.ecr.<region>.amazonaws.com/distress-model-mcp:latest
+#
+# NOTE: --platform linux/amd64 --provenance=false is required -- without it,
+# Docker Desktop 4.31+ produces an OCI image index with attestations that
+# Lambda's CreateFunction API rejects with "image manifest ... not supported."
+# See Dockerfile.lambda for the full explanation.
+#
+# Then create a Lambda function (container image type) from that ECR image,
+# with handler set to mcp_server.handler, and put a Function URL or API
+# Gateway (with IAM or a Lambda authorizer -- see README) in front of it.
+
+FROM public.ecr.aws/lambda/python:3.12
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir "mcp[cli]>=2.0" mangum
+
+COPY src/ ${LAMBDA_TASK_ROOT}/
+COPY data/ ${LAMBDA_TASK_ROOT}/../data/
+# As with Dockerfile.lambda: for real deployments, have mcp_server.py load
+# the model via model_loader.py (S3/DynamoDB registry) instead of baking a
+# fixed model file into the image.
+COPY models/ ${LAMBDA_TASK_ROOT}/../models/
+
+CMD ["mcp_server.handler"]

@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Local test artifacts
+response*.json
+retrain_response.json
+health_check.json
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Never commit real credentials, even by accident
+.env
+*.pem
+*.p7b
+*.cer
+combined-ca-bundle.pem
+corp-*.pem
+
+# Local scratch
+/tmp/

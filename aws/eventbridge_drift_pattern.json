@@ -1,0 +1,10 @@
+{
+  "source": ["aws.cloudwatch"],
+  "detail-type": ["CloudWatch Alarm State Change"],
+  "resources": ["<your ModelDriftAlarm ARN>"],
+  "detail": {
+    "state": {
+      "value": ["ALARM"]
+    }
+  }
+}

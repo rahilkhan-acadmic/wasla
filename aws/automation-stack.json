@@ -1,0 +1,237 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Automated retrain pipeline: two Lambda functions (train+evaluate, register) sharing the same image as the inference API, orchestrated by Step Functions, triggered weekly via EventBridge Scheduler. Deploy AFTER distress-model-lambda stack exists (reuses its image). Usage: aws cloudformation deploy --template-file aws/automation-stack.json --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest",
+
+  "Parameters": {
+    "ImageUri": {
+      "Type": "String",
+      "Description": "Same ECR image URI used for the inference Lambda -- retrain_handler.py is already in it."
+    }
+  },
+
+  "Resources": {
+    "RetrainLambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "distress-model-retrain-lambda-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": "lambda.amazonaws.com" },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "retrain-registry-access",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "ReadWriteModelsInS3",
+                  "Effect": "Allow",
+                  "Action": ["s3:GetObject", "s3:PutObject"],
+                  "Resource": { "Fn::Sub": "arn:aws:s3:::distress-model-${AWS::AccountId}/*" }
+                },
+                {
+                  "Sid": "ReadWriteRegistryPointer",
+                  "Effect": "Allow",
+                  "Action": ["dynamodb:GetItem", "dynamodb:PutItem"],
+                  "Resource": { "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/distress-model-registry" }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+    "FetchDataFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-fetch-data",
+        "PackageType": "Image",
+        "Code": { "ImageUri": { "Ref": "ImageUri" } },
+        "ImageConfig": { "Command": ["fetch_data_handler.fetch_data_handler"] },
+        "Role": { "Fn::GetAtt": ["RetrainLambdaRole", "Arn"] },
+        "Timeout": 600,
+        "MemorySize": 1024,
+        "Environment": {
+          "Variables": {
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+            "DATASET_S3_KEY": "datasets/real_companies.json",
+            "FETCH_MARKETS": "us"
+          }
+        }
+      }
+    },
+
+    "TrainAndEvaluateFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-train-evaluate",
+        "PackageType": "Image",
+        "Code": { "ImageUri": { "Ref": "ImageUri" } },
+        "ImageConfig": { "Command": ["retrain_handler.train_and_evaluate_handler"] },
+        "Role": { "Fn::GetAtt": ["RetrainLambdaRole", "Arn"] },
+        "Timeout": 120,
+        "MemorySize": 1024,
+        "Environment": {
+          "Variables": {
+            "MODEL_REGISTRY_TABLE": "distress-model-registry",
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+            "DATASET_S3_KEY": "datasets/real_companies.json"
+          }
+        }
+      }
+    },
+
+    "RegisterModelFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-register",
+        "PackageType": "Image",
+        "Code": { "ImageUri": { "Ref": "ImageUri" } },
+        "ImageConfig": { "Command": ["retrain_handler.register_model_handler"] },
+        "Role": { "Fn::GetAtt": ["RetrainLambdaRole", "Arn"] },
+        "Timeout": 30,
+        "MemorySize": 512,
+        "Environment": {
+          "Variables": {
+            "MODEL_REGISTRY_TABLE": "distress-model-registry",
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" }
+          }
+        }
+      }
+    },
+
+    "RetrainNotificationsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "distress-model-retrain-notifications"
+      }
+    },
+
+    "StateMachineExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "distress-model-statemachine-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": "states.amazonaws.com" },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "invoke-retrain-lambdas-and-notify",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "lambda:InvokeFunction",
+                  "Resource": [
+                    { "Fn::GetAtt": ["FetchDataFunction", "Arn"] },
+                    { "Fn::GetAtt": ["TrainAndEvaluateFunction", "Arn"] },
+                    { "Fn::GetAtt": ["RegisterModelFunction", "Arn"] }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "sns:Publish",
+                  "Resource": { "Ref": "RetrainNotificationsTopic" }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+    "RetrainStateMachine": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "StateMachineName": "distress-model-retrain",
+        "RoleArn": { "Fn::GetAtt": ["StateMachineExecutionRole", "Arn"] },
+        "DefinitionString": {
+          "Fn::Sub": [
+            "{\"Comment\":\"Automated retrain pipeline: fetch real data -> train+evaluate -> promote or reject.\",\"StartAt\":\"FetchData\",\"States\":{\"FetchData\":{\"Type\":\"Task\",\"Resource\":\"${FetchFnArn}\",\"ResultPath\":\"$.fetch\",\"Retry\":[{\"ErrorEquals\":[\"States.TaskFailed\"],\"IntervalSeconds\":30,\"MaxAttempts\":2,\"BackoffRate\":2.0}],\"Next\":\"TrainAndEvaluate\"},\"TrainAndEvaluate\":{\"Type\":\"Task\",\"Resource\":\"${TrainFnArn}\",\"ResultPath\":\"$.evaluation\",\"Retry\":[{\"ErrorEquals\":[\"States.TaskFailed\"],\"IntervalSeconds\":30,\"MaxAttempts\":2,\"BackoffRate\":2.0}],\"Next\":\"ShouldPromote\"},\"ShouldPromote\":{\"Type\":\"Choice\",\"Choices\":[{\"Variable\":\"$.evaluation.auc_improvement\",\"NumericGreaterThan\":0.01,\"Next\":\"RegisterModel\"}],\"Default\":\"NotifyRejected\"},\"RegisterModel\":{\"Type\":\"Task\",\"Resource\":\"${RegisterFnArn}\",\"InputPath\":\"$.evaluation\",\"ResultPath\":\"$.registration\",\"Next\":\"NotifyPromoted\"},\"NotifyPromoted\":{\"Type\":\"Task\",\"Resource\":\"arn:aws:states:::sns:publish\",\"Parameters\":{\"TopicArn\":\"${TopicArn}\",\"Subject\":\"Distress model retrained and promoted\",\"Message.$\":\"States.Format('New model {} promoted. AUC improved by {}.', $.registration.version, $.evaluation.auc_improvement)\"},\"End\":true},\"NotifyRejected\":{\"Type\":\"Task\",\"Resource\":\"arn:aws:states:::sns:publish\",\"Parameters\":{\"TopicArn\":\"${TopicArn}\",\"Subject\":\"Distress model retrain did not improve\",\"Message.$\":\"States.Format('Retrain finished but AUC change was {}, below threshold. Current model unchanged.', $.evaluation.auc_improvement)\"},\"End\":true}}}",
+            {
+              "FetchFnArn": { "Fn::GetAtt": ["FetchDataFunction", "Arn"] },
+              "TrainFnArn": { "Fn::GetAtt": ["TrainAndEvaluateFunction", "Arn"] },
+              "RegisterFnArn": { "Fn::GetAtt": ["RegisterModelFunction", "Arn"] },
+              "TopicArn": { "Ref": "RetrainNotificationsTopic" }
+            }
+          ]
+        }
+      }
+    },
+
+    "SchedulerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "distress-model-scheduler-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": "scheduler.amazonaws.com" },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "start-retrain-execution",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "states:StartExecution",
+                  "Resource": { "Ref": "RetrainStateMachine" }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+    "WeeklyRetrainSchedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": "distress-model-weekly-retrain",
+        "ScheduleExpression": "rate(7 days)",
+        "FlexibleTimeWindow": { "Mode": "OFF" },
+        "State": "ENABLED",
+        "Target": {
+          "Arn": { "Ref": "RetrainStateMachine" },
+          "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
+          "Input": "{\"trigger_reason\": \"scheduled\"}"
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+    "StateMachineArn": {
+      "Value": { "Ref": "RetrainStateMachine" }
+    },
+    "NotificationsTopicArn": {
+      "Value": { "Ref": "RetrainNotificationsTopic" }
+    }
+  }
+}

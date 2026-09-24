@@ -1,0 +1,26 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/health",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "host": "test"
+  },
+  "requestContext": {
+    "http": {
+      "method": "GET",
+      "path": "/health",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "test"
+    },
+    "domainName": "test",
+    "requestId": "test-request-id",
+    "routeKey": "$default",
+    "stage": "$default",
+    "time": "13/Sep/2026:00:00:00 +0000",
+    "timeEpoch": 0
+  },
+  "isBase64Encoded": false
+}

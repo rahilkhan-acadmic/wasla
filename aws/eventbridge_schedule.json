@@ -1,0 +1,11 @@
+{
+  "Name": "distress-model-weekly-retrain",
+  "ScheduleExpression": "rate(7 days)",
+  "FlexibleTimeWindow": { "Mode": "OFF" },
+  "State": "ENABLED",
+  "Target": {
+    "Arn": "<your Step Functions state machine ARN>",
+    "RoleArn": "<IAM role ARN that EventBridge assumes to start the execution>",
+    "Input": "{\"trigger_reason\": \"scheduled\"}"
+  }
+}

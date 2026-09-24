@@ -1,0 +1,6 @@
+{
+  "model_name": {"S": "distress-classifier"},
+  "s3_key": {"S": "models/distress-classifier/v1/model.json"},
+  "version": {"S": "v1"},
+  "promoted_at": {"S": "2026-09-13T00:00:00Z"}
+}

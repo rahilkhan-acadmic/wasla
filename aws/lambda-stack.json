@@ -1,0 +1,94 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Lambda execution role, function, and Function URL for the distress model inference API. Deploy AFTER pushing an image to the ECR repo from ecr-stack.json. Usage: aws cloudformation deploy --template-file aws/lambda-stack.json --stack-name distress-model-lambda --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest",
+
+  "Parameters": {
+    "ImageUri": {
+      "Type": "String",
+      "Description": "Full ECR image URI with tag, e.g. <account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest"
+    }
+  },
+
+  "Resources": {
+    "LambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "distress-model-lambda-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": "lambda.amazonaws.com" },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "registry-read-access",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "ReadModelFromS3",
+                  "Effect": "Allow",
+                  "Action": ["s3:GetObject"],
+                  "Resource": { "Fn::Sub": "arn:aws:s3:::distress-model-${AWS::AccountId}/*" }
+                },
+                {
+                  "Sid": "ReadRegistryPointer",
+                  "Effect": "Allow",
+                  "Action": ["dynamodb:GetItem"],
+                  "Resource": { "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/distress-model-registry" }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+    "ApiFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-api",
+        "PackageType": "Image",
+        "Code": {
+          "ImageUri": { "Ref": "ImageUri" }
+        },
+        "Role": { "Fn::GetAtt": ["LambdaExecutionRole", "Arn"] },
+        "Timeout": 30,
+        "MemorySize": 512,
+        "Environment": {
+          "Variables": {
+            "MODEL_REGISTRY_TABLE": "distress-model-registry",
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" }
+          }
+        }
+      }
+    },
+
+    "ApiFunctionUrl": {
+      "Type": "AWS::Lambda::Url",
+      "Properties": {
+        "TargetFunctionArn": { "Ref": "ApiFunction" },
+        "AuthType": "AWS_IAM"
+      }
+    }
+  },
+
+  "Outputs": {
+    "FunctionArn": {
+      "Description": "ARN of the deployed Lambda function",
+      "Value": { "Fn::GetAtt": ["ApiFunction", "Arn"] }
+    },
+    "FunctionUrl": {
+      "Description": "HTTPS endpoint for the API (requires AWS_IAM auth to call)",
+      "Value": { "Fn::GetAtt": ["ApiFunctionUrl", "FunctionUrl"] }
+    }
+  }
+}

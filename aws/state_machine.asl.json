@@ -1,0 +1,81 @@
+{
+  "Comment": "Automated retrain pipeline: fetch real data -> train+evaluate -> promote or reject. Runs entirely on Lambda (no AWS Batch/VPC needed). Triggered either on a schedule (EventBridge Scheduler) or by a drift alarm (CloudWatch -> EventBridge). Replace every <...> placeholder with your actual ARNs before deploying.",
+  "StartAt": "FetchData",
+  "States": {
+    "FetchData": {
+      "Type": "Task",
+      "Comment": "Runs fetch_data_handler.py: pulls fresh real data (SEC EDGAR by default) and writes it to S3, so TrainAndEvaluate reads current data rather than a stale or synthetic dataset.",
+      "Resource": "<ARN of the distress-model-fetch-data Lambda>",
+      "ResultPath": "$.fetch",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "TrainAndEvaluate"
+    },
+
+    "TrainAndEvaluate": {
+      "Type": "Task",
+      "Comment": "Retrains on the dataset FetchData just wrote to S3, evaluates the new candidate against the currently-deployed model on the same data, and writes the candidate to a non-live S3 key.",
+      "Resource": "<ARN of the distress-model-train-evaluate Lambda>",
+      "ResultPath": "$.evaluation",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "ShouldPromote"
+    },
+
+    "ShouldPromote": {
+      "Type": "Choice",
+      "Comment": "Only promote if the new model is a real improvement, not just noise -- 0.01 AUC margin is a starting point, tune to your data.",
+      "Choices": [
+        {
+          "Variable": "$.evaluation.auc_improvement",
+          "NumericGreaterThan": 0.01,
+          "Next": "RegisterModel"
+        }
+      ],
+      "Default": "NotifyRejected"
+    },
+
+    "RegisterModel": {
+      "Type": "Task",
+      "Comment": "Promotes the candidate: copies it to a versioned S3 key and updates the DynamoDB pointer that model_loader.py reads -- this is the only step that changes what the live inference Lambda serves, with zero redeploy of that Lambda.",
+      "Resource": "<ARN of the distress-model-register Lambda>",
+      "InputPath": "$.evaluation",
+      "ResultPath": "$.registration",
+      "Next": "NotifyPromoted"
+    },
+
+    "NotifyPromoted": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "<your SNS topic ARN>",
+        "Subject": "Distress model retrained and promoted",
+        "Message.$": "States.Format('New model {} promoted. AUC improved by {}.', $.registration.version, $.evaluation.auc_improvement)"
+      },
+      "End": true
+    },
+
+    "NotifyRejected": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "<your SNS topic ARN>",
+        "Subject": "Distress model retrain did not improve -- kept current model",
+        "Message.$": "States.Format('Retrain finished but AUC change was {}, below the promotion threshold. Current model unchanged.', $.evaluation.auc_improvement)"
+      },
+      "End": true
+    }
+  }
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "Id": "RetrainStateMachine",
+    "Arn": "<your Step Functions state machine ARN -- same one as the scheduled rule>",
+    "RoleArn": "<IAM role ARN that EventBridge assumes to start the execution>",
+    "Input": "{\"trigger_reason\": \"drift_alarm\"}"
+  }
+]

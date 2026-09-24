@@ -1,0 +1,39 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "S3 model bucket and DynamoDB registry table for the financial distress model project. Deploy with: aws cloudformation deploy --template-file aws/infrastructure.json --stack-name distress-model-stack --profile finance-distress --region ap-south-1",
+
+  "Resources": {
+    "ModelBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+        "VersioningConfiguration": { "Status": "Enabled" }
+      }
+    },
+
+    "ModelRegistryTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "distress-model-registry",
+        "AttributeDefinitions": [
+          { "AttributeName": "model_name", "AttributeType": "S" }
+        ],
+        "KeySchema": [
+          { "AttributeName": "model_name", "KeyType": "HASH" }
+        ],
+        "BillingMode": "PAY_PER_REQUEST"
+      }
+    }
+  },
+
+  "Outputs": {
+    "ModelBucketName": {
+      "Description": "S3 bucket for versioned model files",
+      "Value": { "Ref": "ModelBucket" }
+    },
+    "ModelRegistryTableName": {
+      "Description": "DynamoDB table holding the current model version pointer",
+      "Value": { "Ref": "ModelRegistryTable" }
+    }
+  }
+}

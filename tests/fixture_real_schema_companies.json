@@ -1,0 +1,74 @@
+[
+  {
+    "ticker": "US-CIK0000320193",
+    "company_name": "Mock Healthy Corp",
+    "market": "US",
+    "financials": {
+      "total_assets": 100000000.0,
+      "total_liabilities": 40000000.0,
+      "current_assets": 35000000.0,
+      "current_liabilities": 15000000.0,
+      "retained_earnings": 25000000.0,
+      "ebit": 12000000.0,
+      "sales": 80000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2022-03-15",
+    "source": "mock test fixture"
+  },
+  {
+    "ticker": "US-CIK0000999999",
+    "company_name": "Mock Distressed Corp",
+    "market": "US",
+    "financials": {
+      "total_assets": 20000000.0,
+      "total_liabilities": 32000000.0,
+      "current_assets": 4000000.0,
+      "current_liabilities": 18000000.0,
+      "retained_earnings": -15000000.0,
+      "ebit": -6000000.0,
+      "sales": 9000000.0
+    },
+    "headlines": ["Mock Distressed Corp files for bankruptcy protection."],
+    "label_distressed": 1,
+    "event_date": "2022-08-01",
+    "source": "mock test fixture"
+  },
+  {
+    "ticker": "JETAIRWAYS.BO",
+    "company_name": "Jet Airways (India) Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 8000000000.0,
+      "total_liabilities": 13000000000.0,
+      "current_assets": 900000000.0,
+      "current_liabilities": 9500000000.0,
+      "retained_earnings": -8500000000.0,
+      "ebit": -2500000000.0,
+      "sales": 1900000000.0
+    },
+    "headlines": ["Jet Airways (India) Ltd: NCLT CIRP admission"],
+    "label_distressed": 1,
+    "event_date": "2019-06-20",
+    "source": "mock test fixture"
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "company_name": "Reliance Industries Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 1600000000000.0,
+      "total_liabilities": 700000000000.0,
+      "current_assets": 350000000000.0,
+      "current_liabilities": 300000000000.0,
+      "retained_earnings": 500000000000.0,
+      "ebit": 120000000000.0,
+      "sales": 900000000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "mock test fixture"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadModelFromS3",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::distress-model-*/*"
+    },
+    {
+      "Sid": "ReadRegistryPointer",
+      "Effect": "Allow",
+      "Action": ["dynamodb:GetItem"],
+      "Resource": "arn:aws:dynamodb:ap-south-1:<account-id>:table/distress-model-*"
+    }
+  ]
+}

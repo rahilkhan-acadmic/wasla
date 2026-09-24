@@ -1,0 +1,43 @@
+# AWS Lambda container image for the inference API. Deploy behind API Gateway
+# or a Lambda Function URL. Uses Mangum to adapt the FastAPI/ASGI app to
+# Lambda's handler interface (see the `handler` object at the bottom of
+# src/app.py).
+#
+# IMPORTANT: build with --platform linux/amd64 --provenance=false. Since
+# Docker Desktop 4.31+, plain `docker build` defaults to producing an OCI
+# image index with build-provenance attestations, which AWS Lambda's
+# CreateFunction API rejects outright with "The image manifest, config or
+# layer media type for the source image is not supported." These two flags
+# force the older, Lambda-compatible Docker v2 Schema 2 single-manifest
+# format instead.
+#
+# Build & push:
+#   docker build --platform linux/amd64 --provenance=false -f Dockerfile.lambda -t distress-model-api .
+#   aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account>.dkr.ecr.<region>.amazonaws.com
+#   docker tag distress-model-api:latest <account>.dkr.ecr.<region>.amazonaws.com/distress-model-api:latest
+#   docker push <account>.dkr.ecr.<region>.amazonaws.com/distress-model-api:latest
+#
+# Verify before deploying to Lambda:
+#   docker manifest inspect <account>.dkr.ecr.<region>.amazonaws.com/distress-model-api:latest
+#   Look for "mediaType": "application/vnd.docker.distribution.manifest.v2+json"
+#   -- if it instead shows application/vnd.oci.image.index.v1+json, the flags
+#   above didn't take effect and Lambda will reject the image again.
+#
+# Then point a Lambda function (container image type) at that ECR image,
+# with handler set to app.handler, and put API Gateway (or a Function URL)
+# in front of it.
+
+FROM public.ecr.aws/lambda/python:3.12
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir fastapi mangum
+
+COPY src/ ${LAMBDA_TASK_ROOT}/
+COPY data/ ${LAMBDA_TASK_ROOT}/../data/
+# As with the standard Dockerfile: for real deployments, pull the model from
+# S3 at cold-start instead of baking it into the image (see README), so
+# publishing a new model version doesn't require a container rebuild.
+COPY models/ ${LAMBDA_TASK_ROOT}/../models/
+
+CMD ["app.handler"]
