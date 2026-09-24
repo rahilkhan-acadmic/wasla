@@ -229,7 +229,8 @@
         "iam:ListRoleTags",
         "iam:PutRolePolicy",
         "iam:TagRole",
-        "iam:UntagRole"
+        "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy"
       ],
       "Resource": "arn:aws:iam::<account-id>:role/distress-model-*"
     },
