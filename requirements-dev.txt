@@ -1,0 +1,9 @@
+# Dependencies needed to run this project's test suite and validation tools,
+# but NOT needed by the deployed Lambda images -- kept separate from
+# requirements.txt so the production Docker image stays lean (matters for
+# cold-start time, which is already tight -- see aws/lambda-stack.json).
+#
+# Install with: pip install -r requirements.txt -r requirements-dev.txt
+
+moto[s3,dynamodb]>=5.0
+cfn-lint>=1.0
