@@ -61,8 +61,8 @@
           "ImageUri": { "Ref": "ImageUri" }
         },
         "Role": { "Fn::GetAtt": ["LambdaExecutionRole", "Arn"] },
-        "Timeout": 30,
-        "MemorySize": 512,
+        "Timeout": 60,
+        "MemorySize": 1024,
         "Environment": {
           "Variables": {
             "MODEL_REGISTRY_TABLE": "distress-model-registry",

@@ -1,10 +1,14 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "GitHub Actions OIDC federation: lets your GitHub repo's workflows assume an AWS role directly, with no long-lived AWS access keys stored as GitHub secrets. Deploy with: aws cloudformation deploy --template-file aws/github-oidc-stack.json --stack-name distress-model-github-oidc --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides GitHubOrgRepo=<your-org-or-username>/<your-repo-name>",
+  "Description": "GitHub Actions OIDC federation: lets your GitHub repo's workflows assume an AWS role directly, with no long-lived AWS access keys stored as GitHub secrets. Deploy with: aws cloudformation deploy --template-file aws/github-oidc-stack.json --stack-name distress-model-github-oidc --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides GitHubOrg=<your-org-or-username> GitHubRepo=<your-repo-name>",
   "Parameters": {
-    "GitHubOrgRepo": {
+    "GitHubOrg": {
       "Type": "String",
-      "Description": "Your GitHub org/username and repo name, e.g. 'yourname/finance-distress-model' -- scopes which repo can assume this role."
+      "Description": "Your GitHub org/username, e.g. 'yourname'."
+    },
+    "GitHubRepo": {
+      "Type": "String",
+      "Description": "Your repo name, e.g. 'finance-distress-model'."
     },
     "GitHubBranch": {
       "Type": "String",
@@ -46,7 +50,7 @@
                 },
                 "StringLike": {
                   "token.actions.githubusercontent.com:sub": {
-                    "Fn::Sub": "repo:${GitHubOrgRepo}:ref:refs/heads/${GitHubBranch}"
+                    "Fn::Sub": "repo:${GitHubOrg}*/${GitHubRepo}*:ref:refs/heads/${GitHubBranch}"
                   }
                 }
               }
