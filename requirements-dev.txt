@@ -6,4 +6,4 @@
 # Install with: pip install -r requirements.txt -r requirements-dev.txt
 
 moto[s3,dynamodb]>=5.0
-cfn-lint>=1.0
+cfn-lint>=1.57.0
