@@ -42,7 +42,7 @@ import json
 import argparse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from sources import us_edgar_labels, india_labels, uk_companies_house_labels, china_labels
+from sources import us_edgar_labels, india_labels, uk_companies_house_labels, china_labels, nse_gsm_labels
 
 # --- The plugin registry. Adding a market = one line here + its module. ---
 MARKET_REGISTRY = {
@@ -50,6 +50,7 @@ MARKET_REGISTRY = {
     india_labels.MARKET_CODE: india_labels,
     uk_companies_house_labels.MARKET_CODE: uk_companies_house_labels,
     china_labels.MARKET_CODE: china_labels,
+    nse_gsm_labels.MARKET_CODE: nse_gsm_labels,
 }
 
 
