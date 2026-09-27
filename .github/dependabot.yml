@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"   # deliberately not weekly -- ML dependency bumps need a retrain
+        # to validate, not just a passing test suite; monthly keeps
+      # that a manageable, occasional task rather than a weekly chore
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

@@ -1,0 +1,12 @@
+{
+  "_comment": "Golden prediction snapshot. See generate_prediction_snapshot.py docstring before regenerating this file.",
+  "training_auc": 1.0,
+  "predictions": {
+    "SYN001": 0.978379,
+    "SYN010": 0.978379,
+    "SYN027": 0.978379,
+    "SYN060": 0.022998,
+    "SYN075": 0.022998,
+    "SYN100": 0.024946
+  }
+}
