@@ -34,6 +34,9 @@ jobs:
       - name: Run EDGAR leakage-prevention tests
         run: python tests/test_edgar_leakage_prevention.py
 
+      - name: Run prediction stability test (catches dependency-driven drift)
+        run: python tests/test_prediction_stability.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \
