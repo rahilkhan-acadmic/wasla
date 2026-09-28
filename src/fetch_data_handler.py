@@ -64,13 +64,11 @@ class _EnvArgs:
     china_n_healthy = int(os.environ.get("CHINA_N_HEALTHY", "30"))
 
 
-def _count_by_market(records: list[dict]) -> dict:
-    """{'us': {'distressed': 29, 'healthy': 29}, 'india_gsm': {...}, ...}"""
-    counts: dict = {}
+def _count_labels(records: list[dict]) -> dict:
+    """{'distressed': 17, 'healthy': 19} for one market's records."""
+    counts = {"distressed": 0, "healthy": 0}
     for r in records:
-        market = r.get("market", "unknown")
-        label = "distressed" if r.get("label_distressed") == 1 else "healthy"
-        counts.setdefault(market, {"distressed": 0, "healthy": 0})[label] += 1
+        counts["distressed" if r.get("label_distressed") == 1 else "healthy"] += 1
     return counts
 
 
@@ -84,7 +82,17 @@ def fetch_data_handler(event, context):
             f"registered markets: {list(MARKET_REGISTRY.keys())}"
         )
 
-    records = build_records(markets, _EnvArgs())
+    # Build each market SEPARATELY and count per registry code. Deliberately
+    # NOT derived from each record's own "market" field: plugins don't agree
+    # on that string's convention ("US", "IN", "UK" vs. registry codes "us",
+    # "india", "uk"), and an earlier version that compared the two falsely
+    # flagged a healthy US fetch as empty.
+    records: list[dict] = []
+    records_by_market: dict = {}
+    for code in markets:
+        market_records = build_records([code], _EnvArgs())
+        records.extend(market_records)
+        records_by_market[code] = _count_labels(market_records)
 
     usable = [
         r for r in records
@@ -97,23 +105,31 @@ def fetch_data_handler(event, context):
 
     boto3.client("s3").upload_file(tmp_path, MODEL_BUCKET, DATASET_S3_KEY)
 
+    # A silently failed source (e.g. NSE blocking Lambda's datacenter IPs)
+    # would otherwise look identical to a healthy run. Two distinct cases:
+    #  - no records at all: the source produced nothing
+    #  - missing a class: e.g. NSE blocked but yfinance worked, leaving only
+    #    the healthy comparison rows -- a skewed dataset, not an empty one
+    no_records = [c for c, n in records_by_market.items() if n["distressed"] + n["healthy"] == 0]
+    missing_a_class = [
+        c for c, n in records_by_market.items()
+        if c not in no_records and (n["distressed"] == 0 or n["healthy"] == 0)
+    ]
+
     result = {
         "dataset_s3_key": DATASET_S3_KEY,
         "markets_fetched": markets,
-        # Requested markets that produced ZERO records -- a silently failed
-        # source (e.g. NSE blocking Lambda's datacenter IPs) would otherwise
-        # look identical to a healthy run in markets_fetched above.
-        "markets_with_no_records": [m for m in markets if m not in _count_by_market(records)],
+        "markets_with_no_records": no_records,
+        "markets_missing_a_class": missing_a_class,
         "total_records": len(records),
         "usable_records": len(usable),
-        # Per-market, per-label counts -- makes a silently degraded source
-        # visible (e.g. if NSE blocks Lambda's datacenter IPs, india_gsm would
-        # show 0 distressed records here instead of failing loudly).
-        "records_by_market": _count_by_market(records),
+        "records_by_market": records_by_market,
     }
-    if result["markets_with_no_records"]:
-        print(f"WARNING: requested market(s) produced no records: "
-              f"{result['markets_with_no_records']} -- training will proceed "
-              f"on the remaining markets only.")
+    if no_records:
+        print(f"WARNING: requested market(s) produced no records: {no_records} -- "
+              f"training will proceed on the remaining markets only.")
+    if missing_a_class:
+        print(f"WARNING: market(s) returned only one class: {missing_a_class} -- "
+              f"this skews the combined dataset; check that source.")
     print(json.dumps(result, indent=2))
     return result

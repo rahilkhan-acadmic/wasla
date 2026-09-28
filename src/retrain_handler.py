@@ -10,9 +10,19 @@ train_and_evaluate_handler:
       S3 (written by fetch_data_handler.py's scheduled run), falling back to
       a local bundled file if that isn't present. See _load_dataset_arrays.
     - Trains a new model
-    - Downloads the CURRENTLY DEPLOYED model from the registry and evaluates
-      it on the same held-out test set, for a fair apples-to-apples AUC
-      comparison
+    - Downloads the CURRENTLY DEPLOYED model from the registry and scores it
+      on the same held-out split (via train_classifier.split_dataset) that
+      the new model is scored on, so the two AUCs are computed on identical
+      records.
+
+      KNOWN LIMITATION: this is comparable, not clean. The deployed model was
+      trained on earlier fetches that overlap heavily with this week's data,
+      so it has likely already SEEN some of these held-out records -- which
+      flatters it relative to the new model. The rigorous fix is a fixed
+      holdout set that no model ever trains on, or a time-based split (train
+      on older filings, test on newer ones). Until then, treat a small AUC
+      gap either way with suspicion, and watch test_set_size in the output:
+      with a few dozen records the held-out set is a handful of companies.
     - Writes the new candidate model to a "candidate" key in S3 (NOT the
       live path -- it isn't promoted yet)
     - Returns both AUC scores and the candidate's S3 key so Step Functions'
@@ -36,7 +46,7 @@ import numpy as np
 import xgboost as xgb
 
 from features import build_feature_row, financials_from_dict, FEATURE_NAMES, has_complete_financials
-from train_classifier import train_model
+from train_classifier import train_model, split_dataset
 
 MODEL_BUCKET = os.environ.get("MODEL_BUCKET")
 MODEL_REGISTRY_TABLE = os.environ.get("MODEL_REGISTRY_TABLE")
@@ -114,7 +124,14 @@ def train_and_evaluate_handler(event, context):
     X, y = _load_dataset_arrays()
 
     new_model, new_auc, _ = train_model(X, y)
-    current_auc = _evaluate_existing_model(X, y)
+
+    # Score the currently-deployed model on the SAME held-out split the new
+    # model was scored on (split_dataset is deterministic), so the two AUCs
+    # are actually comparable. Previously this scored the live model on ALL
+    # records while the new model was scored only on its held-out quarter --
+    # different data, so the comparison meant nothing.
+    _, X_test, _, y_test = split_dataset(X, y)
+    current_auc = _evaluate_existing_model(X_test, y_test)
 
     candidate_key = f"models/{MODEL_REGISTRY_KEY}/candidate/model-{int(time.time())}.json"
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
@@ -126,6 +143,11 @@ def train_and_evaluate_handler(event, context):
         "new_auc": round(new_auc, 4),
         "current_auc": round(current_auc, 4),
         "auc_improvement": round(new_auc - current_auc, 4),
+        # How many records both AUCs were computed on. With a small dataset
+        # this is tiny (55 records -> ~14) and the AUCs are correspondingly
+        # noisy -- surfaced here so it's visible next to the numbers rather
+        # than buried.
+        "test_set_size": int(len(y_test)),
     }
 
 

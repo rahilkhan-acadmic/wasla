@@ -186,6 +186,26 @@ availability:**
   written in good faith but **could not be verified against a live akshare
   install** in the sandboxed environment it was built in — sanity-check
   `ak.stock_zh_a_spot_em()`'s actual columns before trusting this fully.
+- **`nse_gsm_labels.py`** — a second, better India label source than the
+  manual CSV, using NSE's own **GSM (Graded Surveillance Measure)** list —
+  SEBI/NSE's own objective criteria for weak fundamentals (net worth ≤ ₹10
+  crore, net fixed assets ≤ ₹25 crore, PE > 2× the Nifty 500 benchmark or
+  negative). Two real advantages over `india_labels.py`'s curated CSV: the
+  criteria specifically target *small, weak* companies — this project's
+  actual penny-stock focus, unlike the CSV's mega-cap examples — and
+  GSM-flagged companies are, by definition, still actively listed and
+  trading, unlike the CSV's mostly fully-delisted names (which is exactly
+  why only 2 of 8 of those returned usable `yfinance` data in practice).
+  **The biggest caveat of any market module here**: unlike every other
+  source, NSE publishes no documented public API at all — this targets
+  NSE's internal, undocumented JSON endpoint using the standard community
+  workaround (bootstrap a session via the homepage, then call the API with
+  browser-like headers), and the exact endpoint path was **not verified
+  against a live call**. NSE changes its anti-bot protections more
+  frequently than any other source in this project; if this breaks, check
+  `nsepython`'s or `jugaad-data`'s current source for whatever endpoint
+  they're using now. Healthy comparisons are reused from the existing CSV's
+  large-cap examples, which already reliably return `yfinance` data.
 
 **US (`data/sources/us_edgar_labels.py`):** uses SEC EDGAR's full-text
 search to find real Form 8-K **Item 1.03** filings — the specific,
@@ -218,6 +238,26 @@ it documents two real, current limitations:
 - Unlike the US path, there's no `as_of_date` leakage protection for India
   yet — `yfinance` doesn't expose the kind of dated historical filings
   EDGAR does. This is a real, currently-unsolved gap.
+
+**No plugin may emit headline text (enforced by
+`tests/test_no_label_derived_headlines.py`).** Plugins used to attach a
+`headlines` list per record, which becomes the `news_sentiment` feature — but
+for distressed companies they *wrote it from the label* ("<co> files for
+bankruptcy protection", "<co>: NSE GSM <stage>"), while healthy companies got
+nothing or *current* news scraped at build time. That's the label re-typed as
+text plus a class-dependent input, not independently observed news, so a model
+can learn "the text looks like this ⇒ distressed" and every metric comes out
+inflated. How badly depends on the scorer: VADER scores the US template exactly
+0.0 (it doesn't treat "bankruptcy" as negative), so the leak was mostly in the
+India records under VADER — but FinBERT would score the US one strongly
+negative, so it had to be closed structurally. Until genuine point-in-time,
+label-independent headlines exist, every plugin emits `headlines: []` and the
+feature is a constant 0.0 (importance exactly 0; feature vector length
+unchanged, so deployed models stay compatible). The test runs every registered
+plugin's real `build()` with only the network faked, and *fails* for any
+plugin it has no fake for, so a new market can't reintroduce this by omission.
+Any real-data model trained before this fix — including whatever is currently
+promoted — was trained with that feature and its metrics are suspect.
 
 **Every market plugin writes to the same schema** as `data/sample_companies.json`
 (plus `market`, `region`, `company_name`, `event_date`, `source` for
@@ -336,9 +376,17 @@ or maintain.
 **`src/retrain_handler.py`** has two functions, deployed as two Lambda
 functions from that shared image:
 - `train_and_evaluate_handler` — loads the dataset (see below), retrains,
-  evaluates the new candidate against the *currently deployed* model on the
-  same data for a fair comparison, and writes the candidate to a non-live
-  S3 key
+  then scores the new candidate and the *currently deployed* model on the
+  **same held-out split** (a shared, deterministic `split_dataset()`), and
+  writes the candidate to a non-live S3 key. Two honest caveats: an earlier
+  version scored the live model on *all* records while the candidate was
+  scored only on its held-out quarter, so the two numbers weren't comparable
+  (fixed, with a test that fails against the old behavior); and even now the
+  comparison isn't clean, because the deployed model has likely already seen
+  some of those held-out records in earlier weeks' overlapping data. The
+  rigorous fix is a fixed holdout no model trains on, or a time-based split.
+  The output includes `test_set_size` so you can see how few companies the
+  AUCs rest on.
 - `register_model_handler` — only called if the candidate actually improved:
   promotes it to a versioned key and updates the DynamoDB pointer
 
@@ -404,9 +452,9 @@ meaningful), and always notifies via the SNS topic either way.
 **For the drift-triggered path** (off-cycle retrain when CloudWatch detects
 drift, rather than waiting for the weekly schedule), `aws/cloudwatch_drift_alarm.json`
 + `aws/eventbridge_drift_pattern.json` + `aws/eventbridge_drift_targets.json`
-are still there from the original design — update their `<placeholder>` ARNs
-to point at the state machine this stack outputs, then apply them the same
-way as before:
+  are still there from the original design — update their `<placeholder>` ARNs
+  to point at the state machine this stack outputs, then apply them the same
+  way as before:
 ```bash
 aws cloudformation describe-stacks --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --query "Stacks[0].Outputs" --output table
 aws cloudwatch put-metric-alarm --cli-input-json file://aws/cloudwatch_drift_alarm.json --profile finance-distress
