@@ -25,7 +25,7 @@ import boto3
 def run_test():
     s3 = boto3.client("s3", region_name="ap-south-1")
     s3.create_bucket(Bucket="test-distress-model-bucket",
-                      CreateBucketConfiguration={"LocationConstraint": "ap-south-1"})
+                     CreateBucketConfiguration={"LocationConstraint": "ap-south-1"})
 
     ddb = boto3.client("dynamodb", region_name="ap-south-1")
     ddb.create_table(
@@ -94,6 +94,32 @@ def run_test():
     X, y = retrain_handler._load_dataset_arrays()
     assert len(X) > 2, "Expected the bundled synthetic dataset (120 records) as a fallback"
     print(f"PASSED: fell back to local dataset ({len(X)} records) when the S3 key was missing\n")
+
+    print("=== Test 7: the live model is scored on the SAME held-out split as the new model ===")
+    from train_classifier import split_dataset
+    os.environ.pop("DATASET_S3_KEY", None)
+    importlib.reload(retrain_handler)  # local bundled dataset again
+    X_all, y_all = retrain_handler._load_dataset_arrays()
+    _, _, _, y_expected_test = split_dataset(X_all, y_all)
+
+    captured = {}
+    real_eval = retrain_handler._evaluate_existing_model
+
+    def spy(X_arg, y_arg):
+        captured["y"] = list(y_arg)
+        return real_eval(X_arg, y_arg)
+
+    retrain_handler._evaluate_existing_model = spy
+    result7 = retrain_handler.train_and_evaluate_handler({}, None)
+
+    assert len(captured["y"]) < len(y_all), (
+        f"Live model was scored on {len(captured['y'])} of {len(y_all)} records -- "
+        f"the WHOLE dataset, not the held-out split the new model is scored on")
+    assert captured["y"] == list(y_expected_test), \
+        "Live model must be scored on exactly the held-out split split_dataset() produces"
+    assert result7["test_set_size"] == len(y_expected_test)
+    print(f"PASSED: both models scored on the same {result7['test_set_size']} held-out records "
+          f"(not all {len(y_all)})\n")
 
     print("ALL TESTS PASSED")
 

@@ -22,7 +22,22 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
 
 from features import (build_feature_row, financials_from_dict, FEATURE_NAMES,
-                       has_complete_financials, REQUIRED_FINANCIAL_FIELDS)
+                      has_complete_financials, REQUIRED_FINANCIAL_FIELDS)
+
+
+def split_dataset(X, y, test_size: float = 0.25, random_state: int = 42):
+    """The single, shared train/test split -- deterministic (fixed seed).
+
+    Exists so that ANYTHING comparing models can score them all on the same
+    held-out records. train_model() trains on the train half and reports AUC
+    on the test half; the retrain handler calls this same function to get the
+    identical test half and score the currently-deployed model on it too --
+    otherwise the two AUCs being compared come from different data and mean
+    nothing relative to each other.
+    """
+    return train_test_split(
+        X, y, test_size=test_size, random_state=random_state, stratify=y
+    )
 
 
 def train_model(X, y, test_size: float = 0.25, random_state: int = 42):
@@ -31,9 +46,7 @@ def train_model(X, y, test_size: float = 0.25, random_state: int = 42):
     Shared by both the CLI script below and the Lambda retrain handler
     (src/retrain_handler.py), so both paths train identically.
     """
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state, stratify=y
-    )
+    X_train, X_test, y_train, y_test = split_dataset(X, y, test_size, random_state)
 
     model = xgb.XGBClassifier(
         n_estimators=200,
@@ -50,7 +63,7 @@ def train_model(X, y, test_size: float = 0.25, random_state: int = 42):
     preds = (probs >= 0.5).astype(int)
     auc = roc_auc_score(y_test, probs)
     report = classification_report(y_test, preds, target_names=["healthy", "distressed"],
-                                    output_dict=True)
+                                   output_dict=True)
 
     return model, auc, report
 
@@ -98,7 +111,7 @@ def main():
 
     print("\n=== Feature importances ===")
     for name, imp in sorted(zip(FEATURE_NAMES, model.feature_importances_),
-                             key=lambda t: -t[1]):
+                            key=lambda t: -t[1]):
         print(f"  {name:28s} {imp:.3f}")
 
     model.save_model(args.out)
