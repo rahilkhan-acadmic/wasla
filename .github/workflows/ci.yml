@@ -37,6 +37,12 @@ jobs:
       - name: Run prediction stability test (catches dependency-driven drift)
         run: python tests/test_prediction_stability.py
 
+      - name: Run Lambda args contract test (every market plugin covered by _EnvArgs)
+        run: python tests/test_env_args_contract.py
+
+      - name: Run fetch-data handler test (healthy and degraded-source scenarios)
+        run: python tests/test_fetch_data_handler.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

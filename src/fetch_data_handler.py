@@ -53,12 +53,25 @@ class _EnvArgs:
 
     india_csv = os.path.join(_SRC_DIR, "..", "data", "sources", "india_distress_labels.csv")
 
+    gsm_n_distressed = int(os.environ.get("GSM_N_DISTRESSED", "20"))
+    gsm_healthy_csv = os.path.join(_SRC_DIR, "..", "data", "sources", "india_distress_labels.csv")
+
     uk_api_key = os.environ.get("COMPANIES_HOUSE_API_KEY")
     uk_n_distressed = int(os.environ.get("UK_N_DISTRESSED", "30"))
     uk_n_healthy = int(os.environ.get("UK_N_HEALTHY", "30"))
 
     china_n_distressed = int(os.environ.get("CHINA_N_DISTRESSED", "30"))
     china_n_healthy = int(os.environ.get("CHINA_N_HEALTHY", "30"))
+
+
+def _count_by_market(records: list[dict]) -> dict:
+    """{'us': {'distressed': 29, 'healthy': 29}, 'india_gsm': {...}, ...}"""
+    counts: dict = {}
+    for r in records:
+        market = r.get("market", "unknown")
+        label = "distressed" if r.get("label_distressed") == 1 else "healthy"
+        counts.setdefault(market, {"distressed": 0, "healthy": 0})[label] += 1
+    return counts
 
 
 def fetch_data_handler(event, context):
@@ -87,8 +100,20 @@ def fetch_data_handler(event, context):
     result = {
         "dataset_s3_key": DATASET_S3_KEY,
         "markets_fetched": markets,
+        # Requested markets that produced ZERO records -- a silently failed
+        # source (e.g. NSE blocking Lambda's datacenter IPs) would otherwise
+        # look identical to a healthy run in markets_fetched above.
+        "markets_with_no_records": [m for m in markets if m not in _count_by_market(records)],
         "total_records": len(records),
         "usable_records": len(usable),
+        # Per-market, per-label counts -- makes a silently degraded source
+        # visible (e.g. if NSE blocks Lambda's datacenter IPs, india_gsm would
+        # show 0 distressed records here instead of failing loudly).
+        "records_by_market": _count_by_market(records),
     }
+    if result["markets_with_no_records"]:
+        print(f"WARNING: requested market(s) produced no records: "
+              f"{result['markets_with_no_records']} -- training will proceed "
+              f"on the remaining markets only.")
     print(json.dumps(result, indent=2))
     return result
