@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
 
 from features import (build_feature_row, financials_from_dict, FEATURE_NAMES,
-                      has_complete_financials, REQUIRED_FINANCIAL_FIELDS)
+                       has_complete_financials, REQUIRED_FINANCIAL_FIELDS)
 
 
 def split_dataset(X, y, test_size: float = 0.25, random_state: int = 42):
@@ -40,15 +40,11 @@ def split_dataset(X, y, test_size: float = 0.25, random_state: int = 42):
     )
 
 
-def train_model(X, y, test_size: float = 0.25, random_state: int = 42):
-    """Train the XGBoost classifier and return (model, auc, report_dict).
-
-    Shared by both the CLI script below and the Lambda retrain handler
-    (src/retrain_handler.py), so both paths train identically.
-    """
-    X_train, X_test, y_train, y_test = split_dataset(X, y, test_size, random_state)
-
-    model = xgb.XGBClassifier(
+def make_model(random_state: int = 42):
+    """The classifier configuration used everywhere -- training, the retrain
+    Lambda, and cross_validate.py -- so an evaluation always measures exactly
+    the model that gets deployed."""
+    return xgb.XGBClassifier(
         n_estimators=200,
         max_depth=3,
         learning_rate=0.08,
@@ -57,13 +53,24 @@ def train_model(X, y, test_size: float = 0.25, random_state: int = 42):
         eval_metric="logloss",
         random_state=random_state,
     )
+
+
+def train_model(X, y, test_size: float = 0.25, random_state: int = 42):
+    """Train the XGBoost classifier and return (model, auc, report_dict).
+
+    Shared by both the CLI script below and the Lambda retrain handler
+    (src/retrain_handler.py), so both paths train identically.
+    """
+    X_train, X_test, y_train, y_test = split_dataset(X, y, test_size, random_state)
+
+    model = make_model(random_state)
     model.fit(X_train, y_train)
 
     probs = model.predict_proba(X_test)[:, 1]
     preds = (probs >= 0.5).astype(int)
     auc = roc_auc_score(y_test, probs)
     report = classification_report(y_test, preds, target_names=["healthy", "distressed"],
-                                   output_dict=True)
+                                    output_dict=True)
 
     return model, auc, report
 
@@ -111,7 +118,7 @@ def main():
 
     print("\n=== Feature importances ===")
     for name, imp in sorted(zip(FEATURE_NAMES, model.feature_importances_),
-                            key=lambda t: -t[1]):
+                             key=lambda t: -t[1]):
         print(f"  {name:28s} {imp:.3f}")
 
     model.save_model(args.out)

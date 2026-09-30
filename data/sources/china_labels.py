@@ -154,7 +154,7 @@ def build_china_labeled_dataset(n_distressed: int = 30, n_healthy: int = 30) -> 
             "company_name": c["name"],
             "market": "china",
             "financials": fin,
-            "headlines": [f"{c['name']}: carries ST/*ST special treatment designation"],
+            "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
             "label_distressed": 1,
             "event_date": None,  # AKShare roster is a current snapshot, not dated history
             "source": "CSRC/exchange ST or *ST designation (via AKShare roster)",

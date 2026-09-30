@@ -1,0 +1,132 @@
+[
+  {
+    "ticker": "RCOM.NS",
+    "company_name": "Reliance Communications Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 363360000000.0,
+      "total_liabilities": 1389060000000.0,
+      "current_assets": 323820000000.0,
+      "current_liabilities": 1381630000000.0,
+      "retained_earnings": -1087290000000.0,
+      "ebit": -4460000000.0,
+      "sales": 3140000000.0,
+      "market_value_equity": 2570922141.5427613,
+      "book_value_equity": -1025700000000.0
+    },
+    "headlines": [
+      "Reliance Communications Ltd: NCLT CIRP admission"
+    ],
+    "label_distressed": 1,
+    "event_date": "2019-05-08",
+    "source": "NCLT CIRP admission",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "VIDEOIND.BO",
+    "company_name": "Videocon Industries Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 337905020000.0,
+      "total_liabilities": 776724150000.0,
+      "current_assets": 167788770000.0,
+      "current_liabilities": 772960830000.0,
+      "retained_earnings": -324407540000.0,
+      "ebit": -4391400000.0,
+      "sales": 6477880000.0,
+      "market_value_equity": null,
+      "book_value_equity": -438819130000.0
+    },
+    "headlines": [
+      "Videocon Industries Ltd: NCLT CIRP admission"
+    ],
+    "label_distressed": 1,
+    "event_date": "2018-01-31",
+    "source": "NCLT CIRP admission",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "company_name": "Reliance Industries Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 21781400000000.0,
+      "total_liabilities": 10922740000000.0,
+      "current_assets": 5942490000000.0,
+      "current_liabilities": 5412540000000.0,
+      "retained_earnings": 4636440000000.0,
+      "ebit": 1472180000000.0,
+      "sales": 10572190000000.0,
+      "market_value_equity": 16590811450510.0,
+      "book_value_equity": 10858660000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "TCS.NS",
+    "company_name": "Tata Consultancy Services Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 1823720000000.0,
+      "total_liabilities": 738940000000.0,
+      "current_assets": 1357050000000.0,
+      "current_liabilities": 609140000000.0,
+      "retained_earnings": 998830000000.0,
+      "ebit": 667140000000.0,
+      "sales": 2670210000000.0,
+      "market_value_equity": 7532858212476.0,
+      "book_value_equity": 1084780000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "INFY.NS",
+    "company_name": "Infosys Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 16446000000.0,
+      "total_liabilities": 6606000000.0,
+      "current_assets": 10912000000.0,
+      "current_liabilities": 5516000000.0,
+      "retained_earnings": 13459000000.0,
+      "ebit": 4553000000.0,
+      "sales": 20158000000.0,
+      "market_value_equity": 4051153677154.47,
+      "book_value_equity": 9840000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "ITC.NS",
+    "company_name": "ITC Ltd",
+    "market": "IN",
+    "financials": {
+      "total_assets": 937923800000.0,
+      "total_liabilities": 209193600000.0,
+      "current_assets": 507084100000.0,
+      "current_liabilities": 166872700000.0,
+      "retained_earnings": 516515200000.0,
+      "ebit": 281185600000.0,
+      "sales": 782132800000.0,
+      "market_value_equity": 3370709094789.0,
+      "book_value_equity": 728730200000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  }
+]

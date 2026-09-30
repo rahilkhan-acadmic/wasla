@@ -25,7 +25,7 @@ import boto3
 def run_test():
     s3 = boto3.client("s3", region_name="ap-south-1")
     s3.create_bucket(Bucket="test-distress-model-bucket",
-                     CreateBucketConfiguration={"LocationConstraint": "ap-south-1"})
+                      CreateBucketConfiguration={"LocationConstraint": "ap-south-1"})
 
     ddb = boto3.client("dynamodb", region_name="ap-south-1")
     ddb.create_table(

@@ -70,7 +70,7 @@
         "lambda:UpdateFunctionConfiguration",
         "lambda:UpdateFunctionUrlConfig"
       ],
-      "Resource": "arn:aws:lambda:<region>:<account-id>:function:distress-model-*"
+      "Resource": "arn:aws:lambda:*:<account-id>:function:distress-model-*"
     },
     {
       "Sid": "ECRPushPull",
@@ -195,7 +195,7 @@
         "cloudformation:TagResource",
         "cloudformation:UntagResource"
       ],
-      "Resource": "arn:aws:cloudformation:<region>:<account-id>:stack/distress-model-*/*"
+      "Resource": "arn:aws:cloudformation:*:<account-id>:stack/distress-model-*/*"
     },
     {
       "Sid": "PassRolesToServices",
@@ -208,7 +208,8 @@
             "lambda.amazonaws.com",
             "batch.amazonaws.com",
             "states.amazonaws.com",
-            "scheduler.amazonaws.com"
+            "scheduler.amazonaws.com",
+            "ec2.amazonaws.com"
           ]
         }
       }
@@ -257,6 +258,53 @@
         "iam:ListPolicyVersions"
       ],
       "Resource": "arn:aws:iam::<account-id>:policy/FinanceDistressDeployPolicy"
+    },
+    {
+      "Sid": "EC2ClaudeCodeInstance",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:TerminateInstances",
+        "ec2:StopInstances",
+        "ec2:StartInstances",
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceStatus",
+        "ec2:CreateSecurityGroup",
+        "ec2:DeleteSecurityGroup",
+        "ec2:DescribeSecurityGroups",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeImages",
+        "ec2:DescribeKeyPairs",
+        "ec2:CreateTags",
+        "ec2:DeleteTags",
+        "ec2:DescribeTags",
+        "ec2:DescribeVolumes",
+        "ec2:ModifyInstanceAttribute"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EC2InstanceProfileManagement",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:GetInstanceProfile",
+        "iam:AddRoleToInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile"
+      ],
+      "Resource": "arn:aws:iam::<account-id>:instance-profile/distress-model-*"
+    },
+    {
+      "Sid": "ResolveAmazonLinuxAmiParameter",
+      "Effect": "Allow",
+      "Action": "ssm:GetParameters",
+      "Resource": "arn:aws:ssm:<region>::parameter/aws/service/ami-amazon-linux-latest/*"
     }
   ]
 }

@@ -52,7 +52,7 @@ import time
 import requests
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src"))
-from nse_client import fetch_financials_for_ticker, fetch_recent_news_headlines  # noqa: E402
+from nse_client import fetch_financials_for_ticker  # noqa: E402
 from features import has_complete_financials  # noqa: E402
 
 MARKET_CODE = "india_gsm"
@@ -162,13 +162,12 @@ def build_india_gsm_dataset(n_distressed: int, healthy_csv: str) -> list[dict]:
             if not has_complete_financials(fin):
                 print(f"  Skipping {ticker}: incomplete financials")
                 continue
-            headlines = [f"{c['company_name']}: NSE GSM {c['stage']} (Graded Surveillance Measure)"]
             records.append({
                 "ticker": ticker,
                 "company_name": c["company_name"],
                 "market": "india_gsm",
                 "financials": fin,
-                "headlines": headlines,
+                "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
                 "label_distressed": 1,
                 "event_date": None,
                 "source": f"NSE GSM {c['stage']}",
@@ -183,13 +182,12 @@ def build_india_gsm_dataset(n_distressed: int, healthy_csv: str) -> list[dict]:
             if not has_complete_financials(fin):
                 print(f"  Skipping {ticker}: incomplete financials")
                 continue
-            headlines = fetch_recent_news_headlines(ticker)
             records.append({
                 "ticker": ticker,
                 "company_name": row["company_name"],
                 "market": "india_gsm",
                 "financials": fin,
-                "headlines": headlines,
+                "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
                 "label_distressed": 0,
                 "event_date": row["event_date"],
                 "source": row["source"],

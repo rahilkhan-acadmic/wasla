@@ -36,7 +36,7 @@ FULL_TEXT_SEARCH_URL = "https://efts.sec.gov/LATEST/search-index"
 
 
 def _search_full_text(query: str, forms: str, start_date: str, end_date: str,
-                      from_offset: int = 0) -> dict:
+                       from_offset: int = 0) -> dict:
     """One page of EDGAR full-text search results.
 
     dateRange/startdt/enddt filter by filing date; forms filters by form type.
@@ -98,7 +98,7 @@ def find_bankruptcy_filings(start_date: str, end_date: str, max_results: int = 2
 
 
 def find_healthy_sample(start_date: str, end_date: str, exclude_ciks: set[int],
-                        max_results: int = 200) -> list[dict]:
+                         max_results: int = 200) -> list[dict]:
     """Returns companies that filed a normal annual 10-K in the same window,
     excluding any CIK already flagged as a bankruptcy filer.
 
@@ -113,9 +113,9 @@ def find_healthy_sample(start_date: str, end_date: str, exclude_ciks: set[int],
     while len(results) < max_results:
         page = _search_full_text(
             query='"annual report"',  # EDGAR full-text search 500s on an empty
-            # query -- this common, near-universal
-            # 10-K phrase serves as a de facto
-            # "any 10-K filer" search instead
+                                       # query -- this common, near-universal
+                                       # 10-K phrase serves as a de facto
+                                       # "any 10-K filer" search instead
             forms="10-K",
             start_date=start_date,
             end_date=end_date,
@@ -148,8 +148,8 @@ def find_healthy_sample(start_date: str, end_date: str, exclude_ciks: set[int],
 
 
 def build_us_labeled_dataset(start_date: str, end_date: str,
-                             n_distressed: int = 30, n_healthy: int = 30,
-                             polite_delay: float = 0.2) -> list[dict]:
+                              n_distressed: int = 30, n_healthy: int = 30,
+                              polite_delay: float = 0.2) -> list[dict]:
     """End-to-end: find real bankruptcy events + a healthy sample from the
     same period, pull EACH company's financials AS OF just before its event
     date (or, for healthy companies, as of their filing date), and return
@@ -169,7 +169,7 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
     for b in bankruptcies[:n_distressed]:
         try:
             fin = fetch_financials_for_cik(b["cik"], polite_delay=polite_delay,
-                                           as_of_date=b["filing_date"])
+                                            as_of_date=b["filing_date"])
             if not has_complete_financials(fin):
                 continue  # no usable data for this CIK -- skip rather than guess
             records.append({
@@ -177,7 +177,7 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
                 "company_name": b["company_name"],
                 "market": "US",
                 "financials": fin,
-                "headlines": [f"{b['company_name']} files for bankruptcy protection."],
+                "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
                 "label_distressed": 1,
                 "event_date": b["filing_date"],
                 "source": "SEC EDGAR 8-K Item 1.03",
@@ -188,7 +188,7 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
     for h in healthy[:n_healthy]:
         try:
             fin = fetch_financials_for_cik(h["cik"], polite_delay=polite_delay,
-                                           as_of_date=h["filing_date"])
+                                            as_of_date=h["filing_date"])
             if not has_complete_financials(fin):
                 continue
             records.append({
@@ -218,8 +218,8 @@ def add_cli_args(parser) -> None:
     group = parser.add_argument_group(f"{MARKET_LABEL} options")
     group.add_argument("--us-start-date", default="2015-01-01")
     group.add_argument("--us-end-date", default=None,
-                       help="YYYY-MM-DD; defaults to today, so scheduled/automated "
-                            "runs keep picking up newly-filed bankruptcies over time")
+                        help="YYYY-MM-DD; defaults to today, so scheduled/automated "
+                             "runs keep picking up newly-filed bankruptcies over time")
     group.add_argument("--us-n-distressed", type=int, default=30)
     group.add_argument("--us-n-healthy", type=int, default=30)
 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     data = build_us_labeled_dataset(args.start_date, args.end_date,
-                                    args.n_distressed, args.n_healthy)
+                                     args.n_distressed, args.n_healthy)
     with open(args.out, "w") as f:
         json.dump(data, f, indent=2)
     print(f"\nWrote {len(data)} labeled US companies to {args.out}")

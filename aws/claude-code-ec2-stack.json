@@ -1,0 +1,411 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "EC2 instance for running Claude Code against this project directly -- no SSH key, no open inbound ports, connected via AWS Systems Manager Session Manager only. The instance role carries the SAME permissions as finance-distress-deploy (reused directly from iam-deploy-policy.json, not rewritten), because for Claude Code to deploy without round-tripping commands through a human, it needs to do everything that profile does. Deploy with: aws cloudformation deploy --template-file aws/claude-code-ec2-stack.json --stack-name distress-model-claude-code --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM",
+  "Parameters": {
+    "InstanceType": {
+      "Type": "String",
+      "Default": "t3.large",
+      "Description": "t3.large (2 vCPU, 8GB) handles Docker builds and ML package installs comfortably. Drop to t3.medium (4GB) to save cost if you're not building images on this box."
+    },
+    "VolumeSizeGB": {
+      "Type": "Number",
+      "Default": 40,
+      "Description": "Docker images and Python venvs add up -- 40GB gives real headroom over the default 8GB."
+    },
+    "VpcId": {
+      "Type": "AWS::EC2::VPC::Id",
+      "Description": "Your default VPC works fine -- find it with: aws ec2 describe-vpcs --filters Name=isDefault,Values=true --query 'Vpcs[0].VpcId' --output text"
+    }
+  },
+  "Resources": {
+    "ClaudeCodeInstanceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "distress-model-claude-code-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "distress-model-full-deploy-permissions",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "S3ModelAndDataBuckets",
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:AbortMultipartUpload",
+                    "s3:CreateBucket",
+                    "s3:DeleteBucket",
+                    "s3:DeleteObject",
+                    "s3:DeleteObjectVersion",
+                    "s3:GetBucketTagging",
+                    "s3:GetBucketVersioning",
+                    "s3:GetObject",
+                    "s3:GetObjectVersion",
+                    "s3:ListBucket",
+                    "s3:ListBucketMultipartUploads",
+                    "s3:ListBucketVersions",
+                    "s3:ListMultipartUploadParts",
+                    "s3:PutBucketTagging",
+                    "s3:PutBucketVersioning",
+                    "s3:PutObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::distress-model-*",
+                    "arn:aws:s3:::distress-model-*/*"
+                  ]
+                },
+                {
+                  "Sid": "DynamoDBModelRegistry",
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:CreateTable",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:DeleteTable",
+                    "dynamodb:DescribeTable",
+                    "dynamodb:GetItem",
+                    "dynamodb:ListTables",
+                    "dynamodb:ListTagsOfResource",
+                    "dynamodb:PutItem",
+                    "dynamodb:TagResource",
+                    "dynamodb:UntagResource",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/distress-model-*"
+                  }
+                },
+                {
+                  "Sid": "LambdaDeploy",
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:AddPermission",
+                    "lambda:CreateFunction",
+                    "lambda:CreateFunctionUrlConfig",
+                    "lambda:DeleteFunction",
+                    "lambda:DeleteFunctionUrlConfig",
+                    "lambda:GetFunction",
+                    "lambda:GetFunctionConfiguration",
+                    "lambda:GetFunctionUrlConfig",
+                    "lambda:GetPolicy",
+                    "lambda:InvokeFunction",
+                    "lambda:InvokeFunctionUrl",
+                    "lambda:ListFunctions",
+                    "lambda:ListTags",
+                    "lambda:ListVersionsByFunction",
+                    "lambda:RemovePermission",
+                    "lambda:TagResource",
+                    "lambda:UntagResource",
+                    "lambda:UpdateFunctionCode",
+                    "lambda:UpdateFunctionConfiguration",
+                    "lambda:UpdateFunctionUrlConfig"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:distress-model-*"
+                  }
+                },
+                {
+                  "Sid": "ECRPushPull",
+                  "Effect": "Allow",
+                  "Action": [
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:BatchDeleteImage",
+                    "ecr:BatchGetImage",
+                    "ecr:CompleteLayerUpload",
+                    "ecr:CreateRepository",
+                    "ecr:DeleteRepository",
+                    "ecr:DescribeRepositories",
+                    "ecr:GetAuthorizationToken",
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:GetRepositoryPolicy",
+                    "ecr:InitiateLayerUpload",
+                    "ecr:ListImages",
+                    "ecr:ListTagsForResource",
+                    "ecr:PutImage",
+                    "ecr:SetRepositoryPolicy",
+                    "ecr:TagResource",
+                    "ecr:UntagResource",
+                    "ecr:UploadLayerPart"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Sid": "StepFunctionsAndEventBridge",
+                  "Effect": "Allow",
+                  "Action": [
+                    "events:DeleteRule",
+                    "events:DescribeRule",
+                    "events:ListRules",
+                    "events:ListTagsForResource",
+                    "events:ListTargetsByRule",
+                    "events:PutRule",
+                    "events:PutTargets",
+                    "events:RemoveTargets",
+                    "events:TagResource",
+                    "events:UntagResource",
+                    "scheduler:CreateSchedule",
+                    "scheduler:DeleteSchedule",
+                    "scheduler:GetSchedule",
+                    "scheduler:ListSchedules",
+                    "scheduler:ListTagsForResource",
+                    "scheduler:TagResource",
+                    "scheduler:UntagResource",
+                    "scheduler:UpdateSchedule",
+                    "states:CreateStateMachine",
+                    "states:DeleteStateMachine",
+                    "states:DescribeExecution",
+                    "states:GetExecutionHistory",
+                    "states:DescribeStateMachine",
+                    "states:ListExecutions",
+                    "states:ListStateMachines",
+                    "states:ListTagsForResource",
+                    "states:StartExecution",
+                    "states:StopExecution",
+                    "states:TagResource",
+                    "states:UntagResource",
+                    "states:UpdateStateMachine"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Sid": "MonitoringAndAlerts",
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudwatch:DeleteAlarms",
+                    "cloudwatch:DescribeAlarms",
+                    "cloudwatch:ListTagsForResource",
+                    "cloudwatch:PutMetricAlarm",
+                    "cloudwatch:PutMetricData",
+                    "cloudwatch:TagResource",
+                    "cloudwatch:UntagResource",
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:DeleteLogGroup",
+                    "logs:DeleteLogStream",
+                    "logs:DescribeLogGroups",
+                    "logs:DescribeLogStreams",
+                    "logs:ListTagsForResource",
+                    "logs:PutLogEvents",
+                    "logs:PutRetentionPolicy",
+                    "logs:TagResource",
+                    "logs:UntagResource",
+                    "sns:CreateTopic",
+                    "sns:DeleteTopic",
+                    "sns:GetTopicAttributes",
+                    "sns:ListSubscriptionsByTopic",
+                    "sns:ListTagsForResource",
+                    "sns:ListTopics",
+                    "sns:Publish",
+                    "sns:Subscribe",
+                    "sns:TagResource",
+                    "sns:Unsubscribe",
+                    "sns:UntagResource"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Sid": "CloudFormationStackManagement",
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudformation:CreateStack",
+                    "cloudformation:UpdateStack",
+                    "cloudformation:DeleteStack",
+                    "cloudformation:ContinueUpdateRollback",
+                    "cloudformation:RollbackStack",
+                    "cloudformation:DescribeStacks",
+                    "cloudformation:DescribeStackEvents",
+                    "cloudformation:DescribeStackResources",
+                    "cloudformation:GetTemplate",
+                    "cloudformation:GetTemplateSummary",
+                    "cloudformation:CreateChangeSet",
+                    "cloudformation:DescribeChangeSet",
+                    "cloudformation:ExecuteChangeSet",
+                    "cloudformation:DeleteChangeSet",
+                    "cloudformation:ListChangeSets",
+                    "cloudformation:ListStackResources",
+                    "cloudformation:ListStacks",
+                    "cloudformation:TagResource",
+                    "cloudformation:UntagResource"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/distress-model-*/*"
+                  }
+                },
+                {
+                  "Sid": "PassRolesToServices",
+                  "Effect": "Allow",
+                  "Action": "iam:PassRole",
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/distress-model-*"
+                  },
+                  "Condition": {
+                    "StringEquals": {
+                      "iam:PassedToService": [
+                        "lambda.amazonaws.com",
+                        "batch.amazonaws.com",
+                        "states.amazonaws.com",
+                        "scheduler.amazonaws.com"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "Sid": "CreateServiceRoles",
+                  "Effect": "Allow",
+                  "Action": [
+                    "iam:AttachRolePolicy",
+                    "iam:CreateRole",
+                    "iam:DeleteRole",
+                    "iam:DeleteRolePolicy",
+                    "iam:DetachRolePolicy",
+                    "iam:GetRole",
+                    "iam:GetRolePolicy",
+                    "iam:ListAttachedRolePolicies",
+                    "iam:ListRolePolicies",
+                    "iam:ListRoleTags",
+                    "iam:PutRolePolicy",
+                    "iam:TagRole",
+                    "iam:UntagRole",
+                    "iam:UpdateAssumeRolePolicy"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/distress-model-*"
+                  }
+                },
+                {
+                  "Sid": "ManageGitHubOidcProvider",
+                  "Effect": "Allow",
+                  "Action": [
+                    "iam:CreateOpenIDConnectProvider",
+                    "iam:DeleteOpenIDConnectProvider",
+                    "iam:GetOpenIDConnectProvider",
+                    "iam:ListOpenIDConnectProviders",
+                    "iam:TagOpenIDConnectProvider",
+                    "iam:UntagOpenIDConnectProvider",
+                    "iam:UpdateOpenIDConnectProviderThumbprint"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+                  }
+                },
+                {
+                  "Sid": "InspectOwnDeployPolicy",
+                  "Effect": "Allow",
+                  "Action": [
+                    "iam:GetPolicy",
+                    "iam:GetPolicyVersion",
+                    "iam:ListPolicyVersions"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:policy/FinanceDistressDeployPolicy"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ClaudeCodeInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "ClaudeCodeInstanceRole"
+          }
+        ]
+      }
+    },
+    "ClaudeCodeSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "No inbound rules at all -- Session Manager connects outbound via the SSM agent, so nothing needs to be open to reach this instance.",
+        "VpcId": { "Ref": "VpcId" },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Full outbound: AWS APIs, GitHub, PyPI/npm, Anthropic API, SEC/NSE/yfinance"
+          }
+        ]
+      }
+    },
+    "ClaudeCodeInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "ImageId": "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64}}",
+        "IamInstanceProfile": {
+          "Ref": "ClaudeCodeInstanceProfile"
+        },
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "ClaudeCodeSecurityGroup",
+              "GroupId"
+            ]
+          }
+        ],
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "VolumeSize": {
+                "Ref": "VolumeSizeGB"
+              },
+              "VolumeType": "gp3"
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "distress-model-claude-code"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": [
+              "#!/bin/bash\nset -e\ndnf update -y\ndnf install -y git docker\nsystemctl enable --now docker\nusermod -aG docker ec2-user\ncurl -fsSL https://rpm.nodesource.com/setup_20.x | bash -\ndnf install -y nodejs\nnpm install -g @anthropic-ai/claude-code\necho 'export AWS_DEFAULT_REGION=${Region}' >> /home/ec2-user/.bashrc\necho 'Setup complete. Connect via Session Manager, then: git clone <your-repo-url>, cd into it, run claude.' > /home/ec2-user/SETUP_NOTES.txt\nchown ec2-user:ec2-user /home/ec2-user/SETUP_NOTES.txt\n",
+              {
+                "Region": {
+                  "Ref": "AWS::Region"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "InstanceId": {
+      "Description": "Use this to connect: aws ssm start-session --target <this-id>, or the EC2 console's Connect button",
+      "Value": {
+        "Ref": "ClaudeCodeInstance"
+      }
+    },
+    "StopCommand": {
+      "Description": "Run this when you're done for the day -- EC2 costs by the hour while running",
+      "Value": {
+        "Fn::Sub": "aws ec2 stop-instances --instance-ids ${ClaudeCodeInstance} --region ${AWS::Region}"
+      }
+    }
+  }
+}
