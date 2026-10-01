@@ -125,7 +125,7 @@ def build_uk_labeled_dataset(api_key: str, n_distressed: int = 30, n_healthy: in
             "company_name": c["company_name"],
             "market": "UK",
             "financials": _fetch_financials_stub(c["company_number"]),
-            "headlines": [f"{c['company_name']}: entered {c['status']}"],
+            "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
             "label_distressed": 1,
             "event_date": None,  # not fetched in this stub -- see docstring
             "source": f"Companies House company_status={c['status']}",

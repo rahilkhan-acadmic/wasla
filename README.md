@@ -239,6 +239,21 @@ it documents two real, current limitations:
   yet — `yfinance` doesn't expose the kind of dated historical filings
   EDGAR does. This is a real, currently-unsolved gap.
 
+**Judging the model honestly: `src/cross_validate.py`.** The retrain gate
+scores a model on one held-out split of about 14 companies, which is far too
+small to tell models apart — on real data the same single feature scored 0.965
+on the full set and 0.896 on a 14-record subset, and a lone ratio
+(`retained_earnings_ratio`, no model at all) scored 0.988 overall and 1.000 on
+the same 14 records where the model also scored 1.0. So a perfect score on
+that split isn't evidence the model adds anything. `cross_validate.py` uses
+all the data — repeated stratified k-fold, every company tested many times by
+a model that never saw it — and compares the deployed XGBoost config against
+a logistic regression and single features (Altman Z, Z'', retained earnings,
+leverage) on identical folds, with paired win/tie/loss counts. Its own test
+shuffles the labels and requires every method to fall to chance (~0.5), the
+standard check that an evaluation isn't fooling itself. It measures how well
+ratios *separate* the classes, not how well they *predict* a future failure.
+
 **No plugin may emit headline text (enforced by
 `tests/test_no_label_derived_headlines.py`).** Plugins used to attach a
 `headlines` list per record, which becomes the `news_sentiment` feature — but
@@ -452,9 +467,9 @@ meaningful), and always notifies via the SNS topic either way.
 **For the drift-triggered path** (off-cycle retrain when CloudWatch detects
 drift, rather than waiting for the weekly schedule), `aws/cloudwatch_drift_alarm.json`
 + `aws/eventbridge_drift_pattern.json` + `aws/eventbridge_drift_targets.json`
-  are still there from the original design — update their `<placeholder>` ARNs
-  to point at the state machine this stack outputs, then apply them the same
-  way as before:
+are still there from the original design — update their `<placeholder>` ARNs
+to point at the state machine this stack outputs, then apply them the same
+way as before:
 ```bash
 aws cloudformation describe-stacks --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --query "Stacks[0].Outputs" --output table
 aws cloudwatch put-metric-alarm --cli-input-json file://aws/cloudwatch_drift_alarm.json --profile finance-distress

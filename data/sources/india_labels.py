@@ -45,7 +45,7 @@ import json
 import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src"))
-from nse_client import fetch_financials_for_ticker, fetch_recent_news_headlines  # noqa: E402
+from nse_client import fetch_financials_for_ticker  # noqa: E402
 from features import has_complete_financials  # noqa: E402
 
 
@@ -74,15 +74,12 @@ def build_india_labeled_dataset(csv_path: str, polite_delay: float = 0.5) -> lis
                       f"(common for delisted/failed companies on yfinance) -- {missing}")
                 continue
 
-            headlines = fetch_recent_news_headlines(ticker) if label == 0 else \
-                [f"{row['company_name']}: {row['source']}"]
-
             records.append({
                 "ticker": ticker,
                 "company_name": row["company_name"],
                 "market": "IN",
                 "financials": fin,
-                "headlines": headlines,
+                "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
                 "label_distressed": label,
                 "event_date": row["event_date"],
                 "source": row["source"],

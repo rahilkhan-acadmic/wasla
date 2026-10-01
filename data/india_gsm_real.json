@@ -1,0 +1,431 @@
+[
+  {
+    "ticker": "AGSTRA.NS",
+    "company_name": "AGS Transact Technologies Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 20912030000.0,
+      "total_liabilities": 16295420000.0,
+      "current_assets": 11005780000.0,
+      "current_liabilities": 10026730000.0,
+      "retained_earnings": -27350000.0,
+      "ebit": 9860000.0,
+      "sales": 14706340000.0,
+      "market_value_equity": 307454421.8171406,
+      "book_value_equity": 4616610000.0
+    },
+    "headlines": [
+      "AGS Transact Technologies Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "ANKITMETAL.NS",
+    "company_name": "Ankit Metal & Power Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 11950516000.0,
+      "total_liabilities": 20776947000.0,
+      "current_assets": 7189476000.0,
+      "current_liabilities": 20619773000.0,
+      "retained_earnings": -13301759000.0,
+      "ebit": -986718000.0,
+      "sales": 7575032000.0,
+      "market_value_equity": 265287739.3271327,
+      "book_value_equity": -8826431000.0
+    },
+    "headlines": [
+      "Ankit Metal & Power Limited: NSE GSM ASM IBC Stage I and GSM Stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM ASM IBC Stage I and GSM Stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "BILVYAPAR.NS",
+    "company_name": "Binani Industries Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 252414000.0,
+      "total_liabilities": 2115182000.0,
+      "current_assets": 252415000.0,
+      "current_liabilities": 2115183000.0,
+      "retained_earnings": -4182177000.0,
+      "ebit": -5637000.0,
+      "sales": 0.0,
+      "market_value_equity": 137697504.06216383,
+      "book_value_equity": -1862768000.0
+    },
+    "headlines": [
+      "Binani Industries Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "CLCIND.NS",
+    "company_name": "CLC Industries Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 991670183.0,
+      "total_liabilities": 979182170.0,
+      "current_assets": 563721456.0,
+      "current_liabilities": 564231028.0,
+      "retained_earnings": -8477386784.0,
+      "ebit": -33874224.0,
+      "sales": 3957138738.0,
+      "market_value_equity": 470878996.0694885,
+      "book_value_equity": 12488013.0
+    },
+    "headlines": [
+      "CLC Industries Limited: NSE GSM GSM stage IV and Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM GSM stage IV and Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "CMICABLES.NS",
+    "company_name": "CMI Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 2971797000.0,
+      "total_liabilities": 4549798000.0,
+      "current_assets": 965640000.0,
+      "current_liabilities": 4523327000.0,
+      "retained_earnings": -1161465000.0,
+      "ebit": -107133000.0,
+      "sales": 553406000.0,
+      "market_value_equity": 44075506.75,
+      "book_value_equity": -1578001000.0
+    },
+    "headlines": [
+      "CMI Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "COMPINFO.NS",
+    "company_name": "Compuage Infocom Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 6920431000.0,
+      "total_liabilities": 9881721000.0,
+      "current_assets": 6477055000.0,
+      "current_liabilities": 9881721000.0,
+      "retained_earnings": -3901992000.0,
+      "ebit": -77423000.0,
+      "sales": 11961000.0,
+      "market_value_equity": 89937630.2018094,
+      "book_value_equity": -2961290000.0
+    },
+    "headlines": [
+      "Compuage Infocom Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "EDUCOMP.NS",
+    "company_name": "Educomp Solutions Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 2392850000.0,
+      "total_liabilities": 33244190000.0,
+      "current_assets": 1287970000.0,
+      "current_liabilities": 32702960000.0,
+      "retained_earnings": -43519370000.0,
+      "ebit": -291010000.0,
+      "sales": 36230000.0,
+      "market_value_equity": 105321766.23190689,
+      "book_value_equity": -30851340000.0
+    },
+    "headlines": [
+      "Educomp Solutions Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "EQUIPPP.NS",
+    "company_name": "Equippp Social Impact Technologies Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 328197000.0,
+      "total_liabilities": 177475000.0,
+      "current_assets": 208315000.0,
+      "current_liabilities": 60117000.0,
+      "retained_earnings": -26805000.0,
+      "ebit": 25800000.0,
+      "sales": 447912000.0,
+      "market_value_equity": 2356756906.4243317,
+      "book_value_equity": 150722000.0
+    },
+    "headlines": [
+      "Equippp Social Impact Technologies Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "FLFL.NS",
+    "company_name": "Future Lifestyle Fashions Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 44632600000.0,
+      "total_liabilities": 63444600000.0,
+      "current_assets": 35040200000.0,
+      "current_liabilities": 48533600000.0,
+      "retained_earnings": -33069300000.0,
+      "ebit": -21517100000.0,
+      "sales": 29553000000.0,
+      "market_value_equity": 225987859.84213758,
+      "book_value_equity": -18812000000.0
+    },
+    "headlines": [
+      "Future Lifestyle Fashions Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "GENSOL.NS",
+    "company_name": "Gensol Engineering Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 23278000000.0,
+      "total_liabilities": 20147500000.0,
+      "current_assets": 11228400000.0,
+      "current_liabilities": 8281300000.0,
+      "retained_earnings": 1053500000.0,
+      "ebit": 1829800000.0,
+      "sales": 8341900000.0,
+      "market_value_equity": 642438774.0812988,
+      "book_value_equity": 3130500000.0
+    },
+    "headlines": [
+      "Gensol Engineering Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "GVKPIL.NS",
+    "company_name": "GVK Power & Infrastructure Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 5697500000.0,
+      "total_liabilities": 7876400000.0,
+      "current_assets": 3779800000.0,
+      "current_liabilities": 4702400000.0,
+      "retained_earnings": -37609900000.0,
+      "ebit": -13516000000.0,
+      "sales": 805300000.0,
+      "market_value_equity": 4153323532.726288,
+      "book_value_equity": -2178900000.0
+    },
+    "headlines": [
+      "GVK Power & Infrastructure Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "MEP.NS",
+    "company_name": "MEP Infrastructure Developers Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 22265347000.0,
+      "total_liabilities": 35651700000.0,
+      "current_assets": 20891260000.0,
+      "current_liabilities": 35648072000.0,
+      "retained_earnings": -10769892000.0,
+      "ebit": -7744584000.0,
+      "sales": 731652000.0,
+      "market_value_equity": 121074399.13106418,
+      "book_value_equity": -13386353000.0
+    },
+    "headlines": [
+      "MEP Infrastructure Developers Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "MTEDUCARE.NS",
+    "company_name": "MT Educare Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 2556740000.0,
+      "total_liabilities": 2608308000.0,
+      "current_assets": 1700154000.0,
+      "current_liabilities": 2479756000.0,
+      "retained_earnings": -339149000.0,
+      "ebit": 23060000.0,
+      "sales": 227905000.0,
+      "market_value_equity": 122787695.244102,
+      "book_value_equity": -51568000.0
+    },
+    "headlines": [
+      "MT Educare Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "PERFECT.NS",
+    "company_name": "Perfect Infraengineers Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 426027000.0,
+      "total_liabilities": 99579000.0,
+      "current_assets": 321234000.0,
+      "current_liabilities": 53545000.0,
+      "retained_earnings": 20390000.0,
+      "ebit": 1021000.0,
+      "sales": 57244000.0,
+      "market_value_equity": 141715808.47410965,
+      "book_value_equity": 326448000.0
+    },
+    "headlines": [
+      "Perfect Infraengineers Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "PREMIER.NS",
+    "company_name": "Premier Limited",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 1788670000.0,
+      "total_liabilities": 5226590000.0,
+      "current_assets": 233128000.0,
+      "current_liabilities": 5127560000.0,
+      "retained_earnings": -6064549000.0,
+      "ebit": -58490000.0,
+      "sales": 0.0,
+      "market_value_equity": 89671395.6729052,
+      "book_value_equity": -3437920000.0
+    },
+    "headlines": [
+      "Premier Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
+    ],
+    "label_distressed": 1,
+    "event_date": null,
+    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "company_name": "Reliance Industries Ltd",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 21781400000000.0,
+      "total_liabilities": 10922740000000.0,
+      "current_assets": 5942490000000.0,
+      "current_liabilities": 5412540000000.0,
+      "retained_earnings": 4636440000000.0,
+      "ebit": 1472180000000.0,
+      "sales": 10572190000000.0,
+      "market_value_equity": 16590811450510.0,
+      "book_value_equity": 10858660000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "TCS.NS",
+    "company_name": "Tata Consultancy Services Ltd",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 1823720000000.0,
+      "total_liabilities": 738940000000.0,
+      "current_assets": 1357050000000.0,
+      "current_liabilities": 609140000000.0,
+      "retained_earnings": 998830000000.0,
+      "ebit": 667140000000.0,
+      "sales": 2670210000000.0,
+      "market_value_equity": 7532858212476.0,
+      "book_value_equity": 1084780000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "INFY.NS",
+    "company_name": "Infosys Ltd",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 16446000000.0,
+      "total_liabilities": 6606000000.0,
+      "current_assets": 10912000000.0,
+      "current_liabilities": 5516000000.0,
+      "retained_earnings": 13459000000.0,
+      "ebit": 4553000000.0,
+      "sales": 20158000000.0,
+      "market_value_equity": 4051153677154.47,
+      "book_value_equity": 9840000000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  },
+  {
+    "ticker": "ITC.NS",
+    "company_name": "ITC Ltd",
+    "market": "india_gsm",
+    "financials": {
+      "total_assets": 937923800000.0,
+      "total_liabilities": 209193600000.0,
+      "current_assets": 507084100000.0,
+      "current_liabilities": 166872700000.0,
+      "retained_earnings": 516515200000.0,
+      "ebit": 281185600000.0,
+      "sales": 782132800000.0,
+      "market_value_equity": 3370709094789.0,
+      "book_value_equity": 728730200000.0
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-03-31",
+    "source": "Healthy comparison (large-cap",
+    "region": "Indian Subcontinent"
+  }
+]

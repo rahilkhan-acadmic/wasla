@@ -1,0 +1,116 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Auto-stop Lambda for the billing hard-line alarm. MUST be deployed to us-east-1 -- that's where AWS::Billing CloudWatch alarms are required to live, regardless of which region your actual resources run in. Deploy with: aws cloudformation deploy --template-file aws/billing-auto-stop-stack.json --stack-name distress-model-billing-auto-stop --profile finance-distress --region us-east-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides BillingTopicArn=<your billing-alerts topic ARN>",
+  "Parameters": {
+    "BillingTopicArn": {
+      "Type": "String",
+      "Description": "The SNS topic ARN both billing alarms already publish to (from: aws sns create-topic --name billing-alerts --region us-east-1)"
+    }
+  },
+  "Resources": {
+    "AutoStopFunctionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "distress-model-billing-auto-stop-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "stop-claude-code-instance",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "DescribeAndStopInstance",
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:DescribeInstances",
+                    "ec2:StopInstances"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "AutoStopFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-billing-auto-stop",
+        "Runtime": "python3.12",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "AutoStopFunctionRole",
+            "Arn"
+          ]
+        },
+        "Timeout": 30,
+        "MemorySize": 128,
+        "Environment": {
+          "Variables": {
+            "TARGET_ALARM_NAME": "billing-hard-line-2500inr",
+            "INSTANCE_REGION": "ap-south-1",
+            "INSTANCE_NAME_TAG": "distress-model-claude-code"
+          }
+        },
+        "Code": {
+          "ZipFile": "\"\"\"\nStops the Claude Code EC2 instance automatically when the hard-line billing\nalarm fires. Subscribed to the SAME SNS topic as the early-warning alarm\n(billing-alerts), so it must check WHICH alarm actually triggered rather\nthan acting on every message -- otherwise it would also stop the instance\non the INR 1,500 early warning, which is meant to just be a heads-up email.\n\nThe Lambda itself runs in us-east-1 (where AWS::Billing alarms are required\nto live), but makes its EC2 calls against ap-south-1 explicitly, since\nthat's where the actual instance runs -- a Lambda's own region and the\nregion its API calls target are independent.\n\nMatches the instance by its Name tag rather than a hardcoded instance ID,\nso this keeps working even if the EC2 stack is ever deleted and redeployed\nwith a new instance ID.\n\"\"\"\n\nimport json\nimport os\n\nimport boto3\n\nTARGET_ALARM_NAME = os.environ.get(\"TARGET_ALARM_NAME\", \"billing-hard-line-2500inr\")\nINSTANCE_REGION = os.environ.get(\"INSTANCE_REGION\", \"ap-south-1\")\nINSTANCE_NAME_TAG = os.environ.get(\"INSTANCE_NAME_TAG\", \"distress-model-claude-code\")\n\n\ndef handler(event, context):\n    results = []\n\n    for record in event.get(\"Records\", []):\n        message = json.loads(record[\"Sns\"][\"Message\"])\n        alarm_name = message.get(\"AlarmName\")\n        new_state = message.get(\"NewStateValue\")\n\n        if alarm_name != TARGET_ALARM_NAME:\n            print(f\"Ignoring: alarm '{alarm_name}' is not the hard-line alarm \"\n                  f\"('{TARGET_ALARM_NAME}') -- likely the early-warning alarm, no action taken.\")\n            continue\n        if new_state != \"ALARM\":\n            print(f\"Ignoring: hard-line alarm state is '{new_state}', not 'ALARM' \"\n                  f\"(e.g. this may be the OK/recovery notification).\")\n            continue\n\n        ec2 = boto3.client(\"ec2\", region_name=INSTANCE_REGION)\n        resp = ec2.describe_instances(Filters=[\n            {\"Name\": \"tag:Name\", \"Values\": [INSTANCE_NAME_TAG]},\n            {\"Name\": \"instance-state-name\", \"Values\": [\"running\"]},\n        ])\n        instance_ids = [\n            i[\"InstanceId\"] for r in resp[\"Reservations\"] for i in r[\"Instances\"]\n        ]\n\n        if instance_ids:\n            print(f\"Hard-line billing alarm fired -- stopping instance(s): {instance_ids}\")\n            ec2.stop_instances(InstanceIds=instance_ids)\n            results.append({\"action\": \"stopped\", \"instance_ids\": instance_ids})\n        else:\n            print(f\"Hard-line billing alarm fired, but no running instance tagged \"\n                  f\"'{INSTANCE_NAME_TAG}' was found -- nothing to stop.\")\n            results.append({\"action\": \"none\", \"reason\": \"no matching running instance\"})\n\n    return {\"results\": results}\n"
+        }
+      }
+    },
+    "AutoStopFunctionSnsPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "AutoStopFunction"
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": {
+          "Ref": "BillingTopicArn"
+        }
+      }
+    },
+    "AutoStopFunctionSubscription": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "TopicArn": {
+          "Ref": "BillingTopicArn"
+        },
+        "Protocol": "lambda",
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "AutoStopFunction",
+            "Arn"
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "FunctionArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "AutoStopFunction",
+          "Arn"
+        ]
+      }
+    }
+  }
+}
