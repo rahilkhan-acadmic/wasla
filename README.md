@@ -573,22 +573,25 @@ Before deploying any of the above, you need an AWS account and a properly
 scoped IAM identity to deploy from — not your root account, and not a
 blanket `AdministratorAccess` grant.
 
-**`aws/iam-deploy-policy.json`** is a ready-to-use, scoped-down policy
-covering exactly the services this project touches (S3, DynamoDB, Lambda,
-ECR, Step Functions, EventBridge/Scheduler, Batch, CloudWatch, SNS, and the
-`iam:PassRole` permission needed to hand roles to Lambda/Batch/Step
-Functions at deploy time) — not a general-purpose grant.
+**`aws/iam-deploy-policy-resources.json`** and **`aws/iam-deploy-policy-management.json`**
+are ready-to-use, scoped-down policies covering exactly the services this
+project touches — split into two files because IAM caps a single managed
+policy at 6,144 non-whitespace characters, and the full set of permissions
+this project accumulated (S3, DynamoDB, Lambda, ECR, Step Functions,
+EventBridge/Scheduler, CloudWatch, SNS, CloudFormation, EC2, and several
+categories of IAM self-management) exceeds that in one file. Not a
+general-purpose grant either way — both attach to the same user.
 
 Quick setup:
 1. Enable MFA on your AWS root account, then stop using it day-to-day.
 2. Create an IAM user for yourself (e.g. `yourname-deploy`) with
    programmatic access.
-3. Create a policy from `aws/iam-deploy-policy.json` (replace the
+3. Create **two** policies — one from each file (replace the
    `<account-id>` placeholder with your AWS account ID, and `<region>` with
    the region you'll actually deploy resources in — `ap-south-1` (Mumbai) if
    you're India-based, since every service this project uses is available
    there and it's lower-latency for India-based access than a US region)
-   and attach it to that user.
+   — and attach **both** to that user.
 4. Install the AWS CLI, then run:
    ```bash
    aws configure --profile finance-distress
