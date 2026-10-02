@@ -1,3 +1,8 @@
 template-file-path: aws/claude-code-ec2-stack.json
-parameters: {}
-tags: {}
+
+Parameters:
+  InstanceType: t3.large
+  VolumeSizeGB: 40
+  VpcId: vpc-0478eb9d380e7a638
+
+Tags: {}
