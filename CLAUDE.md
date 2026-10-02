@@ -78,6 +78,27 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
 - DynamoDB table: `distress-model-registry`
 - ECR repository: `distress-model-api`
 
+## IAM identities — three separate things, don't confuse them
+
+1. **`finance-distress-deploy`** (IAM user) — you, deploying from a terminal.
+   Permissions split across two policies (`FinanceDistressDeployPolicy` +
+   `FinanceDistressDeployPolicyManagement`, see `aws/iam-deploy-policy-*.json`)
+   because a single managed policy caps at 6,144 non-whitespace characters.
+2. **`distress-model-claude-code-role`** (EC2 instance role, in
+   `aws/claude-code-ec2-stack.json`) — what Claude Code can do *after* the
+   EC2 instance exists. Trusted by `ec2.amazonaws.com`.
+3. **`distress-model-cfn-gitsync-role`** (IAM role, created manually,
+   definitions in `aws/claude-code-ec2-gitsync-service-role-trust.json` +
+   `-policy.json`) — what CloudFormation itself can do when Git sync
+   auto-deploys on a push to `aws/claude-code-ec2-deployment.yaml` or
+   `aws/claude-code-ec2-stack.json`, with no human credentials available at
+   that moment. Trusted by `cloudformation.amazonaws.com` specifically —
+   this is why it couldn't reuse either of the roles above. Its inline
+   policy, `distress-model-cfn-gitsync-policy`, reuses the exact same
+   EC2/instance-profile/SSM-parameter/role-management statements already
+   proven working in `FinanceDistressDeployPolicyManagement`, just under a
+   different trust relationship.
+
 ## Known, open limitations — don't "fix" these without flagging it first
 
 - **Evaluation is retrospective, not predictive.** The model separates
