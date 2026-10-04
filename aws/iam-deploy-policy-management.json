@@ -135,6 +135,42 @@
       "Effect": "Allow",
       "Action": "ssm:GetParameters",
       "Resource": "arn:aws:ssm:<region>::parameter/aws/service/ami-amazon-linux-latest/*"
+    },
+    {
+      "Sid": "SessionManagerStartOnClaudeCodeInstance",
+      "Effect": "Allow",
+      "Action": "ssm:StartSession",
+      "Resource": "arn:aws:ec2:<region>:<account-id>:instance/*",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/Name": "distress-model-claude-code"
+        }
+      }
+    },
+    {
+      "Sid": "SessionManagerRunShellDocument",
+      "Effect": "Allow",
+      "Action": "ssm:StartSession",
+      "Resource": "arn:aws:ssm:<region>:<account-id>:document/SSM-SessionManagerRunShell"
+    },
+    {
+      "Sid": "SessionManagerEndOwnSessions",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:TerminateSession",
+        "ssm:ResumeSession"
+      ],
+      "Resource": "arn:aws:ssm:<region>:<account-id>:session/${aws:username}-*"
+    },
+    {
+      "Sid": "SessionManagerReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetConnectionStatus",
+        "ssm:DescribeSessions"
+      ],
+      "Resource": "*"
     }
   ]
 }
