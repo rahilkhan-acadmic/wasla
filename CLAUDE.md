@@ -21,7 +21,7 @@ python tests/test_env_args_contract.py
 python tests/test_fetch_data_handler.py
 python tests/test_no_label_derived_headlines.py
 python tests/test_cross_validate.py
-cfn-lint aws/*.json
+cfn-lint aws/*-stack.json aws/infrastructure.json
 ```
 
 These exist because every one of them was written after something broke
