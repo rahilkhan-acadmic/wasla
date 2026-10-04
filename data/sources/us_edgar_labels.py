@@ -149,11 +149,20 @@ def find_healthy_sample(start_date: str, end_date: str, exclude_ciks: set[int],
 
 def build_us_labeled_dataset(start_date: str, end_date: str,
                               n_distressed: int = 30, n_healthy: int = 30,
-                              polite_delay: float = 0.2) -> list[dict]:
+                              polite_delay: float = 0.2,
+                              min_lead_days: int = 0) -> list[dict]:
     """End-to-end: find real bankruptcy events + a healthy sample from the
     same period, pull EACH company's financials AS OF just before its event
     date (or, for healthy companies, as of their filing date), and return
     records in the same schema as data/sample_companies.json.
+
+    `min_lead_days`, if set, requires the financials used to be at least
+    that many days old relative to event_date -- see
+    edgar_client.extract_financials_dict for what this changes and costs
+    (some companies will have no annual filing that old, and get skipped).
+    Every record also gets a `financials_provenance` field recording which
+    actual filing (`filed`/`end` dates) was used per financial field, so a
+    record's real lead time can be measured later without re-fetching.
     """
     print(f"Searching for bankruptcy filings ({start_date} to {end_date})...")
     bankruptcies = find_bankruptcy_filings(start_date, end_date, max_results=n_distressed * 2)
@@ -168,8 +177,10 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
 
     for b in bankruptcies[:n_distressed]:
         try:
-            fin = fetch_financials_for_cik(b["cik"], polite_delay=polite_delay,
-                                            as_of_date=b["filing_date"])
+            fin, prov = fetch_financials_for_cik(b["cik"], polite_delay=polite_delay,
+                                                  as_of_date=b["filing_date"],
+                                                  min_lead_days=min_lead_days,
+                                                  with_provenance=True)
             if not has_complete_financials(fin):
                 continue  # no usable data for this CIK -- skip rather than guess
             records.append({
@@ -177,6 +188,7 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
                 "company_name": b["company_name"],
                 "market": "US",
                 "financials": fin,
+                "financials_provenance": prov,
                 "headlines": [],  # deliberately empty -- see tests/test_no_label_derived_headlines.py
                 "label_distressed": 1,
                 "event_date": b["filing_date"],
@@ -187,8 +199,10 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
 
     for h in healthy[:n_healthy]:
         try:
-            fin = fetch_financials_for_cik(h["cik"], polite_delay=polite_delay,
-                                            as_of_date=h["filing_date"])
+            fin, prov = fetch_financials_for_cik(h["cik"], polite_delay=polite_delay,
+                                                  as_of_date=h["filing_date"],
+                                                  min_lead_days=min_lead_days,
+                                                  with_provenance=True)
             if not has_complete_financials(fin):
                 continue
             records.append({
@@ -196,6 +210,7 @@ def build_us_labeled_dataset(start_date: str, end_date: str,
                 "company_name": h["company_name"],
                 "market": "US",
                 "financials": fin,
+                "financials_provenance": prov,
                 "headlines": [],
                 "label_distressed": 0,
                 "event_date": h["filing_date"],
@@ -222,6 +237,11 @@ def add_cli_args(parser) -> None:
                              "runs keep picking up newly-filed bankruptcies over time")
     group.add_argument("--us-n-distressed", type=int, default=30)
     group.add_argument("--us-n-healthy", type=int, default=30)
+    group.add_argument("--us-min-lead-days", type=int, default=0,
+                        help="Require financials at least this many days older than the "
+                             "event date (bankruptcy filing / 10-K filing), turning this "
+                             "into a forecasting-style gap instead of 'latest available at "
+                             "the time'. 0 (default) preserves today's behavior.")
 
 
 def build(args) -> list[dict]:
@@ -230,6 +250,7 @@ def build(args) -> list[dict]:
     return build_us_labeled_dataset(
         start_date=args.us_start_date, end_date=end_date,
         n_distressed=args.us_n_distressed, n_healthy=args.us_n_healthy,
+        min_lead_days=args.us_min_lead_days,
     )
 
 
@@ -241,11 +262,13 @@ if __name__ == "__main__":
     parser.add_argument("--end-date", default="2024-12-31")
     parser.add_argument("--n-distressed", type=int, default=30)
     parser.add_argument("--n-healthy", type=int, default=30)
+    parser.add_argument("--min-lead-days", type=int, default=0)
     parser.add_argument("--out", default="us_real_labels.json")
     args = parser.parse_args()
 
     data = build_us_labeled_dataset(args.start_date, args.end_date,
-                                     args.n_distressed, args.n_healthy)
+                                     args.n_distressed, args.n_healthy,
+                                     min_lead_days=args.min_lead_days)
     with open(args.out, "w") as f:
         json.dump(data, f, indent=2)
     print(f"\nWrote {len(data)} labeled US companies to {args.out}")

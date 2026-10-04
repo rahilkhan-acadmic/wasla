@@ -32,6 +32,7 @@ Caveats (read before quoting a number):
 """
 
 import argparse
+import json
 import os
 import sys
 
@@ -44,7 +45,9 @@ from sklearn.preprocessing import FunctionTransformer, StandardScaler
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from features import FEATURE_NAMES  # noqa: E402
-from train_classifier import load_dataset, make_model  # noqa: E402
+from train_classifier import (  # noqa: E402
+    load_dataset, make_model, rows_to_arrays, time_split_dataset, check_time_split_gate,
+)
 
 # The ratio features a simple model gets. Excludes news_sentiment (a constant
 # now) and the two Altman composites (built from these same ratios).
@@ -160,11 +163,49 @@ def format_report(scores: dict, n_records: int) -> str:
     return "\n".join(lines)
 
 
+def format_time_split_report(data_path: str, cutoff_date: str, min_per_class: int = 5) -> str:
+    """A SEPARATE, single time-based holdout report -- supplementary to the
+    random k-fold report above, not a replacement for it. The k-fold report
+    measures how well ratios SEPARATE the classes (every record tested many
+    times); this one measures whether the deployed model config generalizes
+    to LATER companies, using train_classifier.time_split_dataset. One
+    split, not repeated -- there isn't enough reliably-dated data yet for
+    multiple time-based folds (see CLAUDE.md's known-limitations notes)."""
+    with open(data_path) as f:
+        raw_rows = json.load(f)
+
+    train_rows, test_rows = time_split_dataset(raw_rows, cutoff_date)
+    try:
+        counts = check_time_split_gate(train_rows, test_rows, min_per_class=min_per_class)
+    except ValueError as e:
+        return f"Time-based holdout at {cutoff_date}: SKIPPED -- {e}"
+
+    X_train, y_train, _ = rows_to_arrays(train_rows)
+    X_test, y_test, _ = rows_to_arrays(test_rows)
+    model = make_model()
+    model.fit(X_train, y_train)
+    auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
+
+    return (
+        f"Time-based holdout at {cutoff_date}: {len(y_train)} train / {len(y_test)} test records\n"
+        f"  train unique companies: healthy={counts['train'][0]} distressed={counts['train'][1]}\n"
+        f"  test  unique companies: healthy={counts['test'][0]} distressed={counts['test'][1]}\n"
+        f"  AUC (train on older companies, test on later ones): {auc:.3f}"
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--data", default="data/sample_companies.json")
     parser.add_argument("--splits", type=int, default=5)
     parser.add_argument("--repeats", type=int, default=10)
+    parser.add_argument("--time-cutoff", default=None,
+                         help="YYYY-MM-DD; if given, also prints ONE supplementary "
+                              "time-based holdout report (see format_time_split_report) "
+                              "alongside the random k-fold report above.")
+    parser.add_argument("--min-per-class", type=int, default=5,
+                         help="Minimum unique companies per class required on each side "
+                              "of --time-cutoff before it's trusted.")
     args = parser.parse_args()
 
     X, y, _ = load_dataset(args.data)
@@ -172,6 +213,10 @@ def main():
           f"{int((y == 0).sum())} healthy) from {args.data}\n")
     scores = run_cross_validation(X, y, n_splits=args.splits, n_repeats=args.repeats)
     print(format_report(scores, len(y)))
+
+    if args.time_cutoff:
+        print()
+        print(format_time_split_report(args.data, args.time_cutoff, min_per_class=args.min_per_class))
 
 
 if __name__ == "__main__":
