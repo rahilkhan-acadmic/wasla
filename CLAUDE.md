@@ -84,6 +84,10 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
    Permissions split across two policies (`FinanceDistressDeployPolicy` +
    `FinanceDistressDeployPolicyManagement`, see `aws/iam-deploy-policy-*.json`)
    because a single managed policy caps at 6,144 non-whitespace characters.
+   It also grants `ssm:StartSession`, scoped to instances tagged
+   `Name=distress-model-claude-code` only, so this user can open a shell on
+   the Claude Code box from a terminal (needs the Session Manager plugin
+   installed locally) without being able to open one on anything else.
 2. **`distress-model-claude-code-role`** (EC2 instance role, in
    `aws/claude-code-ec2-stack.json`) — what Claude Code can do *after* the
    EC2 instance exists. Trusted by `ec2.amazonaws.com`.
