@@ -21,7 +21,10 @@ python tests/test_env_args_contract.py
 python tests/test_fetch_data_handler.py
 python tests/test_no_label_derived_headlines.py
 python tests/test_cross_validate.py
-cfn-lint aws/*.json
+python tests/test_time_split.py
+python tests/test_lead_time.py
+python tests/test_healthy_sample_diversity.py
+cfn-lint aws/*-stack.json aws/infrastructure.json
 ```
 
 These exist because every one of them was written after something broke
@@ -105,11 +108,23 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
 
 ## Known, open limitations — don't "fix" these without flagging it first
 
-- **Evaluation is retrospective, not predictive.** The model separates
-  already-failed companies from healthy ones; it has not been tested on
-  forecasting a future failure. A time-based train/test split (train on
-  older filings, test on newer ones) is the next real step here, not yet
-  built.
+- **Evaluation was retrospective, not predictive — now has a first real
+  check.** `train_classifier.time_split_dataset` (train on companies dated
+  before a cutoff, test on companies dated at/after it, one record per
+  company, never split across sides) is wired into `cross_validate.py`
+  (`--time-cutoff`) and into the live retrain Lambda via
+  `EVAL_SPLIT_CUTOFF_DATE=2023-01-01` on `TrainAndEvaluateFunction` in
+  `aws/automation-stack.json`. It only works because `find_healthy_sample`
+  in `data/sources/us_edgar_labels.py` was fixed to dedupe by CIK — EDGAR's
+  relevance-ranked search used to return the same handful of frequent
+  filers' entire 10-K histories, leaving only 5 distinct healthy US
+  companies, too few to ever clear the split's `min_per_class=5` gate. A
+  single manual run at this cutoff scored AUC 0.93 on 13 held-out,
+  never-trained-on companies — real signal, but ONE small split so far
+  (38 train / 13 test records). Only US records have reliable dates (via
+  EDGAR's `as_of_date`); every other market still goes straight to train
+  regardless of cutoff. Treat this as encouraging, not settled, until it
+  holds up over several weekly retrains.
 - **`news_sentiment` is a constant 0.0 for every record**, deliberately.
   Every market plugin used to write label-derived headline text into this
   feature (a real leak, see `tests/test_no_label_derived_headlines.py`).
