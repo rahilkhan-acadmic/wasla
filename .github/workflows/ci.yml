@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -43,10 +43,14 @@ jobs:
       - name: Run fetch-data handler test (healthy and degraded-source scenarios)
         run: python tests/test_fetch_data_handler.py
 
+      - name: Run /model/info endpoint test (moto-mocked DynamoDB)
+        run: python tests/test_model_info_endpoint.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \
-                   aws/automation-stack.json aws/github-oidc-stack.json
+                   aws/automation-stack.json aws/github-oidc-stack.json \
+                   aws/dashboard-stack.json
 
       - name: Validate all AWS JSON files are well-formed
         run: |
@@ -65,4 +69,31 @@ jobs:
           assert r.status_code == 200, f'Expected 200, got {r.status_code}'
           assert 'probability_distressed' in r.json()
           print('FastAPI smoke test passed:', r.json())
+
+          r = client.get('/model/info')
+          assert r.status_code == 200, f'Expected 200, got {r.status_code}'
+          assert 'registry_configured' in r.json()
+          print('/model/info smoke test passed:', r.json())
           "
+
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dashboard dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Build dashboard (static export; catches TS/JSX errors pre-deploy)
+        working-directory: dashboard
+        env:
+          NEXT_PUBLIC_API_BASE_URL: "https://placeholder.lambda-url.ap-south-1.on.aws"
+        run: npm run build

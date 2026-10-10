@@ -60,7 +60,10 @@ def _fake_us(m):
         {"cik": 1, "company_name": "Bust Co", "filing_date": "2020-01-01", "accession_no": "a"}]
     m.find_healthy_sample = lambda start, end, exclude, max_results=200: [
         {"cik": 2, "company_name": "Fine Co", "filing_date": "2020-01-01"}]
-    m.fetch_financials_for_cik = lambda cik, polite_delay=0.2, as_of_date=None: dict(GOOD)
+    m.fetch_financials_for_cik = (
+        lambda cik, polite_delay=0.2, as_of_date=None, min_lead_days=0, with_provenance=False:
+        (dict(GOOD), {k: None for k in GOOD}) if with_provenance else dict(GOOD)
+    )
 
 
 def _fake_india(m):
