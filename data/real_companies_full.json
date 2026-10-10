@@ -12,9 +12,37 @@
       "ebit": -83094531,
       "sales": 1126
     },
-    "headlines": [
-      "GLOBAL TECH INDUSTRIES GROUP, INC.  (GTII)  (CIK 0000356590) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2024-04-16",
+        "end": "2023-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2024-04-16",
+        "end": "2023-12-31"
+      },
+      "current_assets": {
+        "filed": "2024-04-16",
+        "end": "2023-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2024-04-16",
+        "end": "2023-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2024-04-16",
+        "end": "2023-12-31"
+      },
+      "ebit": {
+        "filed": "2024-04-16",
+        "end": "2023-12-31"
+      },
+      "sales": {
+        "filed": "2016-04-28",
+        "end": "2015-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2024-10-28",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -33,9 +61,37 @@
       "ebit": -70014000,
       "sales": 101229000
     },
-    "headlines": [
-      "Athenex, Inc.  (CIK 0001300699) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2023-03-20",
+        "end": "2022-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2023-03-20",
+        "end": "2022-12-31"
+      },
+      "current_assets": {
+        "filed": "2023-03-20",
+        "end": "2022-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2023-03-20",
+        "end": "2022-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2023-03-20",
+        "end": "2022-12-31"
+      },
+      "ebit": {
+        "filed": "2023-03-20",
+        "end": "2022-12-31"
+      },
+      "sales": {
+        "filed": "2020-03-02",
+        "end": "2019-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2023-10-02",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -54,9 +110,37 @@
       "ebit": -1362605000,
       "sales": 866542000
     },
-    "headlines": [
-      "GULFPORT ENERGY CORP  (GPOR)  (CIK 0000874499) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      },
+      "current_assets": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      },
+      "ebit": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      },
+      "sales": {
+        "filed": "2021-03-05",
+        "end": "2020-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2021-04-29",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -75,9 +159,37 @@
       "ebit": 1209000,
       "sales": 114035000
     },
-    "headlines": [
-      "Approach Resources Inc  (CIK 0001405073) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      },
+      "current_assets": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      },
+      "ebit": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      },
+      "sales": {
+        "filed": "2019-03-18",
+        "end": "2018-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2020-12-31",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -96,9 +208,37 @@
       "ebit": -15516000,
       "sales": 89890000
     },
-    "headlines": [
-      "COSI INC  (CIK 0001171014) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "total_liabilities": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "current_assets": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "current_liabilities": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "retained_earnings": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "ebit": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "sales": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2017-01-09",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -117,9 +257,37 @@
       "ebit": -50567764,
       "sales": 112607831
     },
-    "headlines": [
-      "Emerald Oil, Inc.  (CIK 0001283843) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      },
+      "current_assets": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      },
+      "ebit": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      },
+      "sales": {
+        "filed": "2015-03-10",
+        "end": "2014-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2016-03-23",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -138,9 +306,37 @@
       "ebit": -22038000,
       "sales": 170100000
     },
-    "headlines": [
-      "BurgerFi International, Inc.  (CIK 0001723580) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      },
+      "total_liabilities": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      },
+      "current_assets": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      },
+      "current_liabilities": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      },
+      "retained_earnings": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      },
+      "ebit": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      },
+      "sales": {
+        "filed": "2024-04-10",
+        "end": "2024-01-01"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2025-03-18",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -159,9 +355,37 @@
       "ebit": -602455000,
       "sales": 272883000
     },
-    "headlines": [
-      "Fisker Inc./DE  (FSRNQ)  (CIK 0001720990) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      },
+      "current_assets": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      },
+      "ebit": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      },
+      "sales": {
+        "filed": "2024-04-23",
+        "end": "2023-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2024-06-24",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -180,9 +404,37 @@
       "ebit": -67000,
       "sales": 83505000
     },
-    "headlines": [
-      "PostRock Energy Corp  (CIK 0001473061) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      },
+      "current_assets": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      },
+      "ebit": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      },
+      "sales": {
+        "filed": "2015-03-31",
+        "end": "2014-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2016-04-01",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -201,9 +453,37 @@
       "ebit": -195000000,
       "sales": 1589000000
     },
-    "headlines": [
-      "GenOn Energy, Inc.  (CIK 0001126294) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      },
+      "current_assets": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      },
+      "ebit": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      },
+      "sales": {
+        "filed": "2018-03-30",
+        "end": "2017-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2018-06-06",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -222,9 +502,37 @@
       "ebit": -60050646,
       "sales": 19738523
     },
-    "headlines": [
-      "American Standard Energy Corp.  (CIK 0001349976) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      },
+      "current_assets": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      },
+      "ebit": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      },
+      "sales": {
+        "filed": "2013-08-13",
+        "end": "2012-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2015-09-17",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -243,9 +551,37 @@
       "ebit": -30327000,
       "sales": 119923000
     },
-    "headlines": [
-      "JRjr33, Inc.  (CIK 0001403085) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      },
+      "current_assets": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      },
+      "ebit": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      },
+      "sales": {
+        "filed": "2017-10-18",
+        "end": "2016-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2018-07-06",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -264,9 +600,37 @@
       "ebit": -19235396,
       "sales": 0
     },
-    "headlines": [
-      "TREX WIND-DOWN, INC.  (CIK 0001504167) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2023-03-31",
+        "end": "2022-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2023-03-31",
+        "end": "2022-12-31"
+      },
+      "current_assets": {
+        "filed": "2023-03-31",
+        "end": "2022-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2023-03-31",
+        "end": "2022-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2023-03-31",
+        "end": "2022-12-31"
+      },
+      "ebit": {
+        "filed": "2023-03-31",
+        "end": "2022-12-31"
+      },
+      "sales": {
+        "filed": "2013-12-31",
+        "end": "2013-09-30"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2024-05-09",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -285,9 +649,37 @@
       "ebit": -15516000,
       "sales": 89890000
     },
-    "headlines": [
-      "COSI INC  (CIK 0001171014) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "total_liabilities": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "current_assets": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "current_liabilities": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "retained_earnings": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "ebit": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      },
+      "sales": {
+        "filed": "2016-03-24",
+        "end": "2015-12-28"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2017-02-15",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -306,9 +698,37 @@
       "ebit": -34230000,
       "sales": 23682000
     },
-    "headlines": [
-      "NVN Liquidation, Inc.  (CIK 0001467154) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      },
+      "current_assets": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      },
+      "ebit": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      },
+      "sales": {
+        "filed": "2023-03-30",
+        "end": "2022-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2024-05-01",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -327,9 +747,37 @@
       "ebit": -73094000,
       "sales": 24413000
     },
-    "headlines": [
-      "Lightning eMotors, Inc.  (ZEVY)  (CIK 0001802749) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      },
+      "current_assets": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      },
+      "ebit": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      },
+      "sales": {
+        "filed": "2023-03-13",
+        "end": "2022-12-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2024-02-28",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -348,9 +796,37 @@
       "ebit": -6491383,
       "sales": 1040069
     },
-    "headlines": [
-      "ABAKAN, INC  (CIK 0001400000) files for bankruptcy protection."
-    ],
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      },
+      "total_liabilities": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      },
+      "current_assets": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      },
+      "current_liabilities": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      },
+      "retained_earnings": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      },
+      "ebit": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      },
+      "sales": {
+        "filed": "2015-09-15",
+        "end": "2015-05-31"
+      }
+    },
+    "headlines": [],
     "label_distressed": 1,
     "event_date": "2015-09-25",
     "source": "SEC EDGAR 8-K Item 1.03",
@@ -368,6 +844,36 @@
       "retained_earnings": 86100000,
       "ebit": 194500000,
       "sales": 3430600000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      },
+      "total_liabilities": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      },
+      "current_assets": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      },
+      "current_liabilities": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      },
+      "retained_earnings": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      },
+      "ebit": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      },
+      "sales": {
+        "filed": "2024-08-02",
+        "end": "2024-05-31"
+      }
     },
     "headlines": [],
     "label_distressed": 0,
@@ -388,85 +894,39 @@
       "ebit": 4958000000,
       "sales": 64388000000
     },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      },
+      "current_assets": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      },
+      "ebit": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      },
+      "sales": {
+        "filed": "2022-02-11",
+        "end": "2021-12-31"
+      }
+    },
     "headlines": [],
     "label_distressed": 0,
     "event_date": "2022-02-11",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK108516",
-    "company_name": "WORTHINGTON ENTERPRISES, INC.  (WOR)  (CIK 0000108516)",
-    "market": "US",
-    "financials": {
-      "total_assets": 1848064000,
-      "total_liabilities": 821024000,
-      "current_assets": 524474000,
-      "current_liabilities": 221426000,
-      "retained_earnings": 704137000,
-      "ebit": 76209000,
-      "sales": 1381292000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2026-07-30",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK1968487",
-    "company_name": "Worthington Steel, Inc.  (WS)  (CIK 0001968487)",
-    "market": "US",
-    "financials": {
-      "total_assets": 1961800000,
-      "total_liabilities": 763900000,
-      "current_assets": 1048500000,
-      "current_liabilities": 631500000,
-      "retained_earnings": 164200000,
-      "ebit": 147000000,
-      "sales": 3093300000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2025-07-29",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK825542",
-    "company_name": "SCOTTS MIRACLE-GRO CO  (SMG)  (CIK 0000825542)",
-    "market": "US",
-    "financials": {
-      "total_assets": 3380500000,
-      "total_liabilities": 2677600000,
-      "current_assets": 1216600000,
-      "current_liabilities": 950400000,
-      "retained_earnings": 1235600000,
-      "ebit": 585200000,
-      "sales": 3016500000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2020-11-24",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK825542",
-    "company_name": "SCOTTS MIRACLE-GRO CO  (SMG)  (CIK 0000825542)",
-    "market": "US",
-    "financials": {
-      "total_assets": 2527200000,
-      "total_liabilities": 1894100000,
-      "current_assets": 948600000,
-      "current_liabilities": 613100000,
-      "retained_earnings": 684200000,
-      "ebit": 294600000,
-      "sales": 3016500000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2015-11-24",
     "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
     "region": "Americas"
   },
@@ -483,6 +943,36 @@
       "ebit": 212367000,
       "sales": 4916392000
     },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      },
+      "total_liabilities": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      },
+      "current_assets": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      },
+      "current_liabilities": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      },
+      "retained_earnings": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      },
+      "ebit": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      },
+      "sales": {
+        "filed": "2023-07-31",
+        "end": "2023-05-31"
+      }
+    },
     "headlines": [],
     "label_distressed": 0,
     "event_date": "2023-07-31",
@@ -490,211 +980,51 @@
     "region": "Americas"
   },
   {
-    "ticker": "US-CIK101829",
-    "company_name": "UNITED TECHNOLOGIES CORP /DE/  (RTX)  (CIK 0000101829)",
-    "market": "US",
-    "financials": {
-      "total_assets": 87484000000,
-      "total_liabilities": 58518000000,
-      "current_assets": 26706000000,
-      "current_liabilities": 22618000000,
-      "retained_earnings": 49956000000,
-      "ebit": 7291000000,
-      "sales": 52920000000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2016-02-11",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
     "ticker": "US-CIK825542",
     "company_name": "SCOTTS MIRACLE-GRO CO  (SMG)  (CIK 0000825542)",
     "market": "US",
     "financials": {
-      "total_assets": 2742000000,
-      "total_liabilities": 3099500000,
-      "current_assets": 940300000,
-      "current_liabilities": 739700000,
-      "retained_earnings": 294700000,
-      "ebit": 358600000,
+      "total_assets": 2527200000,
+      "total_liabilities": 1894100000,
+      "current_assets": 948600000,
+      "current_liabilities": 613100000,
+      "retained_earnings": 684200000,
+      "ebit": 294600000,
       "sales": 3016500000
     },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2025-11-25",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK101829",
-    "company_name": "UNITED TECHNOLOGIES CORP /DE/  (RTX)  (CIK 0000101829)",
-    "market": "US",
-    "financials": {
-      "total_assets": 89706000000,
-      "total_liabilities": 60241000000,
-      "current_assets": 28550000000,
-      "current_liabilities": 21906000000,
-      "retained_earnings": 52873000000,
-      "ebit": 8172000000,
-      "sales": 52920000000
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      },
+      "total_liabilities": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      },
+      "current_assets": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      },
+      "current_liabilities": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      },
+      "retained_earnings": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      },
+      "ebit": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      },
+      "sales": {
+        "filed": "2015-11-24",
+        "end": "2015-09-30"
+      }
     },
     "headlines": [],
     "label_distressed": 0,
-    "event_date": "2017-02-09",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK825542",
-    "company_name": "SCOTTS MIRACLE-GRO CO  (SMG)  (CIK 0000825542)",
-    "market": "US",
-    "financials": {
-      "total_assets": 4296800000,
-      "total_liabilities": 4149100000,
-      "current_assets": 1981900000,
-      "current_liabilities": 963900000,
-      "retained_earnings": 1020100000,
-      "ebit": -434000000,
-      "sales": 3016500000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2022-11-28",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK1968487",
-    "company_name": "Worthington Steel, Inc.  (WS)  (CIK 0001968487)",
-    "market": "US",
-    "financials": {
-      "total_assets": 2252400000,
-      "total_liabilities": 989500000,
-      "current_assets": 1129900000,
-      "current_liabilities": 775800000,
-      "retained_earnings": 140000000,
-      "ebit": -1400000,
-      "sales": 3443800000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2026-07-30",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK108516",
-    "company_name": "WORTHINGTON INDUSTRIES INC  (WOR)  (CIK 0000108516)",
-    "market": "US",
-    "financials": {
-      "total_assets": 3373245000,
-      "total_liabilities": 1821550000,
-      "current_assets": 1967992000,
-      "current_liabilities": 787901000,
-      "retained_earnings": 1070016000,
-      "ebit": 167473000,
-      "sales": 3171429000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2021-07-30",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK108516",
-    "company_name": "WORTHINGTON ENTERPRISES, INC.  (WOR)  (CIK 0000108516)",
-    "market": "US",
-    "financials": {
-      "total_assets": 1695152000,
-      "total_liabilities": 756915000,
-      "current_assets": 685370000,
-      "current_liabilities": 196842000,
-      "retained_earnings": 624529000,
-      "ebit": -10715000,
-      "sales": 1153762000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2025-07-30",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK825542",
-    "company_name": "SCOTTS MIRACLE-GRO CO  (SMG)  (CIK 0000825542)",
-    "market": "US",
-    "financials": {
-      "total_assets": 3028700000,
-      "total_liabilities": 2305500000,
-      "current_assets": 1041700000,
-      "current_liabilities": 620500000,
-      "retained_earnings": 1274700000,
-      "ebit": 409600000,
-      "sales": 3016500000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2019-11-27",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK825542",
-    "company_name": "SCOTTS MIRACLE-GRO CO  (SMG)  (CIK 0000825542)",
-    "market": "US",
-    "financials": {
-      "total_assets": 3413700000,
-      "total_liabilities": 3681000000,
-      "current_assets": 1397800000,
-      "current_liabilities": 773700000,
-      "retained_earnings": 490900000,
-      "ebit": -174400000,
-      "sales": 3016500000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2023-11-22",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK108516",
-    "company_name": "WORTHINGTON INDUSTRIES INC  (WOR)  (CIK 0000108516)",
-    "market": "US",
-    "financials": {
-      "total_assets": 2621787000,
-      "total_liabilities": 1585412000,
-      "current_assets": 1241122000,
-      "current_liabilities": 646895000,
-      "retained_earnings": 637757000,
-      "ebit": 141610000,
-      "sales": 3581620000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2018-07-30",
-    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
-    "region": "Americas"
-  },
-  {
-    "ticker": "US-CIK101829",
-    "company_name": "RAYTHEON TECHNOLOGIES CORP  (RTX)  (CIK 0000101829)",
-    "market": "US",
-    "financials": {
-      "total_assets": 162153000000,
-      "total_liabilities": 88269000000,
-      "current_assets": 43376000000,
-      "current_liabilities": 35848000000,
-      "retained_earnings": 49423000000,
-      "ebit": -1889000000,
-      "sales": 56587000000
-    },
-    "headlines": [],
-    "label_distressed": 0,
-    "event_date": "2021-02-08",
+    "event_date": "2015-11-24",
     "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
     "region": "Americas"
   },
@@ -711,9 +1041,529 @@
       "ebit": -102322000,
       "sales": 24873000
     },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      },
+      "current_assets": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      },
+      "ebit": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      },
+      "sales": {
+        "filed": "2016-03-09",
+        "end": "2015-12-31"
+      }
+    },
     "headlines": [],
     "label_distressed": 0,
     "event_date": "2016-03-11",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1704292",
+    "company_name": "Zai Lab Ltd  (ZLAB)  (CIK 0001704292)",
+    "market": "US",
+    "financials": {
+      "total_assets": 1220140000,
+      "total_liabilities": 174545000,
+      "current_assets": 1124336000,
+      "current_liabilities": 139842000,
+      "retained_earnings": -1861360000,
+      "ebit": -404357000,
+      "sales": 215040000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      },
+      "current_assets": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      },
+      "ebit": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      },
+      "sales": {
+        "filed": "2023-03-01",
+        "end": "2022-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2023-12-22",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1120193",
+    "company_name": "NASDAQ, INC.  (NDAQ)  (CIK 0001120193)",
+    "market": "US",
+    "financials": {
+      "total_assets": 32294000000,
+      "total_liabilities": 21467000000,
+      "current_assets": 9096000000,
+      "current_liabilities": 9025000000,
+      "retained_earnings": 7825000000,
+      "ebit": 1578000000,
+      "sales": 4277000000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2024-02-21",
+        "end": "2023-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2024-02-21",
+        "end": "2023-12-31"
+      },
+      "current_assets": {
+        "filed": "2024-02-21",
+        "end": "2023-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2024-02-21",
+        "end": "2023-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2024-02-21",
+        "end": "2023-12-31"
+      },
+      "ebit": {
+        "filed": "2024-02-21",
+        "end": "2023-12-31"
+      },
+      "sales": {
+        "filed": "2019-02-22",
+        "end": "2018-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2024-02-21",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK314203",
+    "company_name": "McEwen Mining Inc.  (MUX, MQMNW)  (CIK 0000314203)",
+    "market": "US",
+    "financials": {
+      "total_assets": 525341000,
+      "total_liabilities": 135400000,
+      "current_assets": 85026000,
+      "current_liabilities": 52399000,
+      "retained_earnings": -1240432000,
+      "ebit": -64280000,
+      "sales": 136541000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      },
+      "current_assets": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      },
+      "ebit": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      },
+      "sales": {
+        "filed": "2022-03-07",
+        "end": "2021-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2022-06-30",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1781335",
+    "company_name": "Otis Worldwide Corp  (OTIS)  (CIK 0001781335)",
+    "market": "US",
+    "financials": {
+      "total_assets": 10710000000,
+      "total_liabilities": 13911000000,
+      "current_assets": 6493000000,
+      "current_liabilities": 6673000000,
+      "retained_earnings": -3076000000,
+      "ebit": 1639000000,
+      "sales": 12756000000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      },
+      "current_assets": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      },
+      "ebit": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      },
+      "sales": {
+        "filed": "2021-02-05",
+        "end": "2020-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2021-02-05",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK850261",
+    "company_name": "Sorrento Therapeutics, Inc.  (SRNE)  (CIK 0000850261)",
+    "market": "US",
+    "financials": {
+      "total_assets": 401586000,
+      "total_liabilities": 315084000,
+      "current_assets": 89654000,
+      "current_liabilities": 76085000,
+      "retained_earnings": -174252000,
+      "ebit": -96777000,
+      "sales": 8152000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      },
+      "current_assets": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      },
+      "ebit": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      },
+      "sales": {
+        "filed": "2017-03-22",
+        "end": "2016-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2017-06-26",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1362468",
+    "company_name": "Allegiant Travel CO  (ALGT)  (CIK 0001362468)",
+    "market": "US",
+    "financials": {
+      "total_assets": 4869410000,
+      "total_liabilities": 3540850000,
+      "current_assets": 1001130000,
+      "current_liabilities": 1212307000,
+      "retained_earnings": 1265420000,
+      "ebit": 220981000,
+      "sales": 2509857000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      },
+      "current_assets": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      },
+      "ebit": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      },
+      "sales": {
+        "filed": "2024-02-29",
+        "end": "2023-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2024-03-08",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1856437",
+    "company_name": "Victoria's Secret & Co.  (VSCO)  (CIK 0001856437)",
+    "market": "US",
+    "financials": {
+      "total_assets": 5013000000,
+      "total_liabilities": 4103000000,
+      "current_assets": 1883000000,
+      "current_liabilities": 1507000000,
+      "retained_earnings": 504000000,
+      "ebit": 271000000,
+      "sales": 6553000000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      },
+      "total_liabilities": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      },
+      "current_assets": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      },
+      "current_liabilities": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      },
+      "retained_earnings": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      },
+      "ebit": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      },
+      "sales": {
+        "filed": "2026-03-20",
+        "end": "2026-01-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2026-03-20",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1764046",
+    "company_name": "CLARIVATE Plc  (CLVT)  (CIK 0001764046)",
+    "market": "US",
+    "financials": {
+      "total_assets": 15197344000,
+      "total_liabilities": 5603373000,
+      "current_assets": 1328005000,
+      "current_liabilities": 1569767000,
+      "retained_earnings": -958867000,
+      "ebit": 2805000,
+      "sales": 974345000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2021-02-26",
+        "end": "2020-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2021-02-26",
+        "end": "2020-12-31"
+      },
+      "current_assets": {
+        "filed": "2021-02-26",
+        "end": "2020-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2021-02-26",
+        "end": "2020-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2021-02-26",
+        "end": "2020-12-31"
+      },
+      "ebit": {
+        "filed": "2021-02-26",
+        "end": "2020-12-31"
+      },
+      "sales": {
+        "filed": "2020-03-02",
+        "end": "2019-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2021-02-26",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK1508381",
+    "company_name": "Bionik Laboratories Corp.  (CIK 0001508381)",
+    "market": "US",
+    "financials": {
+      "total_assets": 3242,
+      "total_liabilities": 42580,
+      "current_assets": 3242,
+      "current_liabilities": 42580,
+      "retained_earnings": -64551,
+      "ebit": -12545,
+      "sales": 6000
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2015-04-15",
+        "end": "2014-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2015-04-15",
+        "end": "2014-12-31"
+      },
+      "current_assets": {
+        "filed": "2015-04-15",
+        "end": "2014-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2015-04-15",
+        "end": "2014-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2015-04-15",
+        "end": "2014-12-31"
+      },
+      "ebit": {
+        "filed": "2012-04-11",
+        "end": "2011-12-31"
+      },
+      "sales": {
+        "filed": "2015-04-15",
+        "end": "2014-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2015-04-15",
+    "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
+    "region": "Americas"
+  },
+  {
+    "ticker": "US-CIK827099",
+    "company_name": "Ocean Thermal Energy Corp  (CPWR)  (CIK 0000827099)",
+    "market": "US",
+    "financials": {
+      "total_assets": 5957,
+      "total_liabilities": 30033881,
+      "current_assets": 5957,
+      "current_liabilities": 29807088,
+      "retained_earnings": -89584516,
+      "ebit": -1981881,
+      "sales": 0
+    },
+    "financials_provenance": {
+      "total_assets": {
+        "filed": "2022-03-30",
+        "end": "2021-12-31"
+      },
+      "total_liabilities": {
+        "filed": "2022-03-30",
+        "end": "2021-12-31"
+      },
+      "current_assets": {
+        "filed": "2022-03-30",
+        "end": "2021-12-31"
+      },
+      "current_liabilities": {
+        "filed": "2022-03-30",
+        "end": "2021-12-31"
+      },
+      "retained_earnings": {
+        "filed": "2022-03-30",
+        "end": "2021-12-31"
+      },
+      "ebit": {
+        "filed": "2022-03-30",
+        "end": "2021-12-31"
+      },
+      "sales": {
+        "filed": "2019-03-22",
+        "end": "2018-12-31"
+      }
+    },
+    "headlines": [],
+    "label_distressed": 0,
+    "event_date": "2022-05-05",
     "source": "SEC EDGAR 10-K (no bankruptcy filing found)",
     "region": "Americas"
   },
@@ -729,15 +1579,13 @@
       "retained_earnings": -27350000.0,
       "ebit": 9860000.0,
       "sales": 14706340000.0,
-      "market_value_equity": 307454421.8171406,
+      "market_value_equity": 298486979.54628754,
       "book_value_equity": 4616610000.0
     },
-    "headlines": [
-      "AGS Transact Technologies Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
-    "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
+    "source": "NSE GSM ASM IBC Stage I and GSM Stage 0",
     "region": "Indian Subcontinent"
   },
   {
@@ -752,15 +1600,13 @@
       "retained_earnings": -13301759000.0,
       "ebit": -986718000.0,
       "sales": 7575032000.0,
-      "market_value_equity": 265287739.3271327,
+      "market_value_equity": 366887286.54265404,
       "book_value_equity": -8826431000.0
     },
-    "headlines": [
-      "Ankit Metal & Power Limited: NSE GSM ASM IBC Stage I and GSM Stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
-    "source": "NSE GSM ASM IBC Stage I and GSM Stage 0",
+    "source": "NSE GSM GSM stage I and Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip",
     "region": "Indian Subcontinent"
   },
   {
@@ -775,12 +1621,10 @@
       "retained_earnings": -4182177000.0,
       "ebit": -5637000.0,
       "sales": 0.0,
-      "market_value_equity": 137697504.06216383,
+      "market_value_equity": 136442858.25868845,
       "book_value_equity": -1862768000.0
     },
-    "headlines": [
-      "Binani Industries Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -798,12 +1642,10 @@
       "retained_earnings": -8477386784.0,
       "ebit": -33874224.0,
       "sales": 3957138738.0,
-      "market_value_equity": 470878996.0694885,
+      "market_value_equity": 449258082.28881836,
       "book_value_equity": 12488013.0
     },
-    "headlines": [
-      "CLC Industries Limited: NSE GSM GSM stage IV and Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM GSM stage IV and Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip",
@@ -821,12 +1663,10 @@
       "retained_earnings": -1161465000.0,
       "ebit": -107133000.0,
       "sales": 553406000.0,
-      "market_value_equity": 44075506.75,
+      "market_value_equity": 39908368.08284974,
       "book_value_equity": -1578001000.0
     },
-    "headlines": [
-      "CMI Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -844,12 +1684,10 @@
       "retained_earnings": -3901992000.0,
       "ebit": -77423000.0,
       "sales": 11961000.0,
-      "market_value_equity": 89937630.2018094,
+      "market_value_equity": 93430360.88001609,
       "book_value_equity": -2961290000.0
     },
-    "headlines": [
-      "Compuage Infocom Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -867,12 +1705,10 @@
       "retained_earnings": -43519370000.0,
       "ebit": -291010000.0,
       "sales": 36230000.0,
-      "market_value_equity": 105321766.23190689,
+      "market_value_equity": 113894467.11595345,
       "book_value_equity": -30851340000.0
     },
-    "headlines": [
-      "Educomp Solutions Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -890,12 +1726,10 @@
       "retained_earnings": -26805000.0,
       "ebit": 25800000.0,
       "sales": 447912000.0,
-      "market_value_equity": 2356756906.4243317,
+      "market_value_equity": 2257785388.1722927,
       "book_value_equity": 150722000.0
     },
-    "headlines": [
-      "Equippp Social Impact Technologies Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -913,12 +1747,10 @@
       "retained_earnings": -33069300000.0,
       "ebit": -21517100000.0,
       "sales": 29553000000.0,
-      "market_value_equity": 225987859.84213758,
+      "market_value_equity": 193703874.7103809,
       "book_value_equity": -18812000000.0
     },
-    "headlines": [
-      "Future Lifestyle Fashions Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -936,12 +1768,10 @@
       "retained_earnings": 1053500000.0,
       "ebit": 1829800000.0,
       "sales": 8341900000.0,
-      "market_value_equity": 642438774.0812988,
+      "market_value_equity": 407915951.28048706,
       "book_value_equity": 3130500000.0
     },
-    "headlines": [
-      "Gensol Engineering Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -959,12 +1789,10 @@
       "retained_earnings": -37609900000.0,
       "ebit": -13516000000.0,
       "sales": 805300000.0,
-      "market_value_equity": 4153323532.726288,
+      "market_value_equity": 3632183844.69738,
       "book_value_equity": -2178900000.0
     },
-    "headlines": [
-      "GVK Power & Infrastructure Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -982,12 +1810,10 @@
       "retained_earnings": -10769892000.0,
       "ebit": -7744584000.0,
       "sales": 731652000.0,
-      "market_value_equity": 121074399.13106418,
+      "market_value_equity": 124743316.67210841,
       "book_value_equity": -13386353000.0
     },
-    "headlines": [
-      "MEP Infrastructure Developers Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -1005,12 +1831,10 @@
       "retained_earnings": -339149000.0,
       "ebit": 23060000.0,
       "sales": 227905000.0,
-      "market_value_equity": 122787695.244102,
+      "market_value_equity": 121343126.9314878,
       "book_value_equity": -51568000.0
     },
-    "headlines": [
-      "MT Educare Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -1031,9 +1855,7 @@
       "market_value_equity": 141715808.47410965,
       "book_value_equity": 326448000.0
     },
-    "headlines": [
-      "Perfect Infraengineers Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -1051,12 +1873,10 @@
       "retained_earnings": -6064549000.0,
       "ebit": -58490000.0,
       "sales": 0.0,
-      "market_value_equity": 89671395.6729052,
+      "market_value_equity": 83586549.03039145,
       "book_value_equity": -3437920000.0
     },
-    "headlines": [
-      "Premier Limited: NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0 (Graded Surveillance Measure)"
-    ],
+    "headlines": [],
     "label_distressed": 1,
     "event_date": null,
     "source": "NSE GSM Insolvency and Bankruptcy Code (IBC) - Receipt of Disclosure or Recommenced scrip and GSM stage 0",
@@ -1074,7 +1894,7 @@
       "retained_earnings": 4636440000000.0,
       "ebit": 1472180000000.0,
       "sales": 10572190000000.0,
-      "market_value_equity": 16590811450510.0,
+      "market_value_equity": 15837053385505.766,
       "book_value_equity": 10858660000000.0
     },
     "headlines": [],
@@ -1095,7 +1915,7 @@
       "retained_earnings": 998830000000.0,
       "ebit": 667140000000.0,
       "sales": 2670210000000.0,
-      "market_value_equity": 7532858212476.0,
+      "market_value_equity": 7800596688808.0,
       "book_value_equity": 1084780000000.0
     },
     "headlines": [],
@@ -1116,7 +1936,7 @@
       "retained_earnings": 13459000000.0,
       "ebit": 4553000000.0,
       "sales": 20158000000.0,
-      "market_value_equity": 4051153677154.47,
+      "market_value_equity": 4145121697165.941,
       "book_value_equity": 9840000000.0
     },
     "headlines": [],
@@ -1137,7 +1957,7 @@
       "retained_earnings": 516515200000.0,
       "ebit": 281185600000.0,
       "sales": 782132800000.0,
-      "market_value_equity": 3370709094789.0,
+      "market_value_equity": 3333117543546.0,
       "book_value_equity": 728730200000.0
     },
     "headlines": [],
