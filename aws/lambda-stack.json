@@ -72,7 +72,6 @@
         "Role": { "Fn::GetAtt": ["LambdaExecutionRole", "Arn"] },
         "Timeout": 60,
         "MemorySize": 1024,
-        "ReservedConcurrentExecutions": 5,
         "Environment": {
           "Variables": {
             "MODEL_REGISTRY_TABLE": "distress-model-registry",
@@ -119,7 +118,7 @@
       "Value": { "Fn::GetAtt": ["ApiFunction", "Arn"] }
     },
     "FunctionUrl": {
-      "Description": "HTTPS endpoint for the API (public, AuthType NONE -- /predict's output isn't sensitive; ReservedConcurrentExecutions caps abuse/cost instead of gating with IAM)",
+      "Description": "HTTPS endpoint for the API (public, AuthType NONE -- /predict's output isn't sensitive. No ReservedConcurrentExecutions cap: this account's total Lambda concurrency quota is too low (~10) to reserve any for a single function without violating AWS's 10-unreserved-minimum rule -- the account-wide quota itself is the de facto ceiling for now. Revisit if the quota is ever raised.)",
       "Value": { "Fn::GetAtt": ["ApiFunctionUrl", "FunctionUrl"] }
     }
   }
