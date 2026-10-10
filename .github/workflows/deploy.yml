@@ -83,8 +83,65 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides ImageUri=${{ steps.image.outputs.uri }}
 
+      - name: Deploy dashboard hosting stack (S3 + CloudFront, idempotent)
+        run: |
+          aws cloudformation deploy \
+            --template-file aws/dashboard-stack.json \
+            --stack-name distress-model-dashboard \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Get dashboard stack outputs
+        id: dashboard
+        run: |
+          OUTPUTS=$(aws cloudformation describe-stacks --stack-name distress-model-dashboard \
+            --region ${{ env.AWS_REGION }} --query "Stacks[0].Outputs" --output json)
+          echo "bucket=$(echo "$OUTPUTS" | jq -r '.[] | select(.OutputKey=="DashboardBucketName") | .OutputValue')" >> "$GITHUB_OUTPUT"
+          echo "distribution_id=$(echo "$OUTPUTS" | jq -r '.[] | select(.OutputKey=="DistributionId") | .OutputValue')" >> "$GITHUB_OUTPUT"
+          echo "domain=$(echo "$OUTPUTS" | jq -r '.[] | select(.OutputKey=="DistributionDomainName") | .OutputValue')" >> "$GITHUB_OUTPUT"
+
+      - name: Re-deploy inference Lambda stack with CORS now that the dashboard domain is known
+        run: |
+          aws cloudformation deploy \
+            --template-file aws/lambda-stack.json \
+            --stack-name distress-model-lambda \
+            --region ${{ env.AWS_REGION }} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides ImageUri=${{ steps.image.outputs.uri }} DashboardOrigin=${{ steps.dashboard.outputs.domain }}
+
+      - name: Get inference Lambda Function URL
+        id: function_url
+        run: |
+          URL=$(aws cloudformation describe-stacks --stack-name distress-model-lambda \
+            --region ${{ env.AWS_REGION }} --query "Stacks[0].Outputs[?OutputKey=='FunctionUrl'].OutputValue" --output text)
+          echo "url=${URL%/}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Build dashboard (static export, pointed at the real API)
+        working-directory: dashboard
+        env:
+          NEXT_PUBLIC_API_BASE_URL: ${{ steps.function_url.outputs.url }}
+        run: |
+          npm ci
+          npm run build
+
+      - name: Sync dashboard build to S3
+        run: aws s3 sync dashboard/out/ s3://${{ steps.dashboard.outputs.bucket }}/ --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.dashboard.outputs.distribution_id }} \
+            --paths "/*"
+
       - name: Summary
         run: |
           echo "### Deployed successfully :rocket:" >> "$GITHUB_STEP_SUMMARY"
           echo "Image: ${{ steps.image.outputs.uri }}" >> "$GITHUB_STEP_SUMMARY"
           echo "Commit: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Dashboard: https://${{ steps.dashboard.outputs.domain }}" >> "$GITHUB_STEP_SUMMARY"

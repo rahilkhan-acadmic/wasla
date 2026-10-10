@@ -24,7 +24,9 @@ python tests/test_cross_validate.py
 python tests/test_time_split.py
 python tests/test_lead_time.py
 python tests/test_healthy_sample_diversity.py
+python tests/test_model_info_endpoint.py
 cfn-lint aws/*-stack.json aws/infrastructure.json
+cd dashboard && npm ci && npm run build && cd ..
 ```
 
 These exist because every one of them was written after something broke
@@ -76,8 +78,11 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
 - Step Functions: `distress-model-retrain`
 - CloudFormation stacks: `distress-model-stack`, `distress-model-ecr`,
   `distress-model-lambda`, `distress-model-automation`,
-  `distress-model-github-oidc`, `distress-model-claude-code`
-- S3 bucket: `distress-model-<account-id>`
+  `distress-model-github-oidc`, `distress-model-claude-code`,
+  `distress-model-dashboard`
+- S3 buckets: `distress-model-<account-id>` (model registry),
+  `distress-model-dashboard-<account-id>` (static dashboard, private,
+  served only via CloudFront OAC)
 - DynamoDB table: `distress-model-registry`
 - ECR repository: `distress-model-api`
 

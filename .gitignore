@@ -30,3 +30,9 @@ corp-*.pem
 
 # Local scratch
 /tmp/
+
+# Dashboard (Next.js)
+dashboard/node_modules/
+dashboard/out/
+dashboard/.next/
+dashboard/.env*.local
