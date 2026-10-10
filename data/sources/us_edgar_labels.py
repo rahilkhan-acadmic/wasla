@@ -107,8 +107,18 @@ def find_healthy_sample(start_date: str, end_date: str, exclude_ciks: set[int],
     survivorship bias: a hardcoded list of "well-known healthy companies"
     implicitly only include survivors, i.e., a leaky proxy for the very
     thing we're trying to predict.
+
+    Deduplicates by CIK as results are collected. The underlying full-text
+    query ranks by relevance, not by company diversity, so a handful of
+    large, frequent filers (every one of their past 10-Ks independently
+    matches "annual report") would otherwise dominate the result list --
+    without this, `max_results=60` could come back as 60 hits spanning only
+    5 real companies, each counted many times over. The caller still only
+    gets ONE filing (the highest-ranked) per company; year-level diversity
+    for a given company is not the goal here, company-level diversity is.
     """
     results = []
+    seen_ciks = set()
     offset = 0
     while len(results) < max_results:
         page = _search_full_text(
@@ -131,8 +141,9 @@ def find_healthy_sample(start_date: str, end_date: str, exclude_ciks: set[int],
             if cik_raw is None:
                 continue
             cik = int(cik_raw)
-            if cik in exclude_ciks:
+            if cik in exclude_ciks or cik in seen_ciks:
                 continue
+            seen_ciks.add(cik)
             results.append({
                 "cik": cik,
                 "company_name": source.get("display_names", [""])[0],
