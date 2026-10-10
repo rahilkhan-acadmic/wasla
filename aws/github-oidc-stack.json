@@ -83,7 +83,12 @@
                     "s3:ListMultipartUploadParts",
                     "s3:PutBucketTagging",
                     "s3:PutBucketVersioning",
-                    "s3:PutObject"
+                    "s3:PutObject",
+                    "s3:GetBucketPolicy",
+                    "s3:PutBucketPolicy",
+                    "s3:DeleteBucketPolicy",
+                    "s3:GetBucketPublicAccessBlock",
+                    "s3:PutBucketPublicAccessBlock"
                   ],
                   "Resource": [
                     "arn:aws:s3:::distress-model-*",
@@ -118,6 +123,7 @@
                     "lambda:CreateFunction",
                     "lambda:CreateFunctionUrlConfig",
                     "lambda:DeleteFunction",
+                    "lambda:DeleteFunctionConcurrency",
                     "lambda:DeleteFunctionUrlConfig",
                     "lambda:GetFunction",
                     "lambda:GetFunctionConfiguration",
@@ -128,6 +134,7 @@
                     "lambda:ListFunctions",
                     "lambda:ListTags",
                     "lambda:ListVersionsByFunction",
+                    "lambda:PutFunctionConcurrency",
                     "lambda:RemovePermission",
                     "lambda:TagResource",
                     "lambda:UntagResource",
@@ -138,6 +145,26 @@
                   "Resource": {
                     "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:distress-model-*"
                   }
+                },
+                {
+                  "Sid": "CloudFrontDashboard",
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudfront:CreateDistribution",
+                    "cloudfront:GetDistribution",
+                    "cloudfront:UpdateDistribution",
+                    "cloudfront:DeleteDistribution",
+                    "cloudfront:TagResource",
+                    "cloudfront:UntagResource",
+                    "cloudfront:ListTagsForResource",
+                    "cloudfront:CreateOriginAccessControl",
+                    "cloudfront:GetOriginAccessControl",
+                    "cloudfront:UpdateOriginAccessControl",
+                    "cloudfront:DeleteOriginAccessControl",
+                    "cloudfront:CreateInvalidation",
+                    "cloudfront:GetInvalidation"
+                  ],
+                  "Resource": "*"
                 },
                 {
                   "Sid": "ECRPushPull",
