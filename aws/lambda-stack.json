@@ -11,6 +11,14 @@
       "Type": "String",
       "Default": "",
       "Description": "CloudFront domain of the dashboard (dashboard-stack.json's DistributionDomainName output), e.g. d111111abcdef8.cloudfront.net. Left blank on first deploy before the dashboard stack exists -- CORS stays disabled until this is set via a redeploy with --parameter-overrides."
+    },
+    "CognitoUserPoolId": {
+      "Type": "String",
+      "Description": "auth-stack.json's UserPoolId output -- required for the API to verify ID tokens."
+    },
+    "CognitoClientId": {
+      "Type": "String",
+      "Description": "auth-stack.json's UserPoolClientId output -- required for the API to verify ID tokens' audience."
     }
   },
 
@@ -75,7 +83,9 @@
         "Environment": {
           "Variables": {
             "MODEL_REGISTRY_TABLE": "distress-model-registry",
-            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" }
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+            "COGNITO_USER_POOL_ID": { "Ref": "CognitoUserPoolId" },
+            "COGNITO_CLIENT_ID": { "Ref": "CognitoClientId" }
           }
         }
       }

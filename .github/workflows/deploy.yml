@@ -46,6 +46,21 @@ jobs:
             --stack-name distress-model-ecr \
             --region ${{ env.AWS_REGION }}
 
+      - name: Deploy Cognito auth stack (idempotent, before the API's first deploy)
+        run: |
+          aws cloudformation deploy \
+            --template-file aws/auth-stack.json \
+            --stack-name distress-model-auth \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Get auth stack outputs
+        id: auth
+        run: |
+          OUTPUTS=$(aws cloudformation describe-stacks --stack-name distress-model-auth \
+            --region ${{ env.AWS_REGION }} --query "Stacks[0].Outputs" --output json)
+          echo "user_pool_id=$(echo "$OUTPUTS" | jq -r '.[] | select(.OutputKey=="UserPoolId") | .OutputValue')" >> "$GITHUB_OUTPUT"
+          echo "client_id=$(echo "$OUTPUTS" | jq -r '.[] | select(.OutputKey=="UserPoolClientId") | .OutputValue')" >> "$GITHUB_OUTPUT"
+
       - name: Log in to ECR
         run: |
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | \
@@ -72,7 +87,9 @@ jobs:
             --stack-name distress-model-lambda \
             --region ${{ env.AWS_REGION }} \
             --capabilities CAPABILITY_NAMED_IAM \
-            --parameter-overrides ImageUri=${{ steps.image.outputs.uri }}
+            --parameter-overrides ImageUri=${{ steps.image.outputs.uri }} \
+              CognitoUserPoolId=${{ steps.auth.outputs.user_pool_id }} \
+              CognitoClientId=${{ steps.auth.outputs.client_id }}
 
       - name: Deploy automated retrain pipeline stack
         run: |
@@ -106,7 +123,9 @@ jobs:
             --stack-name distress-model-lambda \
             --region ${{ env.AWS_REGION }} \
             --capabilities CAPABILITY_NAMED_IAM \
-            --parameter-overrides ImageUri=${{ steps.image.outputs.uri }} DashboardOrigin=${{ steps.dashboard.outputs.domain }}
+            --parameter-overrides ImageUri=${{ steps.image.outputs.uri }} DashboardOrigin=${{ steps.dashboard.outputs.domain }} \
+              CognitoUserPoolId=${{ steps.auth.outputs.user_pool_id }} \
+              CognitoClientId=${{ steps.auth.outputs.client_id }}
 
       - name: Get inference Lambda Function URL
         id: function_url
@@ -126,6 +145,8 @@ jobs:
         working-directory: dashboard
         env:
           NEXT_PUBLIC_API_BASE_URL: ${{ steps.function_url.outputs.url }}
+          NEXT_PUBLIC_COGNITO_USER_POOL_ID: ${{ steps.auth.outputs.user_pool_id }}
+          NEXT_PUBLIC_COGNITO_CLIENT_ID: ${{ steps.auth.outputs.client_id }}
         run: |
           npm ci
           npm run build

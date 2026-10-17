@@ -24,9 +24,10 @@ from typing import Optional
 
 import numpy as np
 import xgboost as xgb
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+import auth
 from features import build_feature_row, financials_from_dict, FEATURE_NAMES
 from altman_zscore import classify_zone
 import model_loader
@@ -124,13 +125,13 @@ def health():
 
 
 @app.post("/predict", response_model=PredictResponse)
-def predict(req: PredictRequest):
+def predict(req: PredictRequest, claims: dict = Depends(auth.require_auth)):
     fin_dict = req.financials.model_dump()
     return _run_prediction(req.ticker, fin_dict, req.headlines)
 
 
 @app.post("/predict/demo/{ticker}", response_model=PredictResponse)
-def predict_demo(ticker: str):
+def predict_demo(ticker: str, claims: dict = Depends(auth.require_auth)):
     """Convenience endpoint for testing against the bundled synthetic dataset."""
     if not os.path.exists(SAMPLE_DATA_PATH):
         raise HTTPException(status_code=404, detail="Sample dataset not found")
@@ -143,7 +144,7 @@ def predict_demo(ticker: str):
 
 
 @app.get("/model/info", response_model=ModelInfoResponse)
-def model_info():
+def model_info(claims: dict = Depends(auth.require_auth)):
     """Read-only view of the current promoted model. Reads the DynamoDB
     registry pointer directly rather than model_loader.get_model(), so a
     dashboard page load doesn't trigger an S3 download + model deserialization

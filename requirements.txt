@@ -9,6 +9,7 @@ fastapi==0.141.1
 uvicorn[standard]==0.53.0   # only needed for local/ECS/App Runner serving, not Lambda
 mangum==0.22.0              # only needed for the Lambda deployment path
 mcp[cli]==2.2.0             # only needed for src/mcp_server.py (Claude/MCP client integration)
+PyJWT[crypto]==2.15.1       # Cognito ID token verification in src/auth.py
 
 # Optional, for real (recommended) FinBERT sentiment instead of the offline
 # VADER fallback:
