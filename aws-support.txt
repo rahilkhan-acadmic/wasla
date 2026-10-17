@@ -1,0 +1,22 @@
+Subject: Account verification needed to use CloudFront and public Lambda Function URLs
+
+Account ID: 345736954421
+Region: ap-south-1
+
+We're trying to deploy two resources in this account and are hitting what appear to be account-verification-related restrictions on both:
+
+1. Creating an AWS::CloudFront::Distribution via CloudFormation fails with:
+   "Access denied for operation 'AWS::CloudFront::Distribution: Your account
+   must be verified before you can add new CloudFront resources. To verify
+   your account, please contact AWS Support."
+
+2. A Lambda Function URL configured with AuthType: NONE (public, no IAM auth)
+   and a correctly-scoped resource policy (Principal: "*",
+   Action: lambda:InvokeFunctionUrl, Condition: FunctionUrlAuthType=NONE)
+   returns HTTP 403 "Forbidden" / AccessDeniedException on anonymous
+   requests, even though direct lambda:InvokeFunction calls to the same
+   function succeed normally.
+
+Could you verify this account for both CloudFront usage and public
+(unauthenticated) Lambda Function URLs? Happy to provide any additional
+account/billing verification needed.

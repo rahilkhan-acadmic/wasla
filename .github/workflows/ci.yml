@@ -46,11 +46,14 @@ jobs:
       - name: Run /model/info endpoint test (moto-mocked DynamoDB)
         run: python tests/test_model_info_endpoint.py
 
+      - name: Run Cognito ID token auth test (self-signed JWT, no real User Pool)
+        run: python tests/test_auth.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \
                    aws/automation-stack.json aws/github-oidc-stack.json \
-                   aws/dashboard-stack.json
+                   aws/dashboard-stack.json aws/auth-stack.json
 
       - name: Validate all AWS JSON files are well-formed
         run: |
@@ -65,15 +68,9 @@ jobs:
           from fastapi.testclient import TestClient
           from app import app
           client = TestClient(app)
-          r = client.post('/predict/demo/SYN027')
+          r = client.get('/health')
           assert r.status_code == 200, f'Expected 200, got {r.status_code}'
-          assert 'probability_distressed' in r.json()
           print('FastAPI smoke test passed:', r.json())
-
-          r = client.get('/model/info')
-          assert r.status_code == 200, f'Expected 200, got {r.status_code}'
-          assert 'registry_configured' in r.json()
-          print('/model/info smoke test passed:', r.json())
           "
 
   dashboard:

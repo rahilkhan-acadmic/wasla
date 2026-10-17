@@ -3,6 +3,8 @@
 // server to read env vars at request time) -- set it when running `next build`,
 // e.g. NEXT_PUBLIC_API_BASE_URL=https://xxxx.lambda-url.ap-south-1.on.aws npm run build
 
+import { getIdToken } from "./auth";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 export interface Financials {
@@ -48,8 +50,12 @@ export interface HealthResponse {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const idToken = getIdToken();
   const res = await fetch(`${API_BASE_URL}${path}`, {
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      ...(idToken ? { authorization: `Bearer ${idToken}` } : {}),
+    },
     ...init,
   });
   if (!res.ok) {
