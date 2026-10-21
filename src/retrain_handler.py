@@ -42,11 +42,13 @@ import time
 import tempfile
 
 import boto3
-import numpy as np
 import xgboost as xgb
+from sklearn.metrics import roc_auc_score
 
-from features import build_feature_row, financials_from_dict, FEATURE_NAMES, has_complete_financials
-from train_classifier import train_model, split_dataset
+from train_classifier import (
+    train_model, split_dataset, make_model, rows_to_arrays,
+    time_split_dataset, check_time_split_gate,
+)
 
 MODEL_BUCKET = os.environ.get("MODEL_BUCKET")
 MODEL_REGISTRY_TABLE = os.environ.get("MODEL_REGISTRY_TABLE")
@@ -62,15 +64,27 @@ SAMPLE_DATA_PATH = os.environ.get(
 # noise in a small dataset. Tune once real data makes AUC deltas meaningful.
 PROMOTION_AUC_MARGIN = float(os.environ.get("PROMOTION_AUC_MARGIN", "0.01"))
 
+# If set (YYYY-MM-DD), evaluation uses train_classifier.time_split_dataset
+# instead of a random split -- train on companies dated before this, test on
+# companies dated at/after it. Left unset by default: at the current real
+# dataset's size this gate fails for every reasonable cutoff (see
+# CLAUDE.md's known-limitations notes), so there is nothing to gain from
+# forcing it on yet. When it IS set and the gate fails anyway (too few
+# unique companies per class on one side), this handler logs why and falls
+# back to the random split rather than crashing the scheduled run.
+EVAL_SPLIT_CUTOFF_DATE = os.environ.get("EVAL_SPLIT_CUTOFF_DATE")
+EVAL_MIN_PER_CLASS = int(os.environ.get("EVAL_MIN_PER_CLASS", "5"))
 
-def _load_dataset_arrays():
-    """Loads the training dataset. Prefers a fresh real dataset written to
-    S3 by fetch_data_handler.py's scheduled run (DATASET_S3_KEY); falls
-    back to a local file (DATASET_PATH env var, else the bundled synthetic
-    dataset) if S3 isn't configured or the download fails -- e.g. before
-    the fetch step has ever run, or if it errors on a given week. Same
-    schema either way, so nothing below this function needs to know which
-    source it came from."""
+
+def _load_dataset_records() -> list[dict]:
+    """Loads the raw training dataset records, unfiltered and with
+    event_date/market intact -- needed for time_split_dataset(). Prefers a
+    fresh real dataset written to S3 by fetch_data_handler.py's scheduled
+    run (DATASET_S3_KEY); falls back to a local file (DATASET_PATH env var,
+    else the bundled synthetic dataset) if S3 isn't configured or the
+    download fails -- e.g. before the fetch step has ever run, or if it
+    errors on a given week. Same schema either way, so nothing below this
+    function needs to know which source it came from."""
     dataset_path = None
 
     if DATASET_S3_KEY and MODEL_BUCKET:
@@ -88,24 +102,19 @@ def _load_dataset_arrays():
         print(f"Loaded dataset from local file {dataset_path}")
 
     with open(dataset_path) as f:
-        raw = json.load(f)
+        return json.load(f)
 
-    X, y = [], []
-    for row in raw:
-        if not has_complete_financials(row["financials"]):
-            continue  # same guard as train_classifier.py -- see features.py's docstring
-        fin = financials_from_dict(row["financials"])
-        feats = build_feature_row(fin, row.get("headlines", []))
-        X.append([feats[name] for name in FEATURE_NAMES])
-        y.append(row["label_distressed"])
-    return np.array(X), np.array(y)
+
+def _load_dataset_arrays():
+    """Backward-compatible (X, y) view of _load_dataset_records(), for
+    callers that don't need the time-based split."""
+    X, y, _ = rows_to_arrays(_load_dataset_records())
+    return X, y
 
 
 def _evaluate_existing_model(X, y) -> float:
     """Downloads and scores the currently-registered model on the given
     data, for a fair comparison against the freshly trained candidate."""
-    from sklearn.metrics import roc_auc_score
-
     ddb = boto3.resource("dynamodb").Table(MODEL_REGISTRY_TABLE)
     item = ddb.get_item(Key={"model_name": MODEL_REGISTRY_KEY}).get("Item")
     if item is None:
@@ -121,16 +130,44 @@ def _evaluate_existing_model(X, y) -> float:
 
 
 def train_and_evaluate_handler(event, context):
-    X, y = _load_dataset_arrays()
+    records = _load_dataset_records()
 
-    new_model, new_auc, _ = train_model(X, y)
+    # Try a time-based eval split (train on companies dated before the
+    # cutoff, test on companies dated at/after it) when EVAL_SPLIT_CUTOFF_DATE
+    # is configured. Falls back to the random split -- the ONLY mode that
+    # existed before this -- if it's unset, or if the gate finds too few
+    # unique companies of either class on either side to trust the result.
+    # This is a graceful degrade, not a silent one: the fallback reason is
+    # surfaced in the returned eval_gate_reason field.
+    eval_mode = "random"
+    gate_reason = None
 
-    # Score the currently-deployed model on the SAME held-out split the new
-    # model was scored on (split_dataset is deterministic), so the two AUCs
-    # are actually comparable. Previously this scored the live model on ALL
-    # records while the new model was scored only on its held-out quarter --
-    # different data, so the comparison meant nothing.
-    _, X_test, _, y_test = split_dataset(X, y)
+    if EVAL_SPLIT_CUTOFF_DATE:
+        try:
+            train_rows, test_rows = time_split_dataset(records, EVAL_SPLIT_CUTOFF_DATE)
+            check_time_split_gate(train_rows, test_rows, min_per_class=EVAL_MIN_PER_CLASS)
+            eval_mode = "time"
+        except ValueError as e:
+            gate_reason = str(e)
+            print(f"Time split gate failed, falling back to random split: {gate_reason}")
+
+    if eval_mode == "time":
+        X_train, y_train, _ = rows_to_arrays(train_rows)
+        X_test, y_test, _ = rows_to_arrays(test_rows)
+        new_model = make_model()
+        new_model.fit(X_train, y_train)
+        new_auc = float(roc_auc_score(y_test, new_model.predict_proba(X_test)[:, 1]))
+    else:
+        X, y, _ = rows_to_arrays(records)
+        new_model, new_auc, _ = train_model(X, y)
+        # Score the currently-deployed model on the SAME held-out split the
+        # new model was scored on (split_dataset is deterministic), so the
+        # two AUCs are actually comparable. Previously this scored the live
+        # model on ALL records while the new model was scored only on its
+        # held-out quarter -- different data, so the comparison meant
+        # nothing.
+        _, X_test, _, y_test = split_dataset(X, y)
+
     current_auc = _evaluate_existing_model(X_test, y_test)
 
     candidate_key = f"models/{MODEL_REGISTRY_KEY}/candidate/model-{int(time.time())}.json"
@@ -138,17 +175,20 @@ def train_and_evaluate_handler(event, context):
         new_model.save_model(tmp.name)
         boto3.client("s3").upload_file(tmp.name, MODEL_BUCKET, candidate_key)
 
-    return {
+    result = {
         "candidate_s3_key": candidate_key,
         "new_auc": round(new_auc, 4),
         "current_auc": round(current_auc, 4),
         "auc_improvement": round(new_auc - current_auc, 4),
+        "eval_mode": eval_mode,
         # How many records both AUCs were computed on. With a small dataset
-        # this is tiny (55 records -> ~14) and the AUCs are correspondingly
-        # noisy -- surfaced here so it's visible next to the numbers rather
-        # than buried.
+        # this is tiny, and the AUCs are correspondingly noisy -- surfaced
+        # here so it's visible next to the numbers rather than buried.
         "test_set_size": int(len(y_test)),
     }
+    if gate_reason:
+        result["eval_gate_reason"] = gate_reason
+    return result
 
 
 def register_model_handler(event, context):

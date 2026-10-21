@@ -6,7 +6,24 @@
     "ImageUri": {
       "Type": "String",
       "Description": "Full ECR image URI with tag, e.g. <account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest"
+    },
+    "DashboardOrigin": {
+      "Type": "String",
+      "Default": "",
+      "Description": "CloudFront domain of the dashboard (dashboard-stack.json's DistributionDomainName output), e.g. d111111abcdef8.cloudfront.net. Left blank on first deploy before the dashboard stack exists -- CORS stays disabled until this is set via a redeploy with --parameter-overrides."
+    },
+    "CognitoUserPoolId": {
+      "Type": "String",
+      "Description": "auth-stack.json's UserPoolId output -- required for the API to verify ID tokens."
+    },
+    "CognitoClientId": {
+      "Type": "String",
+      "Description": "auth-stack.json's UserPoolClientId output -- required for the API to verify ID tokens' audience."
     }
+  },
+
+  "Conditions": {
+    "HasDashboardOrigin": { "Fn::Not": [{ "Fn::Equals": [{ "Ref": "DashboardOrigin" }, ""] }] }
   },
 
   "Resources": {
@@ -66,7 +83,9 @@
         "Environment": {
           "Variables": {
             "MODEL_REGISTRY_TABLE": "distress-model-registry",
-            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" }
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+            "COGNITO_USER_POOL_ID": { "Ref": "CognitoUserPoolId" },
+            "COGNITO_CLIENT_ID": { "Ref": "CognitoClientId" }
           }
         }
       }
@@ -76,7 +95,29 @@
       "Type": "AWS::Lambda::Url",
       "Properties": {
         "TargetFunctionArn": { "Ref": "ApiFunction" },
-        "AuthType": "AWS_IAM"
+        "AuthType": "NONE",
+        "Cors": {
+          "Fn::If": [
+            "HasDashboardOrigin",
+            {
+              "AllowOrigins": [{ "Fn::Sub": "https://${DashboardOrigin}" }],
+              "AllowMethods": ["GET", "POST"],
+              "AllowHeaders": ["content-type"],
+              "MaxAge": 300
+            },
+            { "Ref": "AWS::NoValue" }
+          ]
+        }
+      }
+    },
+
+    "ApiFunctionUrlPublicInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": { "Ref": "ApiFunction" },
+        "Action": "lambda:InvokeFunctionUrl",
+        "Principal": "*",
+        "FunctionUrlAuthType": "NONE"
       }
     }
   },
@@ -87,7 +128,7 @@
       "Value": { "Fn::GetAtt": ["ApiFunction", "Arn"] }
     },
     "FunctionUrl": {
-      "Description": "HTTPS endpoint for the API (requires AWS_IAM auth to call)",
+      "Description": "HTTPS endpoint for the API (public, AuthType NONE -- /predict's output isn't sensitive. No ReservedConcurrentExecutions cap: this account's total Lambda concurrency quota is too low (~10) to reserve any for a single function without violating AWS's 10-unreserved-minimum rule -- the account-wide quota itself is the de facto ceiling for now. Revisit if the quota is ever raised.)",
       "Value": { "Fn::GetAtt": ["ApiFunctionUrl", "FunctionUrl"] }
     }
   }

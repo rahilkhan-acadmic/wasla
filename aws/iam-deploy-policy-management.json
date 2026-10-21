@@ -171,6 +171,15 @@
         "ssm:DescribeSessions"
       ],
       "Resource": "*"
+    },
+    {
+      "Sid": "SupportCaseReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "support:DescribeCases",
+        "support:DescribeCommunications"
+      ],
+      "Resource": "*"
     }
   ]
 }

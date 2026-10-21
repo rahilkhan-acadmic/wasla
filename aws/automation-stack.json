@@ -86,7 +86,8 @@
           "Variables": {
             "MODEL_REGISTRY_TABLE": "distress-model-registry",
             "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
-            "DATASET_S3_KEY": "datasets/real_companies.json"
+            "DATASET_S3_KEY": "datasets/real_companies.json",
+            "EVAL_SPLIT_CUTOFF_DATE": "2023-01-01"
           }
         }
       }

@@ -1,0 +1,57 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Cognito User Pool for mandatory-TOTP-MFA-gated access to the dashboard and the inference API. No self-signup, no Hosted UI -- users are created via admin-create-user and log in through the dashboard's own LoginForm. Deploy BEFORE lambda-stack.json so the API requires auth from its first invocation. Usage: aws cloudformation deploy --template-file aws/auth-stack.json --stack-name distress-model-auth --region ap-south-1",
+
+  "Resources": {
+    "DashboardUserPool": {
+      "Type": "AWS::Cognito::UserPool",
+      "Properties": {
+        "UserPoolName": "distress-model-dashboard-users",
+        "UsernameAttributes": [],
+        "MfaConfiguration": "ON",
+        "EnabledMfas": ["SOFTWARE_TOKEN_MFA"],
+        "AdminCreateUserConfig": {
+          "AllowAdminCreateUserOnly": true
+        },
+        "Policies": {
+          "PasswordPolicy": {
+            "MinimumLength": 12,
+            "RequireUppercase": true,
+            "RequireLowercase": true,
+            "RequireNumbers": true,
+            "RequireSymbols": true
+          }
+        }
+      }
+    },
+
+    "DashboardUserPoolClient": {
+      "Type": "AWS::Cognito::UserPoolClient",
+      "Properties": {
+        "ClientName": "distress-model-dashboard-client",
+        "UserPoolId": { "Ref": "DashboardUserPool" },
+        "GenerateSecret": false,
+        "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+        "AccessTokenValidity": 1,
+        "IdTokenValidity": 1,
+        "RefreshTokenValidity": 30,
+        "TokenValidityUnits": {
+          "AccessToken": "hours",
+          "IdToken": "hours",
+          "RefreshToken": "days"
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+    "UserPoolId": {
+      "Description": "Pass this as lambda-stack.json's CognitoUserPoolId parameter and dashboard's NEXT_PUBLIC_COGNITO_USER_POOL_ID build var",
+      "Value": { "Ref": "DashboardUserPool" }
+    },
+    "UserPoolClientId": {
+      "Description": "Pass this as lambda-stack.json's CognitoClientId parameter and dashboard's NEXT_PUBLIC_COGNITO_CLIENT_ID build var",
+      "Value": { "Ref": "DashboardUserPoolClient" }
+    }
+  }
+}

@@ -50,6 +50,7 @@ class _EnvArgs:
     us_end_date = os.environ.get("US_END_DATE")  # None -> today, see us_edgar_labels.build()
     us_n_distressed = int(os.environ.get("US_N_DISTRESSED", "30"))
     us_n_healthy = int(os.environ.get("US_N_HEALTHY", "30"))
+    us_min_lead_days = int(os.environ.get("US_MIN_LEAD_DAYS", "0"))
 
     india_csv = os.path.join(_SRC_DIR, "..", "data", "sources", "india_distress_labels.csv")
 

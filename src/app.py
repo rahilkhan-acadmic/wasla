@@ -9,6 +9,7 @@ Endpoints:
     GET  /health                 Liveness check
     POST /predict                Score a company given its financials + headlines
     POST /predict/demo/{ticker}  Score a company from the bundled synthetic dataset
+    GET  /model/info             Current promoted model version + registry metadata
 
 Run locally:
     uvicorn app:app --host 0.0.0.0 --port 8000 --app-dir src
@@ -23,9 +24,10 @@ from typing import Optional
 
 import numpy as np
 import xgboost as xgb
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+import auth
 from features import build_feature_row, financials_from_dict, FEATURE_NAMES
 from altman_zscore import classify_zone
 import model_loader
@@ -87,6 +89,13 @@ class PredictResponse(BaseModel):
     cash_burning: bool
 
 
+class ModelInfoResponse(BaseModel):
+    registry_configured: bool
+    version: Optional[str] = None
+    promoted_at: Optional[str] = None
+    s3_key: Optional[str] = None
+
+
 def _run_prediction(ticker: str, fin_dict: dict, headlines: list[str]) -> PredictResponse:
     model = get_model()
     fin = financials_from_dict(fin_dict)
@@ -116,13 +125,13 @@ def health():
 
 
 @app.post("/predict", response_model=PredictResponse)
-def predict(req: PredictRequest):
+def predict(req: PredictRequest, claims: dict = Depends(auth.require_auth)):
     fin_dict = req.financials.model_dump()
     return _run_prediction(req.ticker, fin_dict, req.headlines)
 
 
 @app.post("/predict/demo/{ticker}", response_model=PredictResponse)
-def predict_demo(ticker: str):
+def predict_demo(ticker: str, claims: dict = Depends(auth.require_auth)):
     """Convenience endpoint for testing against the bundled synthetic dataset."""
     if not os.path.exists(SAMPLE_DATA_PATH):
         raise HTTPException(status_code=404, detail="Sample dataset not found")
@@ -132,6 +141,27 @@ def predict_demo(ticker: str):
     if match is None:
         raise HTTPException(status_code=404, detail=f"{ticker} not found in sample dataset")
     return _run_prediction(ticker, match["financials"], match.get("headlines", []))
+
+
+@app.get("/model/info", response_model=ModelInfoResponse)
+def model_info(claims: dict = Depends(auth.require_auth)):
+    """Read-only view of the current promoted model. Reads the DynamoDB
+    registry pointer directly rather than model_loader.get_model(), so a
+    dashboard page load doesn't trigger an S3 download + model deserialization
+    just to answer a metadata question."""
+    table_name = os.environ.get("MODEL_REGISTRY_TABLE")
+    if not table_name:
+        return ModelInfoResponse(registry_configured=False)
+    key_value = os.environ.get("MODEL_REGISTRY_KEY", "distress-classifier")
+    item = model_loader._fetch_pointer(table_name, key_value)
+    if item is None:
+        return ModelInfoResponse(registry_configured=True, version=None)
+    return ModelInfoResponse(
+        registry_configured=True,
+        version=item.get("version"),
+        promoted_at=item.get("promoted_at"),
+        s3_key=item.get("s3_key"),
+    )
 
 
 # --- AWS Lambda entry point -------------------------------------------------

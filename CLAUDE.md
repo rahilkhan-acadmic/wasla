@@ -21,7 +21,13 @@ python tests/test_env_args_contract.py
 python tests/test_fetch_data_handler.py
 python tests/test_no_label_derived_headlines.py
 python tests/test_cross_validate.py
-cfn-lint aws/*.json
+python tests/test_time_split.py
+python tests/test_lead_time.py
+python tests/test_healthy_sample_diversity.py
+python tests/test_model_info_endpoint.py
+python tests/test_auth.py
+cfn-lint aws/*-stack.json aws/infrastructure.json
+cd dashboard && npm ci && npm run build && cd ..
 ```
 
 These exist because every one of them was written after something broke
@@ -43,8 +49,11 @@ regenerate the snapshot reflexively without understanding why it changed.
 docker build --platform linux/amd64 --provenance=false -f Dockerfile.lambda -t distress-model-api .
 docker tag distress-model-api:latest <account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:<tag>
 docker push <account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:<tag>
-aws cloudformation deploy --template-file aws/lambda-stack.json --stack-name distress-model-lambda --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:<tag>
+aws cloudformation deploy --template-file aws/lambda-stack.json --stack-name distress-model-lambda --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:<tag> CognitoUserPoolId=<user-pool-id> CognitoClientId=<client-id>
 ```
+`CognitoUserPoolId`/`CognitoClientId` come from `aws/auth-stack.json`'s outputs
+(deploy that stack once, before the API's first deploy — see the MFA section
+below).
 Fast. Bypasses CI entirely — the test suite above is the ONLY safety net on
 this path, since nothing else will check the code. Use for urgent fixes and
 local iteration, always after running every test above, never before.
@@ -65,6 +74,13 @@ Verify against the real endpoint, not just "the deploy command succeeded":
 ```bash
 aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-binary-format raw-in-base64-out --payload file://aws/test_invoke_predict_payload.json response.json && cat response.json
 ```
+**Known gap since MFA shipped:** this payload targets `/predict/demo/SYN027`,
+which now requires a valid Cognito ID token via `Authorization: Bearer ...`
+in the `headers` block — the raw invoke above will now return 401, not a
+prediction. There's no scripted way to generate a real token for this check
+(it requires a live login against the User Pool), so for now, verify `/health`
+this way instead (still open, no auth) and verify an authenticated route
+manually via the dashboard's login flow.
 
 ## Key resource names (ap-south-1)
 
@@ -73,10 +89,15 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
 - Step Functions: `distress-model-retrain`
 - CloudFormation stacks: `distress-model-stack`, `distress-model-ecr`,
   `distress-model-lambda`, `distress-model-automation`,
-  `distress-model-github-oidc`, `distress-model-claude-code`
-- S3 bucket: `distress-model-<account-id>`
+  `distress-model-github-oidc`, `distress-model-claude-code`,
+  `distress-model-dashboard`, `distress-model-auth`
+- S3 buckets: `distress-model-<account-id>` (model registry),
+  `distress-model-dashboard-<account-id>` (static dashboard, private,
+  served only via CloudFront OAC)
 - DynamoDB table: `distress-model-registry`
 - ECR repository: `distress-model-api`
+- Cognito User Pool: `distress-model-dashboard-users` (stack
+  `distress-model-auth`, see "MFA-gated access" below)
 
 ## IAM identities — three separate things, don't confuse them
 
@@ -105,11 +126,23 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
 
 ## Known, open limitations — don't "fix" these without flagging it first
 
-- **Evaluation is retrospective, not predictive.** The model separates
-  already-failed companies from healthy ones; it has not been tested on
-  forecasting a future failure. A time-based train/test split (train on
-  older filings, test on newer ones) is the next real step here, not yet
-  built.
+- **Evaluation was retrospective, not predictive — now has a first real
+  check.** `train_classifier.time_split_dataset` (train on companies dated
+  before a cutoff, test on companies dated at/after it, one record per
+  company, never split across sides) is wired into `cross_validate.py`
+  (`--time-cutoff`) and into the live retrain Lambda via
+  `EVAL_SPLIT_CUTOFF_DATE=2023-01-01` on `TrainAndEvaluateFunction` in
+  `aws/automation-stack.json`. It only works because `find_healthy_sample`
+  in `data/sources/us_edgar_labels.py` was fixed to dedupe by CIK — EDGAR's
+  relevance-ranked search used to return the same handful of frequent
+  filers' entire 10-K histories, leaving only 5 distinct healthy US
+  companies, too few to ever clear the split's `min_per_class=5` gate. A
+  single manual run at this cutoff scored AUC 0.93 on 13 held-out,
+  never-trained-on companies — real signal, but ONE small split so far
+  (38 train / 13 test records). Only US records have reliable dates (via
+  EDGAR's `as_of_date`); every other market still goes straight to train
+  regardless of cutoff. Treat this as encouraging, not settled, until it
+  holds up over several weekly retrains.
 - **`news_sentiment` is a constant 0.0 for every record**, deliberately.
   Every market plugin used to write label-derived headline text into this
   feature (a real leak, see `tests/test_no_label_derived_headlines.py`).
@@ -127,6 +160,40 @@ aws lambda invoke --function-name distress-model-api --region ap-south-1 --cli-b
   `data/sources/nse_gsm_labels.py` or `uk_companies_house_labels.py` starts
   failing, that's the likely cause, not a bug in this codebase — check their
   module docstrings.
+
+## MFA-gated access (dashboard + API)
+
+`/predict`, `/predict/demo/{ticker}`, and `/model/info` on
+`distress-model-api` all require a valid Cognito ID token
+(`Authorization: Bearer ...`); `/health` stays open. The dashboard's
+`AuthGate`/`LoginForm` components (`dashboard/components/`) drive the
+SRP + mandatory-TOTP-MFA login flow against the `distress-model-auth`
+User Pool; `src/auth.py` verifies the token server-side via the pool's JWKS.
+See `doc/mfa-plan.md` for the full design rationale.
+
+**No self-signup — users are provisioned manually:**
+```bash
+aws cognito-idp admin-create-user \
+  --user-pool-id <UserPoolId> --username rahilkhan \
+  --user-attributes Name=email,Value=rahilkhan.acadmic@gmail.com \
+  --message-action SUPPRESS --region ap-south-1
+
+aws cognito-idp admin-set-user-password \
+  --user-pool-id <UserPoolId> --username rahilkhan \
+  --password '<temporary-password-shared-out-of-band>' \
+  --no-temporary --region ap-south-1
+```
+`--no-temporary` skips `NEW_PASSWORD_REQUIRED` for the first admin account.
+Additional users can omit it to go through the full first-login flow in the
+UI (new password → TOTP QR/secret → confirm code).
+
+**Still blocked on live E2E verification** by the same CloudFront/Function-URL
+account-verification issue as the plain dashboard (see `doc/aws-support.txt` /
+`doc/aws-support-followup.txt`) — confirmed still active as of 2026-10-17, not
+newly broken by this feature. `auth-stack.json`, `src/auth.py`, and the
+dashboard components are fully buildable/testable locally in the meantime
+(`python tests/test_auth.py`, local `uvicorn` + `next dev`) and will deploy
+automatically once that's resolved.
 
 ## Cost note
 

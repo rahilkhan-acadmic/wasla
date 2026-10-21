@@ -326,8 +326,8 @@ covering filings from 2001 onward.**
 
 ## Deploying on AWS
 
-`src/app.py` is a FastAPI service exposing `/predict` and `/predict/demo/{ticker}`.
-Two deployment paths are provided:
+`src/app.py` is a FastAPI service exposing `/predict`, `/predict/demo/{ticker}`,
+`/health`, and `/model/info`. Two deployment paths are provided:
 
 **Lambda (recommended for this project's traffic pattern)** — a screening
 tool gets bursty, not constant, traffic, so a serverless API that scales to
@@ -355,9 +355,38 @@ diagrams from the conversation for the visual version):
 | Training | AWS Batch on Fargate, orchestrated by Step Functions |
 | Model registry | S3 (versioned) + DynamoDB for metadata |
 | Inference API | Lambda (container image) + API Gateway |
-| Dashboard | CloudFront + S3 |
+| Dashboard | CloudFront + S3 — **built**, see below |
 | Alerting | SNS → Slack/email |
 | Monitoring & retrain trigger | CloudWatch alarms → EventBridge → Step Functions |
+
+### Dashboard
+
+`dashboard/` is a React (Next.js) app, statically exported (`output: "export"`,
+no server/SSR) and hosted on S3 + CloudFront per `aws/dashboard-stack.json`
+(private bucket, CloudFront Origin Access Control — no public bucket policy).
+It talks directly to the inference Lambda's Function URL in the browser, which
+is why that URL's `AuthType` is `NONE` rather than `AWS_IAM` (see
+`aws/lambda-stack.json`'s `DashboardOrigin` parameter and `Cors` block) — the
+`/predict` response isn't sensitive, so the actual risk being guarded against
+is unbounded invocation cost, handled by `ReservedConcurrentExecutions`
+instead of IAM.
+
+v1 has three features: a form to score a company from its financials, a
+one-click demo-ticker picker against the bundled synthetic dataset, and a
+small model-status panel (current version + last-promoted time, via the new
+`GET /model/info` endpoint). It deliberately does not yet show prediction
+history, model/AUC comparisons over time, or per-market views — see
+`CLAUDE.md`'s known-limitations notes and the dashboard implementation plan
+for what's deferred and why.
+
+Build/deploy (Node.js is a build-time dependency only — nothing Node-based
+runs in production):
+```bash
+cd dashboard && npm ci
+NEXT_PUBLIC_API_BASE_URL=<function-url> npm run build
+aws s3 sync out/ s3://<DashboardBucketName>/ --delete
+aws cloudfront create-invalidation --distribution-id <DistributionId> --paths "/*"
+```
 
 **Important for production:** both Dockerfiles currently `COPY` the model
 into the image at build time. That means shipping a new model version
