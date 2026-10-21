@@ -102,7 +102,7 @@
             {
               "AllowOrigins": [{ "Fn::Sub": "https://${DashboardOrigin}" }],
               "AllowMethods": ["GET", "POST"],
-              "AllowHeaders": ["content-type"],
+              "AllowHeaders": ["content-type", "authorization"],
               "MaxAge": 300
             },
             { "Ref": "AWS::NoValue" }

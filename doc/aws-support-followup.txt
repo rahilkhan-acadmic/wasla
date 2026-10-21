@@ -1,22 +1,46 @@
-Subject: Status check — Account verification for CloudFront and public Lambda Function URLs (Account 345736954421)
+Subject: Follow-up — CloudFront now working, Lambda Function URL 403 still active (Account 345736954421)
 
 Hi,
 
-I'm following up on this case regarding the two pending account-verification issues:
+Thanks for the help so far — I can confirm the CloudFront half of this case
+is resolved. As of 2026-10-21, AWS::CloudFront::Distribution creation
+succeeded via CloudFormation (stack "distress-model-dashboard", distribution
+E3SU1RNVVEI0GH, domain d3777jqr8y94ft.cloudfront.net) — no more "Your
+account must be verified before you can add new CloudFront resources."
 
-1. AWS::CloudFront::Distribution creation blocked with "Your account must be
-   verified before you can add new CloudFront resources."
-2. Lambda Function URLs with AuthType: NONE returning 403 on anonymous
-   requests despite a correctly scoped resource policy.
+However, issue #2 from the original case is still active and appears to be
+a separate restriction, not resolved by the same fix:
 
-It's been about a week since I opened this, and I wanted to check on status
--- is there any additional information needed from my side (billing history,
-use case details, expected traffic volume, etc.) to move the verification
-along? We're blocked on deploying a results dashboard (CloudFront + S3)
-until this clears, so an estimated timeline would also help us plan around
-it.
+A Lambda Function URL configured with AuthType: NONE (public, no IAM auth)
+still returns HTTP 403 Forbidden / AccessDeniedException on anonymous
+requests, even though:
+- the resource policy is correctly scoped (Principal: "*",
+  Action: lambda:InvokeFunctionUrl, Condition: FunctionUrlAuthType=NONE —
+  confirmed via `aws lambda get-policy`)
+- the Function URL's AuthType is confirmed NONE via
+  `aws lambda get-function-url-config`
+- the request hits the authorization layer before any application code
+  runs (same 403 on every path, including `/`)
 
-Thanks for your help.
+Freshly reconfirmed 2026-10-21 ~10:58 UTC:
 
+  curl -i https://tg5xe3bzwsu2uexhrmnxbncidq0clvqy.lambda-url.ap-south-1.on.aws/health
+
+  HTTP/1.1 403 Forbidden
+  x-amzn-ErrorType: AccessDeniedException
+  {"Message":"Forbidden. For troubleshooting Function URL authorization
+  issues, see: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html"}
+
+Function: distress-model-api
+ARN: arn:aws:lambda:ap-south-1:345736954421:function:distress-model-api
 Account ID: 345736954421
 Region: ap-south-1
+
+Could you confirm whether this is the same account-verification restriction
+as the CloudFront issue (just not yet applied to Lambda Function URLs), or a
+genuinely separate block? Either way, we're still blocked on serving a
+public dashboard that calls this Function URL anonymously from the browser
+— an estimated timeline for this half specifically would help us plan
+around it.
+
+Thanks for your help.
