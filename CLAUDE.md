@@ -169,7 +169,7 @@ manually via the dashboard's login flow.
 `AuthGate`/`LoginForm` components (`dashboard/components/`) drive the
 SRP + mandatory-TOTP-MFA login flow against the `distress-model-auth`
 User Pool; `src/auth.py` verifies the token server-side via the pool's JWKS.
-See `mfa-plan.md` for the full design rationale.
+See `doc/mfa-plan.md` for the full design rationale.
 
 **No self-signup — users are provisioned manually:**
 ```bash
@@ -188,8 +188,8 @@ Additional users can omit it to go through the full first-login flow in the
 UI (new password → TOTP QR/secret → confirm code).
 
 **Still blocked on live E2E verification** by the same CloudFront/Function-URL
-account-verification issue as the plain dashboard (see `aws-support.txt` /
-`aws-support-followup.txt`) — confirmed still active as of 2026-10-17, not
+account-verification issue as the plain dashboard (see `doc/aws-support.txt` /
+`doc/aws-support-followup.txt`) — confirmed still active as of 2026-10-17, not
 newly broken by this feature. `auth-stack.json`, `src/auth.py`, and the
 dashboard components are fully buildable/testable locally in the meantime
 (`python tests/test_auth.py`, local `uvicorn` + `next dev`) and will deploy

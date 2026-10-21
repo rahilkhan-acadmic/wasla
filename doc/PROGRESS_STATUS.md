@@ -32,7 +32,7 @@ session back up.
   resources."` This blocks the dashboard going live end-to-end; it's
   unrelated to the MFA work and pre-existing.
 - A status-check follow-up for the open AWS Support case is drafted in
-  `aws-support-followup.txt` (repo root, committed) but **not yet sent** --
+  `aws-support-followup.txt` (`doc/`, committed) but **not yet sent** --
   needs to be posted via the AWS Console (Support Center), since the
   Support API itself requires a Business/Enterprise support plan this
   account doesn't have (`SubscriptionRequiredException` confirmed when

@@ -12,7 +12,7 @@ the dashboard's functionality and the API's data-returning routes.
 feature):** this AWS account currently can't create `AWS::CloudFront::Distribution`
 resources, and anonymous requests to `AuthType: NONE` Lambda Function URLs are
 denied by AWS itself regardless of resource policy — both need AWS Support to
-verify the account (ticket content already drafted in `aws-support.txt`,
+verify the account (ticket content already drafted in `doc/aws-support.txt`,
 committed this session). Neither blocker is caused by or specific to auth —
 they already blocked the plain public dashboard from going live. This plan
 is fully buildable and testable right now (cfn-lint, backend unit tests with
@@ -238,7 +238,7 @@ treatment as the existing placeholder `NEXT_PUBLIC_API_BASE_URL`.
 ## What's deferred / out of scope
 
 AWS CloudFront/Function-URL account-verification blocker (external, tracked
-via `aws-support.txt`, unrelated to auth); API Gateway (rejected — unconfirmed
+via `doc/aws-support.txt`, unrelated to auth); API Gateway (rejected — unconfirmed
 workaround, real added cost); SMS MFA; Hosted UI/OAuth redirect; self-service
 signup; Cognito "remember this device" tracking; QR-rendering library choice
 (plain-text TOTP secret is a valid zero-dependency fallback); SES/email
