@@ -1,0 +1,46 @@
+Manual CloudFront console setup (fallback reference, not a workaround)
+========================================================================
+
+Note first: the CloudFront account-verification restriction ("Your account
+must be verified before you can add new CloudFront resources") is enforced
+by the CloudFront service itself, at the account level. The AWS Console
+calls the same backend API as CloudFormation, so creating a distribution
+by hand here will hit the identical AccessDenied error until AWS Support
+clears the restriction (see aws-support.txt / aws-support-followup.txt).
+This is recorded for reference -- either to confirm that live, or to have
+ready for the moment the account is verified, in which case the existing
+aws/dashboard-stack.json deploy should just be used instead of doing this
+by hand.
+
+1. Create the S3 bucket (private)
+   - S3 console -> Create bucket -> name it
+     distress-model-dashboard-<account-id> -> region ap-south-1 -> leave
+     "Block all public access" checked (CloudFront reaches it via OAC, not
+     public access).
+
+2. Create an Origin Access Control (OAC)
+   - CloudFront console -> Origin access (left nav) -> Create control
+     setting -> Signing behavior: Sign requests (recommended), Origin
+     type: S3.
+
+3. Create the distribution
+   - CloudFront console -> Distributions -> Create distribution.
+   - Origin domain: pick the new bucket (the S3 option, not "S3 website
+     endpoint").
+   - Origin access: choose "Origin access control settings (recommended)"
+     -> select the OAC from step 2.
+   - Accept the prompt to update the bucket policy, or copy the generated
+     policy statement (same shape as DashboardBucketPolicy in
+     aws/dashboard-stack.json: allows cloudfront.amazonaws.com to
+     s3:GetObject, scoped by AWS:SourceArn to this distribution).
+   - Viewer protocol policy: Redirect HTTP to HTTPS.
+   - Cache policy: managed CachingOptimized policy
+     (id 658327ea-f89d-4fab-a63d-7e88639e58f6 -- same one the template
+     uses).
+   - Default root object: index.html.
+   - Price class: PriceClass_100 (US/Canada/Europe/Asia), matching the
+     template.
+   - Click Create distribution.
+
+If the account is still unverified, step 3 is where it fails with the
+same AccessDenied message seen via CloudFormation.
