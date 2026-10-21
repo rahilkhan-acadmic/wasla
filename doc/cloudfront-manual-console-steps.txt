@@ -12,6 +12,16 @@ ready for the moment the account is verified, in which case the existing
 aws/dashboard-stack.json deploy should just be used instead of doing this
 by hand.
 
+UPDATE 2026-10-21: the CloudFront half of the restriction cleared. The
+manual S3 bucket + OAC created earlier following steps 1-2 below were
+deleted and `aws/dashboard-stack.json` was deployed clean instead, exactly
+as anticipated above -- stack distress-model-dashboard reached
+CREATE_COMPLETE (DistributionId E3SU1RNVVEI0GH, domain
+d3777jqr8y94ft.cloudfront.net). This manual-console path is no longer
+needed and is kept here only as historical/fallback reference. The
+Lambda Function URL anonymous-403 restriction from the same support case
+is separate and still active -- see aws-support-followup.txt.
+
 1. Create the S3 bucket (private)
    - S3 console -> Create bucket -> name it
      distress-model-dashboard-<account-id> -> region ap-south-1 -> leave
