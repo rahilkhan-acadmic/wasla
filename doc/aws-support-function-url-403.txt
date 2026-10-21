@@ -1,0 +1,103 @@
+Subject: Public Lambda Function URL (AuthType: NONE) returns 403 Forbidden on anonymous requests, account-wide
+
+Account ID: 345736954421
+Region: ap-south-1
+
+Summary
+-------
+Any Lambda Function URL configured with AuthType: NONE in this account
+returns HTTP 403 Forbidden / AccessDeniedException on anonymous
+(unauthenticated) requests, even with a correctly scoped resource-based
+policy explicitly allowing public access. This happens before the
+function's own code runs -- it's rejected at the authorization layer.
+
+This was originally reported alongside a CloudFront account-verification
+issue in an earlier case. The CloudFront half of that case has since been
+resolved (CloudFront distribution creation now succeeds). This Function
+URL behavior did NOT resolve along with it and still reproduces today,
+2026-10-21.
+
+Affected resource (production)
+-------------------------------
+Function: distress-model-api
+ARN: arn:aws:lambda:ap-south-1:345736954421:function:distress-model-api
+Function URL: https://tg5xe3bzwsu2uexhrmnxbncidq0clvqy.lambda-url.ap-south-1.on.aws/
+
+  curl -i https://tg5xe3bzwsu2uexhrmnxbncidq0clvqy.lambda-url.ap-south-1.on.aws/health
+
+  HTTP/1.1 403 Forbidden
+  x-amzn-ErrorType: AccessDeniedException
+  {"Message":"Forbidden. For troubleshooting Function URL authorization
+  issues, see: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html"}
+
+Confirmed resource-based policy on this function (via
+`aws lambda get-policy --function-name distress-model-api`) is exactly
+the documented shape for public access:
+
+  {
+    "Sid": "...",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "lambda:InvokeFunctionUrl",
+    "Resource": "arn:aws:lambda:ap-south-1:345736954421:function:distress-model-api",
+    "Condition": { "StringEquals": { "lambda:FunctionUrlAuthType": "NONE" } }
+  }
+
+And `aws lambda get-function-url-config` confirms AuthType: NONE on the
+URL itself.
+
+Confirmed account-wide, not function-specific
+----------------------------------------------
+To rule out a misconfiguration specific to distress-model-api, I created a
+brand-new, disposable Lambda function with no application code, no prior
+history, and the identical AuthType: NONE + public resource policy. It
+produced the exact same 403 AccessDeniedException immediately on first
+request. That test function has since been deleted. This confirms the
+block is a blanket, account-level restriction on anonymous Function URL
+invocation, not something wrong with distress-model-api's configuration.
+
+Steps to reproduce via the AWS Console
+---------------------------------------
+1. Lambda console (ap-south-1) -> Functions -> Create function.
+2. Choose "Author from scratch" (an Event function is sufficient for this
+   test). Function name: anything, e.g. test-public-url. Runtime:
+   Python 3.13 (or any available runtime). Architecture: x86_64.
+3. Permissions: leave the default "Create a new role with basic Lambda
+   permissions" selected. Click Create function.
+4. On the function's page, open the Configuration tab -> Function URL ->
+   Create function URL.
+5. Auth type: NONE. Leave CORS unconfigured (not needed to reproduce
+   this). Click Save.
+6. Still on Configuration -> Permissions, confirm a resource-based policy
+   statement now exists granting lambda:InvokeFunctionUrl to Principal "*"
+   with condition FunctionUrlAuthType=NONE (the console adds this
+   automatically when you choose Auth type: NONE in step 5).
+7. Copy the Function URL shown at the top of the Function URL
+   configuration page.
+8. Open that URL directly in a browser tab where you are NOT signed into
+   the AWS Console (a private/incognito window is the simplest way to
+   guarantee no AWS session or SigV4 credentials are attached) -- or run
+   `curl -i <function-url>` from a terminal with no AWS credentials
+   exported.
+9. Expected: some response from the function (even an error from the
+   function's own code, since this test function has no real handler
+   logic, is fine -- the point is reaching the function at all).
+   Actual: HTTP 403 Forbidden, body
+   `{"Message":"Forbidden. For troubleshooting Function URL authorization
+   issues, see: ..."}`, header `x-amzn-ErrorType: AccessDeniedException`.
+10. Clean up: delete the test function (Lambda console -> Actions ->
+    Delete). This also removes its Function URL and resource policy. If
+    the console created a dedicated execution role for it, that can be
+    deleted too from the IAM console (Roles -> search the role name shown
+    on the function's Configuration -> Permissions tab).
+
+Ask
+---
+Could you confirm whether this is part of the same account-verification
+restriction as the earlier CloudFront issue (just not yet lifted for
+Function URLs), or a separate block? We're blocked on serving a public
+dashboard that calls this Function URL anonymously from a browser until
+anonymous invocation is unblocked. An estimated timeline would help us
+plan around it.
+
+Thanks for your help.
