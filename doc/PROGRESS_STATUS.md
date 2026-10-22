@@ -97,35 +97,28 @@ Confirmed the weekly retrain schedule (`distress-model-weekly-retrain`) is
 healthy -- 4 consecutive `SUCCEEDED` executions since the time-split eval
 went live (2026-09-29, 10-06, 10-13, 10-20).
 
-**IAM permission drift found on `finance-distress-deploy` (the human
-terminal user) -- both repo files are now correct target state (updated
-2026-10-22, commit `68964fa`); only the live `create-policy-version` apply
-is still pending, and has to be run by the account owner (the EC2 instance
-role is deliberately denied `iam:CreatePolicyVersion` on both, confirmed
+**RESOLVED 2026-10-22.** IAM permission drift found on
+`finance-distress-deploy` (the human terminal user) -- both repo files were
+brought to correct target state (commit `68964fa`), then applied live by
+the account owner from their own terminal (the EC2 instance role is
+deliberately denied `iam:CreatePolicyVersion` on both policies, confirmed
 via a live `AccessDenied` test -- this is the identity-separation boundary
-in `CLAUDE.md`'s "IAM identities" section, not a bug to fix).**
+in `CLAUDE.md`'s "IAM identities" section, not a bug to fix).
 
-| # | Policy ARN | File (now correct) | `Sid` section | Live status | What's missing live |
-|---|---|---|---|---|---|
-| 1 | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `CognitoUserPoolManagement` (own statement, line ~101) | `v17`, 2026-10-01, stale | Entire statement missing (predates MFA work, PR #27/#28) |
-| 2a | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `CloudFrontDashboard` (own statement, line ~36) | same `v17` | Entire statement missing -- file-side gap fixed 2026-10-22, was absent from the repo file too, not just live |
-| 2b | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `S3ModelAndDataBuckets` (existing statement, line ~5 -- actions folded into it, not a new statement) | same `v17` | `s3:GetBucketPolicy`/`PutBucketPolicy`/`DeleteBucketPolicy`/`GetBucketPublicAccessBlock`/`PutBucketPublicAccessBlock` added to the existing action list |
-| 3 | `FinanceDistressDeployPolicyManagement` | `aws/iam-deploy-policy-management.json` | `SupportCaseReadOnly` (own statement, line ~176) | unknown (EC2 role can't read this policy by design) | Entire statement already in the file; per 2026-10-21 notes, not yet applied live |
+| # | Policy ARN | File | `Sid` section | Live result |
+|---|---|---|---|---|
+| 1 | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `CognitoUserPoolManagement` | **Applied.** New default version `v18` (2026-10-22), diffed byte-for-byte against the repo file from this instance -- exact match. |
+| 2a | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `CloudFrontDashboard` | **Applied.** Same `v18`, same exact-match diff. |
+| 2b | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `S3ModelAndDataBuckets` (actions folded into existing statement) | **Applied.** Same `v18`, same exact-match diff. |
+| 3 | `FinanceDistressDeployPolicyManagement` | `aws/iam-deploy-policy-management.json` | `SupportCaseReadOnly` | **Applied.** New default version `v4` (2026-10-22, ~6 min after being set, up from `v3` which was 17 days old) -- account owner pasted the live document, manually confirmed all 13 statements match the repo file exactly (EC2 role can't read this policy itself, by design). |
 
-Apply commands (run from your own terminal, not this instance):
-```bash
-aws iam create-policy-version --policy-arn arn:aws:iam::345736954421:policy/FinanceDistressDeployPolicy --policy-document file://aws/iam-deploy-policy-resources.json --set-as-default --region ap-south-1
-aws iam create-policy-version --policy-arn arn:aws:iam::345736954421:policy/FinanceDistressDeployPolicyManagement --policy-document file://aws/iam-deploy-policy-management.json --set-as-default --region ap-south-1
-```
+`finance-distress-deploy` now has everything the direct-deploy path in
+`CLAUDE.md` needs for `auth-stack.json` and `dashboard-stack.json` --
+Cognito, CloudFront, S3 bucket-policy, and Support-case read access, all
+live and matching the repo. No further action needed on this item.
 
-None of these currently block anything in progress -- every real deploy so
-far has gone through CI's GitHub OIDC role or the EC2 instance role, both
-of which already have what they need. These only matter if the direct,
-from-this-terminal deploy path in `CLAUDE.md` is actually used for
-`auth-stack.json` or `dashboard-stack.json`.
-
-Deliberately not automating the apply step itself for now -- doing so would
-mean some CI-triggered identity could rewrite the human terminal user's own
+Deliberately did not automate the apply step itself -- doing so would mean
+some CI-triggered identity could rewrite the human terminal user's own
 permissions on a merge, which reopens the same escalation question the
 three-identity split in `CLAUDE.md` exists to avoid. Revisit only with a
 specific design for that boundary, not as a side effect of convenience.
@@ -136,7 +129,6 @@ restriction:**
 - Submit the standalone ticket (`doc/aws-support-function-url-403.txt`) via
   the AWS Support Console -- the actual unblocking lever, has to be pasted
   in by hand.
-- Apply the three IAM fixes above.
 - Test the full MFA login flow (new password -> TOTP QR -> confirm code)
   against local `uvicorn` + `next dev` -- never exercised end-to-end as a
   real human login yet, only unit-tested.
