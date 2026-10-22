@@ -48,11 +48,12 @@ session back up.
 - **Standalone support ticket SUBMITTED 2026-10-22, Case ID
   `179258268000268`.** Filed using `doc/aws-support-function-url-403.txt`
   verbatim (the account-wide repro via a disposable test Lambda, the
-  distinction from the already-resolved CloudFront half). Can't poll
-  status via CLI/API (`SubscriptionRequiredException` -- this account has
-  no Business/Enterprise support plan), so check the Support Center
-  Console for replies. This is now the single open item blocking the
-  dashboard end-to-end.
+  distinction from the already-resolved CloudFront half). Still **pending**
+  as of 2026-10-22, re-checked via the Support Center Console (CLI/API
+  confirmed `SubscriptionRequiredException` again, same as always -- this
+  account has no Business/Enterprise support plan, so status has to be
+  checked manually in the Console, not scriptable). This is now the single
+  open item blocking the dashboard end-to-end.
 - IAM permission drift on `finance-distress-deploy` -- **RESOLVED
   2026-10-22**, see the dated TODO section below for the full
   policy-by-policy verification.
