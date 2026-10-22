@@ -1,4 +1,4 @@
-# Progress status -- saved 2026-10-17, updated 2026-10-21
+# Progress status -- saved 2026-10-17, updated 2026-10-22
 
 Scratch file for session handoff. Read this first when picking the
 session back up.
@@ -89,6 +89,61 @@ session back up.
 4. Optional cleanup: apply the deploy-user policy change above from your own
    terminal if you want `finance-distress-deploy` to be able to check
    Support case status too (not required for anything currently blocked).
+
+## TODO -- 2026-10-22
+
+Full project scan while still blocked on the Function URL restriction.
+Confirmed the weekly retrain schedule (`distress-model-weekly-retrain`) is
+healthy -- 4 consecutive `SUCCEEDED` executions since the time-split eval
+went live (2026-09-29, 10-06, 10-13, 10-20).
+
+**IAM permission drift found on `finance-distress-deploy` (the human
+terminal user), live vs. checked-in repo files:**
+
+1. `FinanceDistressDeployPolicy` is missing `CognitoUserPoolManagement`
+   entirely, live -- confirmed `v17`, last updated 2026-10-01, predates the
+   MFA work. The repo's `aws/iam-deploy-policy-resources.json` already has
+   the full statement (added alongside PR #27/#28) but it was never pushed
+   with `aws iam create-policy-version`. Direct deploy of `auth-stack.json`
+   from your own terminal would fail on this today.
+2. Same live policy is also missing CloudFront + S3 bucket-policy actions
+   (`cloudfront:CreateDistribution`, `PutBucketPolicy`,
+   `PutBucketPublicAccessBlock`, etc.) that the EC2 instance role and
+   GitHub OIDC role both have for the dashboard work -- not even present in
+   the checked-in `iam-deploy-policy-resources.json` file, so this one
+   needs a repo edit too, not just a live push. Direct deploy of
+   `dashboard-stack.json` from your terminal would fail today.
+3. Already known (see "What's still blocked" above): `support:DescribeCases`/
+   `DescribeCommunications` on `FinanceDistressDeployPolicyManagement` is
+   file-only, not yet applied live.
+
+None of these currently block anything in progress -- every real deploy so
+far has gone through CI's GitHub OIDC role or the EC2 instance role, both
+of which already have what they need. These only matter if the direct,
+from-this-terminal deploy path in `CLAUDE.md` is actually used for
+`auth-stack.json` or `dashboard-stack.json`.
+
+**Remaining tasks that don't depend on AWS lifting the Function URL
+restriction:**
+
+- Submit the standalone ticket (`doc/aws-support-function-url-403.txt`) via
+  the AWS Support Console -- the actual unblocking lever, has to be pasted
+  in by hand.
+- Apply the three IAM fixes above.
+- Test the full MFA login flow (new password -> TOTP QR -> confirm code)
+  against local `uvicorn` + `next dev` -- never exercised end-to-end as a
+  real human login yet, only unit-tested.
+- Widen US `n_healthy`/`n_distressed` now that the CIK-diversity bug is
+  fixed (flagged as a follow-up in the time-split work, not yet done).
+- Keep watching the weekly retrain's AUC hold up over more runs before
+  trusting the 0.93 result -- check actual eval numbers per run, not just
+  that the Step Functions execution `SUCCEEDED`.
+- India's healthy-company list is still thin (5 mega-caps vs. 15
+  distressed) -- real scale-mismatch gap, addressable independently.
+- `news_sentiment` is still a hardcoded `0.0` -- needs a real,
+  label-independent, point-in-time news source; unsolved design problem.
+- `data/sources/uk_companies_house_labels.py:27` has a standing TODO
+  marking the financials half as unimplemented.
 
 ## Cost reminder
 
