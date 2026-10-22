@@ -105,11 +105,12 @@ role is deliberately denied `iam:CreatePolicyVersion` on both, confirmed
 via a live `AccessDenied` test -- this is the identity-separation boundary
 in `CLAUDE.md`'s "IAM identities" section, not a bug to fix).**
 
-| # | Policy ARN | File (now correct) | Live status | What's missing live |
-|---|---|---|---|---|
-| 1 | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `v17`, 2026-10-01, stale | `CognitoUserPoolManagement` statement (predates MFA work, PR #27/#28) |
-| 2 | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | same `v17` | CloudFront + S3 bucket-policy actions (`CreateDistribution`, `PutBucketPolicy`, `PutBucketPublicAccessBlock`, etc.) -- file-side gap fixed 2026-10-22, was missing from the repo file too, not just live |
-| 3 | `FinanceDistressDeployPolicyManagement` | `aws/iam-deploy-policy-management.json` | unknown (EC2 role can't read this policy by design) | `support:DescribeCases`/`DescribeCommunications` -- file already had this; per 2026-10-21 notes, not yet applied live |
+| # | Policy ARN | File (now correct) | `Sid` section | Live status | What's missing live |
+|---|---|---|---|---|---|
+| 1 | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `CognitoUserPoolManagement` (own statement, line ~101) | `v17`, 2026-10-01, stale | Entire statement missing (predates MFA work, PR #27/#28) |
+| 2a | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `CloudFrontDashboard` (own statement, line ~36) | same `v17` | Entire statement missing -- file-side gap fixed 2026-10-22, was absent from the repo file too, not just live |
+| 2b | `FinanceDistressDeployPolicy` | `aws/iam-deploy-policy-resources.json` | `S3ModelAndDataBuckets` (existing statement, line ~5 -- actions folded into it, not a new statement) | same `v17` | `s3:GetBucketPolicy`/`PutBucketPolicy`/`DeleteBucketPolicy`/`GetBucketPublicAccessBlock`/`PutBucketPublicAccessBlock` added to the existing action list |
+| 3 | `FinanceDistressDeployPolicyManagement` | `aws/iam-deploy-policy-management.json` | `SupportCaseReadOnly` (own statement, line ~176) | unknown (EC2 role can't read this policy by design) | Entire statement already in the file; per 2026-10-21 notes, not yet applied live |
 
 Apply commands (run from your own terminal, not this instance):
 ```bash
