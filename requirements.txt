@@ -5,7 +5,7 @@ scikit-learn==1.8.0
 xgboost==3.4.1
 vaderSentiment==3.3.2
 yfinance==1.7.0   # needed only for src/nse_client.py (Indian market data)
-fastapi==0.141.1
+fastapi==0.162.0
 uvicorn[standard]==0.53.0   # only needed for local/ECS/App Runner serving, not Lambda
 mangum==0.22.0              # only needed for the Lambda deployment path
 mcp[cli]==2.2.0             # only needed for src/mcp_server.py (Claude/MCP client integration)
