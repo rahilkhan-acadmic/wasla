@@ -1,3 +1,15 @@
+RESOLVED -- both issues below are closed. Issue 1 (CloudFront) was fixed by
+AWS Support clearing the account-verification restriction, 2026-10-21. Issue
+2 (Function URL 403) turned out NOT to be an AWS-side restriction at all --
+it was a missing `lambda:InvokeFunction` resource-policy statement in our
+own `aws/lambda-stack.json` (AWS requires both `lambda:InvokeFunctionUrl`
+and `lambda:InvokeFunction` for `AuthType: NONE` since Oct 2025). Fixed in
+code and deployed 2026-11-09; see `doc/PROGRESS_STATUS.md`. This ticket
+(and its standalone Function URL follow-up, Case ID 179258268000268) can be
+closed. Kept below for historical record.
+
+---
+
 Subject: Account verification needed to use CloudFront and public Lambda Function URLs
 
 Account ID: 345736954421

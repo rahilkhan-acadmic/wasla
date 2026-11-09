@@ -71,54 +71,42 @@ end-to-end as a real human login, only unit-tested so far.
 
 ## What's still blocked
 
-- **The Lambda Function URL anonymous-403 restriction is still active --
-  this is now the sole remaining blocker on reaching the dashboard
-  end-to-end.** It's the other half of the same original AWS Support case
-  as the CloudFront issue, but did NOT clear with it: a direct, anonymous
-  `curl` to `https://tg5xe3bzwsu2uexhrmnxbncidq0clvqy.lambda-url.ap-south-1.on.aws/health`
-  still returns `403 Forbidden` / `AccessDeniedException` at the
-  authorization layer, confirmed fresh on 2026-10-21, even though
-  `AuthType: NONE` and the resource policy are both correct (checked via
-  `get-function-url-config` / `get-policy`). This means no anonymous
-  browser request can reach the API at all yet, regardless of CORS being
-  fixed.
-- **Standalone support ticket SUBMITTED 2026-10-22, Case ID
-  `179258268000268`.** Filed using `doc/aws-support-function-url-403.txt`
-  verbatim (the account-wide repro via a disposable test Lambda, the
-  distinction from the already-resolved CloudFront half). Still **pending**
-  as of 2026-10-22, re-checked via the Support Center Console (CLI/API
-  confirmed `SubscriptionRequiredException` again, same as always -- this
-  account has no Business/Enterprise support plan, so status has to be
-  checked manually in the Console, not scriptable). This is now the single
-  open item blocking the dashboard end-to-end.
-- IAM permission drift on `finance-distress-deploy` -- **RESOLVED
-  2026-10-22**, see the dated TODO section below for the full
-  policy-by-policy verification.
-- **Known gap, documented in `CLAUDE.md`:** the post-deploy verification
-  command (`aws lambda invoke ... aws/test_invoke_predict_payload.json`)
-  targets `/predict/demo/SYN027`, which now requires auth -- it will 401,
-  not return a prediction. No scripted fix for this yet (would need a real
-  Cognito login to generate a token). Use `/health` instead for a quick
-  liveness check, verify authenticated routes manually via the dashboard
-  once it's reachable.
+Nothing AWS-side anymore. The Lambda Function URL anonymous-403 (previously
+listed here as "the sole remaining blocker") is **RESOLVED 2026-11-09** --
+see the section at the top of this file. It was never the account
+restriction it was assumed to be; it was a missing `lambda:InvokeFunction`
+resource-policy statement in `aws/lambda-stack.json`, fixed in code.
+Standalone support case `179258268000268` can be closed -- AWS Support
+action was never actually required for it.
+
+IAM permission drift on `finance-distress-deploy` -- **RESOLVED
+2026-10-22**, see the dated TODO section below for the full
+policy-by-policy verification.
+
+**Known gap, documented in `CLAUDE.md`:** the post-deploy verification
+command (`aws lambda invoke ... aws/test_invoke_predict_payload.json`)
+targets `/predict/demo/SYN027`, which now requires auth -- it will 401,
+not return a prediction. No scripted fix for this yet (would need a real
+Cognito login to generate a token). Use `/health` instead for a quick
+liveness check (now reachable anonymously, confirmed live), verify
+authenticated routes manually via the dashboard.
 
 ## Next steps, roughly in order
 
-1. ~~Post the Function URL issue to AWS Support.~~ **Done 2026-10-22** --
-   Case ID `179258268000268`. Waiting on AWS's response; check the Support
-   Center Console periodically (no CLI/API polling on this plan).
-2. Once AWS lifts the Function-URL restriction: no code changes needed,
-   the dashboard is already built, synced, and CORS-correct -- it'll work
-   as soon as anonymous Function URL invocation is unblocked.
-3. Provision the first admin Cognito user (commands in `CLAUDE.md`'s MFA
+1. ~~Post the Function URL issue to AWS Support.~~ ~~Done 2026-10-22,
+   Case ID `179258268000268`.~~ Turned out unnecessary -- root cause found
+   and fixed in code 2026-11-09, case can be closed.
+2. Provision the first admin Cognito user (commands in `CLAUDE.md`'s MFA
    section) and walk through the login flow (new password -> TOTP QR
-   setup -> confirm code) manually in a browser once the Function URL
-   restriction clears -- this has never been tested against a real,
-   reachable frontend yet, only locally/via unit tests.
+   setup -> confirm code) manually in a browser against the now-live
+   dashboard (`https://d3777jqr8y94ft.cloudfront.net/`) -- this has never
+   been tested against a real, reachable frontend yet, only locally/via
+   unit tests.
 
 ## TODO -- 2026-10-22
 
-Full project scan while still blocked on the Function URL restriction.
+Full project scan while still blocked on the Function URL restriction (this
+has since been resolved 2026-11-09, see top of file).
 Confirmed the weekly retrain schedule (`distress-model-weekly-retrain`) is
 healthy -- 4 consecutive `SUCCEEDED` executions since the time-split eval
 went live (2026-09-29, 10-06, 10-13, 10-20).
@@ -149,12 +137,8 @@ permissions on a merge, which reopens the same escalation question the
 three-identity split in `CLAUDE.md` exists to avoid. Revisit only with a
 specific design for that boundary, not as a side effect of convenience.
 
-**Remaining tasks that don't depend on AWS lifting the Function URL
-restriction:**
+**Remaining tasks:**
 
-- Submit the standalone ticket (`doc/aws-support-function-url-403.txt`) via
-  the AWS Support Console -- the actual unblocking lever, has to be pasted
-  in by hand.
 - Test the full MFA login flow (new password -> TOTP QR -> confirm code)
   against local `uvicorn` + `next dev` -- never exercised end-to-end as a
   real human login yet, only unit-tested.

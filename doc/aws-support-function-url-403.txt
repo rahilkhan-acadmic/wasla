@@ -1,3 +1,15 @@
+RESOLVED 2026-11-09 -- NOT an AWS-side restriction. Root cause was a missing
+`lambda:InvokeFunction` resource-policy statement in our own
+`aws/lambda-stack.json`: AWS changed Function URL requirements in Oct 2025
+to require both `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` for
+`AuthType: NONE`, and the template only granted the first. Fixed in code
+(see `doc/PROGRESS_STATUS.md`), deployed, verified live. This standalone
+ticket (Case ID 179258268000268) can be closed/withdrawn -- no AWS Support
+action was actually needed. Kept below for historical record of how the
+repro was built.
+
+---
+
 Subject: Public Lambda Function URL (AuthType: NONE) returns 403 Forbidden on anonymous requests, account-wide
 
 Account ID: 345736954421

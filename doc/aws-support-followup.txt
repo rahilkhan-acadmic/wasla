@@ -1,3 +1,13 @@
+RESOLVED 2026-11-09 -- the Function URL 403 referenced below was NOT an AWS
+account restriction after all. Root cause: a missing `lambda:InvokeFunction`
+resource-policy statement in `aws/lambda-stack.json` (AWS now requires both
+`lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` for `AuthType: NONE`
+Function URLs, since Oct 2025). Fixed in code, deployed, verified live --
+see `doc/PROGRESS_STATUS.md`. This follow-up was never sent and does not
+need to be; kept below for historical record.
+
+---
+
 Subject: Follow-up — CloudFront now working, Lambda Function URL 403 still active (Account 345736954421)
 
 Hi,
