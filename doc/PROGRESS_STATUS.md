@@ -1,7 +1,44 @@
-# Progress status -- saved 2026-10-17, updated 2026-10-22
+# Progress status -- saved 2026-10-17, updated 2026-11-09
 
 Scratch file for session handoff. Read this first when picking the
 session back up.
+
+## Dashboard is now fully live end-to-end (2026-11-09)
+
+The Function URL anonymous-403 was **not** actually the account-verification
+restriction riding along behind the CloudFront issue -- that theory held as
+of 2026-10-22 but turned out to be wrong. The real cause: AWS changed Function
+URL requirements in October 2025 -- `AuthType: NONE` now needs **two**
+resource-policy statements, `lambda:InvokeFunctionUrl` *and*
+`lambda:InvokeFunction` (the latter scoped with the
+`lambda:InvokedViaFunctionUrl` condition). `aws/lambda-stack.json` only ever
+granted the first one. Confirmed by the error message changing from the old
+generic account-block text to a specific
+`"Invoking a Function URL requires both the lambda:InvokeFunctionUrl and
+lambda:InvokeFunction permissions"` -- which is exactly what
+https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html documents.
+
+Fixed by adding `ApiFunctionUrlPublicInvokeFunctionPermission` (a second
+`AWS::Lambda::Permission` with `Action: lambda:InvokeFunction`,
+`Principal: "*"`, `InvokedViaFunctionUrl: true`) next to the existing
+`ApiFunctionUrlPublicInvokePermission` in `aws/lambda-stack.json`. Full test
+suite + `cfn-lint` run clean, deployed directly via
+`aws cloudformation deploy --template-file aws/lambda-stack.json
+--stack-name distress-model-lambda --region ap-south-1`. Verified live:
+anonymous `curl .../health` -> `200 {"status":"ok",...}`,
+CloudFront (`https://d3777jqr8y94ft.cloudfront.net/`) -> `200`.
+
+**Standalone AWS Support case `179258268000268` (Function URL 403) can be
+closed/withdrawn** -- not an AWS-side account restriction, was a missing
+resource-policy statement in our own template. No further AWS Support
+action needed for either half of the original combined case; both are
+resolved now, one by AWS lifting the CloudFront verification block
+(2026-10-21), the other by this code fix (2026-11-09).
+
+**Next real step:** provision the first admin Cognito user and walk the
+login flow (new password -> TOTP QR -> confirm code) against the live
+dashboard at `https://d3777jqr8y94ft.cloudfront.net/` -- never exercised
+end-to-end as a real human login, only unit-tested so far.
 
 ## What's done and live in production
 

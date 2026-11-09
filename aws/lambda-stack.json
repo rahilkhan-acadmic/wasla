@@ -119,6 +119,16 @@
         "Principal": "*",
         "FunctionUrlAuthType": "NONE"
       }
+    },
+
+    "ApiFunctionUrlPublicInvokeFunctionPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": { "Ref": "ApiFunction" },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "*",
+        "InvokedViaFunctionUrl": true
+      }
     }
   },
 
