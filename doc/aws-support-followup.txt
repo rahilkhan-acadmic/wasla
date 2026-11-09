@@ -1,0 +1,56 @@
+RESOLVED 2026-11-09 -- the Function URL 403 referenced below was NOT an AWS
+account restriction after all. Root cause: a missing `lambda:InvokeFunction`
+resource-policy statement in `aws/lambda-stack.json` (AWS now requires both
+`lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` for `AuthType: NONE`
+Function URLs, since Oct 2025). Fixed in code, deployed, verified live --
+see `doc/PROGRESS_STATUS.md`. This follow-up was never sent and does not
+need to be; kept below for historical record.
+
+---
+
+Subject: Follow-up — CloudFront now working, Lambda Function URL 403 still active (Account 345736954421)
+
+Hi,
+
+Thanks for the help so far — I can confirm the CloudFront half of this case
+is resolved. As of 2026-10-21, AWS::CloudFront::Distribution creation
+succeeded via CloudFormation (stack "distress-model-dashboard", distribution
+E3SU1RNVVEI0GH, domain d3777jqr8y94ft.cloudfront.net) — no more "Your
+account must be verified before you can add new CloudFront resources."
+
+However, issue #2 from the original case is still active and appears to be
+a separate restriction, not resolved by the same fix:
+
+A Lambda Function URL configured with AuthType: NONE (public, no IAM auth)
+still returns HTTP 403 Forbidden / AccessDeniedException on anonymous
+requests, even though:
+- the resource policy is correctly scoped (Principal: "*",
+  Action: lambda:InvokeFunctionUrl, Condition: FunctionUrlAuthType=NONE —
+  confirmed via `aws lambda get-policy`)
+- the Function URL's AuthType is confirmed NONE via
+  `aws lambda get-function-url-config`
+- the request hits the authorization layer before any application code
+  runs (same 403 on every path, including `/`)
+
+Freshly reconfirmed 2026-10-21 ~10:58 UTC:
+
+  curl -i https://tg5xe3bzwsu2uexhrmnxbncidq0clvqy.lambda-url.ap-south-1.on.aws/health
+
+  HTTP/1.1 403 Forbidden
+  x-amzn-ErrorType: AccessDeniedException
+  {"Message":"Forbidden. For troubleshooting Function URL authorization
+  issues, see: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html"}
+
+Function: distress-model-api
+ARN: arn:aws:lambda:ap-south-1:345736954421:function:distress-model-api
+Account ID: 345736954421
+Region: ap-south-1
+
+Could you confirm whether this is the same account-verification restriction
+as the CloudFront issue (just not yet applied to Lambda Function URLs), or a
+genuinely separate block? Either way, we're still blocked on serving a
+public dashboard that calls this Function URL anonymously from the browser
+— an estimated timeline for this half specifically would help us plan
+around it.
+
+Thanks for your help.
