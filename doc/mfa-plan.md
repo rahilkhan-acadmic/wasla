@@ -9,18 +9,18 @@ mandatory-MFA authentication so only specifically authorized users can reach
 the dashboard's functionality and the API's data-returning routes.
 
 **Separate, pre-existing blocker on live verification (not part of this
-feature):** this AWS account currently can't create `AWS::CloudFront::Distribution`
-resources, and anonymous requests to `AuthType: NONE` Lambda Function URLs are
-denied by AWS itself regardless of resource policy — both need AWS Support to
-verify the account (ticket content already drafted in `aws-support.txt`,
-committed this session). Neither blocker is caused by or specific to auth —
-they already blocked the plain public dashboard from going live. This plan
-is fully buildable and testable right now (cfn-lint, backend unit tests with
-a self-signed JWT, local `uvicorn`/`next dev` walkthrough) and will deploy
-automatically the moment AWS lifts the restriction, via the existing
-`deploy.yml` sequence. No infra is added to try to dodge that restriction
-(e.g. no API Gateway swap-in) — unconfirmed payoff, real added cost, out of
-scope.
+feature, now RESOLVED as of 2026-11-09):** this AWS account previously
+couldn't create `AWS::CloudFront::Distribution` resources (fixed by AWS
+Support, 2026-10-21), and anonymous requests to `AuthType: NONE` Lambda
+Function URLs were returning 403 (fixed in code 2026-11-09 — a missing
+`lambda:InvokeFunction` resource-policy statement, not an AWS restriction;
+see `doc/PROGRESS_STATUS.md`). Neither blocker was caused by or specific to
+auth — they blocked the plain public dashboard from going live too. The
+dashboard is now reachable end-to-end; this plan was already fully
+buildable/testable throughout (cfn-lint, backend unit tests with a
+self-signed JWT, local `uvicorn`/`next dev` walkthrough) and deployed
+automatically via the existing `deploy.yml` sequence once both blockers
+cleared.
 
 ## 1. Cognito stack — new `aws/auth-stack.json`
 
@@ -238,7 +238,7 @@ treatment as the existing placeholder `NEXT_PUBLIC_API_BASE_URL`.
 ## What's deferred / out of scope
 
 AWS CloudFront/Function-URL account-verification blocker (external, tracked
-via `aws-support.txt`, unrelated to auth); API Gateway (rejected — unconfirmed
+via `doc/aws-support.txt`, unrelated to auth); API Gateway (rejected — unconfirmed
 workaround, real added cost); SMS MFA; Hosted UI/OAuth redirect; self-service
 signup; Cognito "remember this device" tracking; QR-rendering library choice
 (plain-text TOTP secret is a valid zero-dependency fallback); SES/email
