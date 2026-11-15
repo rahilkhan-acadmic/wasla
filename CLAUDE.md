@@ -26,6 +26,7 @@ python tests/test_lead_time.py
 python tests/test_healthy_sample_diversity.py
 python tests/test_model_info_endpoint.py
 python tests/test_auth.py
+python tests/test_market_data.py
 cfn-lint aws/*-stack.json aws/infrastructure.json
 cd dashboard && npm ci && npm run build && cd ..
 ```

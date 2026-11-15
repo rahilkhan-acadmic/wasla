@@ -49,6 +49,9 @@ jobs:
       - name: Run Cognito ID token auth test (self-signed JWT, no real User Pool)
         run: python tests/test_auth.py
 
+      - name: Run NSE market-data tests (snapshot job + /companies, /lookup; fake Yahoo, moto S3)
+        run: python tests/test_market_data.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

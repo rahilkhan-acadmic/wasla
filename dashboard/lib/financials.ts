@@ -30,8 +30,22 @@ export function parseValue(raw: string | undefined): number | null {
 const compact = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 const full = new Intl.NumberFormat("en", { maximumFractionDigits: 2 });
 
-// Compact under the bars ("1.2B"); full in the table view.
-export function formatCompact(n: number): string {
+// Compact beside the bars ("1.2B", or "₹1.2T" when the currency is known);
+// full in the table view.
+export function formatCompact(n: number, currency: string | null = null): string {
+  if (currency) {
+    try {
+      return new Intl.NumberFormat("en", {
+        notation: "compact",
+        maximumFractionDigits: 1,
+        style: "currency",
+        currency,
+        currencyDisplay: "narrowSymbol",
+      }).format(n);
+    } catch {
+      // Unknown currency code -- fall through to the plain format.
+    }
+  }
   return compact.format(n);
 }
 

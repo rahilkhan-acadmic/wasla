@@ -866,3 +866,132 @@ form textarea {
   background: var(--hover);
   border-radius: 6px;
 }
+
+/* ---------- Ticker combobox & auto-fill notices ---------- */
+.combobox {
+  position: relative;
+  margin-bottom: 0.7rem;
+}
+
+.combobox > label {
+  margin-bottom: 0;
+}
+
+.combobox-list {
+  position: absolute;
+  z-index: 15;
+  left: 0;
+  right: 0;
+  top: calc(100% - 1.2rem);
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+.combobox-option {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.combobox-option-active {
+  background: var(--hover);
+}
+
+.opt-symbol {
+  font-weight: 600;
+  min-width: 7.5rem;
+}
+
+.opt-name {
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+
+.opt-flag {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.field-hint {
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.notice {
+  margin: 0 0 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+}
+
+.notice p {
+  margin: 0;
+}
+
+.notice-info {
+  color: var(--text-secondary);
+}
+
+.notice-error {
+  color: var(--critical-text);
+  border-color: currentColor;
+  overflow-wrap: anywhere;
+}
+
+.notice-prompt {
+  border-color: var(--brand);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.notice-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.source-note {
+  margin: 0 0 0.9rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.source-note p {
+  margin: 0 0 0.25rem;
+}
+
+.source-missing {
+  color: var(--warning-text);
+}
+
+@media (max-width: 479px) {
+  .opt-symbol {
+    min-width: 5.5rem;
+  }
+}
+
+.value-hint {
+  display: block;
+  min-height: 1em;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}

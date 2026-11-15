@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Automated retrain pipeline: two Lambda functions (train+evaluate, register) sharing the same image as the inference API, orchestrated by Step Functions, triggered weekly via EventBridge Scheduler. Deploy AFTER distress-model-lambda stack exists (reuses its image). Usage: aws cloudformation deploy --template-file aws/automation-stack.json --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest",
+  "Description": "Automated retrain pipeline plus the weekly NSE market-data snapshot for the dashboard. Retrain: two Lambda functions (train+evaluate, register) sharing the same image as the inference API, orchestrated by Step Functions, triggered weekly via EventBridge Scheduler. Deploy AFTER distress-model-lambda stack exists (reuses its image). Usage: aws cloudformation deploy --template-file aws/automation-stack.json --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest",
 
   "Parameters": {
     "ImageUri": {
@@ -112,6 +112,28 @@
       }
     },
 
+    "NseSnapshotFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-nse-snapshot",
+        "Description": "Weekly: Nifty LargeMidcap 250 constituents + latest annual financials (yfinance) to S3 for the dashboard ticker list and auto-fill. Display data only, never training data.",
+        "PackageType": "Image",
+        "Code": { "ImageUri": { "Ref": "ImageUri" } },
+        "ImageConfig": { "Command": ["market_data.snapshot_handler"] },
+        "Role": { "Fn::GetAtt": ["RetrainLambdaRole", "Arn"] },
+        "Timeout": 900,
+        "MemorySize": 1024,
+        "Environment": {
+          "Variables": {
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+            "MARKET_SNAPSHOT_KEY": "market-data/nse-largemidcap250/latest.json",
+            "CONSTITUENTS_SEED_KEY": "market-data/nse-largemidcap250/constituents.csv",
+            "SNAPSHOT_WORKERS": "6"
+          }
+        }
+      }
+    },
+
     "RetrainNotificationsTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -206,6 +228,19 @@
                 }
               ]
             }
+          },
+          {
+            "PolicyName": "invoke-nse-snapshot",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "lambda:InvokeFunction",
+                  "Resource": { "Fn::GetAtt": ["NseSnapshotFunction", "Arn"] }
+                }
+              ]
+            }
           }
         ]
       }
@@ -222,6 +257,23 @@
           "Arn": { "Ref": "RetrainStateMachine" },
           "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
           "Input": "{\"trigger_reason\": \"scheduled\"}"
+        }
+      }
+    },
+
+    "WeeklyNseSnapshotSchedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": "distress-model-weekly-nse-snapshot",
+        "Description": "Refresh the dashboard's NSE LargeMidcap 250 snapshot every Sunday 01:30 UTC (07:00 IST).",
+        "ScheduleExpression": "cron(30 1 ? * SUN *)",
+        "FlexibleTimeWindow": { "Mode": "OFF" },
+        "State": "ENABLED",
+        "Target": {
+          "Arn": { "Fn::GetAtt": ["NseSnapshotFunction", "Arn"] },
+          "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
+          "Input": "{\"trigger_reason\": \"scheduled\"}",
+          "RetryPolicy": { "MaximumRetryAttempts": 1 }
         }
       }
     }

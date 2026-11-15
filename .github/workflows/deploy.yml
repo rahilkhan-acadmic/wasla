@@ -100,6 +100,27 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides ImageUri=${{ steps.image.outputs.uri }}
 
+      - name: Build the first NSE market-data snapshot if none exists yet
+        # The weekly schedule only fires on Sundays; without this, the
+        # dashboard's ticker list would stay empty until then after the
+        # first deploy. Async invoke: the job takes several minutes and its
+        # result is the S3 object, not this step's output.
+        run: |
+          BUCKET="distress-model-${{ steps.account.outputs.id }}"
+          KEY="market-data/nse-largemidcap250/latest.json"
+          if aws s3api head-object --bucket "$BUCKET" --key "$KEY" --region ${{ env.AWS_REGION }} > /dev/null 2>&1; then
+            echo "Snapshot already present at s3://$BUCKET/$KEY"
+          else
+            aws lambda invoke \
+              --function-name distress-model-nse-snapshot \
+              --invocation-type Event \
+              --region ${{ env.AWS_REGION }} \
+              --cli-binary-format raw-in-base64-out \
+              --payload '{"trigger_reason": "first-deploy"}' \
+              /dev/null
+            echo "Started the first snapshot run (takes a few minutes)."
+          fi
+
       - name: Deploy dashboard hosting stack (S3 + CloudFront, idempotent)
         run: |
           aws cloudformation deploy \

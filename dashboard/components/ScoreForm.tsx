@@ -2,21 +2,27 @@
 
 import { useState } from "react";
 import { predict, PredictResponse } from "../lib/api";
-import { FormValues, OPTIONAL_FIELDS, REQUIRED_FIELDS, parseValue } from "../lib/financials";
+import { FormValues, OPTIONAL_FIELDS, REQUIRED_FIELDS, formatCompact, parseValue } from "../lib/financials";
 
 // The form's values live in the parent (CompanyScorePage) so the financials
 // chart beside it can redraw as the user types.
 export default function ScoreForm({
   ticker,
-  onTickerChange,
+  tickerField,
+  notice,
   values,
+  currency = null,
   onValuesChange,
   onResult,
   onClear,
 }: {
   ticker: string;
-  onTickerChange: (t: string) => void;
+  // The ticker input (a searchable combobox) and any auto-fill notice are
+  // owned by CompanyScorePage, which knows about the NSE company list.
+  tickerField: React.ReactNode;
+  notice?: React.ReactNode;
   values: FormValues;
+  currency?: string | null;
   onValuesChange: (v: FormValues) => void;
   onResult: (r: PredictResponse | null) => void;
   onClear: () => void;
@@ -64,12 +70,13 @@ export default function ScoreForm({
   return (
     <section className="card">
       <h2>Company Score</h2>
-      <p className="card-subtitle">Enter the latest annual figures, all in the same currency and unit.</p>
+      <p className="card-subtitle">
+        Pick a Nifty LargeMidcap 250 company to fill in its latest annual figures, or type any ticker. All figures
+        must be in the same currency and unit.
+      </p>
       <form onSubmit={handleSubmit}>
-        <label>
-          Ticker
-          <input value={ticker} onChange={(e) => onTickerChange(e.target.value)} required />
-        </label>
+        {tickerField}
+        {notice}
 
         <div className="field-grid">
           {REQUIRED_FIELDS.map(([key, label]) => (
@@ -83,6 +90,7 @@ export default function ScoreForm({
                 onChange={(e) => onValuesChange({ ...values, [key]: e.target.value })}
                 required
               />
+              <ReadableValue raw={values[key]} currency={currency} />
             </label>
           ))}
 
@@ -96,6 +104,7 @@ export default function ScoreForm({
                 value={values[key] ?? ""}
                 onChange={(e) => onValuesChange({ ...values, [key]: e.target.value })}
               />
+              <ReadableValue raw={values[key]} currency={currency} />
             </label>
           ))}
         </div>
@@ -120,5 +129,17 @@ export default function ScoreForm({
 
       {error && <p className="error-note">{error}</p>}
     </section>
+  );
+}
+
+// "17500000000000" is unreadable at a glance; show "₹17.5T" under it.
+// Only for large values, where the compact form actually helps.
+function ReadableValue({ raw, currency }: { raw: string | undefined; currency: string | null }) {
+  const n = parseValue(raw);
+  if (n === null || Math.abs(n) < 100_000) return <span className="value-hint" aria-hidden="true" />;
+  return (
+    <span className="value-hint" aria-hidden="true">
+      ≈ {formatCompact(n, currency)}
+    </span>
   );
 }

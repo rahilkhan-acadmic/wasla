@@ -82,6 +82,88 @@ def fetch_financials_for_ticker(ticker: str, polite_delay: float = 0.5) -> dict:
     return out
 
 
+def _value_at(df, aliases: list[str], column) -> Optional[float]:
+    """Value of the first alias row that is non-null in exactly `column`.
+    Unlike _first_available(), never falls back to an older period."""
+    if df is None or df.empty or column is None or column not in df.columns:
+        return None
+    for label in aliases:
+        if label in df.index:
+            v = df.at[label, column]
+            if v is not None and v == v:  # not None / NaN
+                return float(v)
+    return None
+
+
+def _latest_column(df, aliases: list[str]):
+    """Newest period column in which the first available alias row has a value."""
+    if df is None or df.empty:
+        return None
+    for label in aliases:
+        if label in df.index:
+            series = df.loc[label].dropna()
+            if not series.empty:
+                return series.index[0]
+    return None
+
+
+def fetch_financials_with_period(ticker: str, polite_delay: float = 0.5, with_name: bool = False) -> dict:
+    """fetch_financials_for_ticker's fields plus, for display:
+        as_of     period-end date of the latest annual balance sheet
+        currency  reporting currency per Yahoo (INR for .NS/.BO)
+        name      company short name (only when with_name=True; costs one
+                  extra request)
+    Used by market_data.py for the dashboard's ticker auto-fill. Not used by
+    training, which has its own as-of handling."""
+    t = yf.Ticker(ticker)
+    time.sleep(polite_delay)
+
+    balance_sheet = t.balance_sheet
+    income_stmt = t.income_stmt
+
+    # Every figure comes from ONE fiscal year: the latest balance sheet's
+    # period, and the income statement column for the same period-end (or
+    # its newest column if the dates don't line up). A gap is left missing
+    # rather than filled from an older year -- mixing years would put a
+    # misleading "as of" label on the auto-filled form.
+    bs_col = _latest_column(balance_sheet, BALANCE_SHEET_ALIASES["total_assets"])
+    if income_stmt is not None and not income_stmt.empty:
+        inc_col = bs_col if bs_col in income_stmt.columns else income_stmt.columns[0]
+    else:
+        inc_col = None
+
+    out = {}
+    for field, aliases in BALANCE_SHEET_ALIASES.items():
+        out[field] = _value_at(balance_sheet, aliases, bs_col)
+    for field, aliases in INCOME_STMT_ALIASES.items():
+        out[field] = _value_at(income_stmt, aliases, inc_col)
+
+    try:
+        fi = t.fast_info
+        out["market_value_equity"] = fi.get("marketCap")
+        out["currency"] = fi.get("currency")
+    except Exception:
+        out["market_value_equity"] = None
+        out["currency"] = None
+
+    if out.get("total_assets") is not None and out.get("total_liabilities") is not None:
+        out["book_value_equity"] = out["total_assets"] - out["total_liabilities"]
+    else:
+        out["book_value_equity"] = None
+
+    out["as_of"] = bs_col.strftime("%Y-%m-%d") if hasattr(bs_col, "strftime") else (str(bs_col)[:10] if bs_col is not None else None)
+
+    if with_name:
+        try:
+            info = t.info or {}
+            out["name"] = info.get("shortName") or info.get("longName")
+            out["currency"] = info.get("financialCurrency") or out.get("currency")
+        except Exception:
+            out["name"] = None
+
+    return out
+
+
 def fetch_recent_news_headlines(ticker: str, max_items: int = 10) -> list[str]:
     """Pull recent headlines for a ticker via yfinance's news feed, for
     feeding into sentiment.py. Coverage for small/micro-caps is often thin --

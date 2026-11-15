@@ -7,11 +7,23 @@ import { FormValues, REQUIRED_FIELDS, formatCompact, formatFull, parseValue } fr
 // (retained earnings, EBIT), so bars grow from a shared zero baseline and
 // negatives take the opposite pole of the diverging pair. A colour legend
 // appears only when a negative value is actually on screen.
-export default function FinancialsChart({ ticker, values }: { ticker: string; values: FormValues }) {
+export default function FinancialsChart({
+  ticker,
+  values,
+  currency = null,
+  asOf = null,
+}: {
+  ticker: string;
+  values: FormValues;
+  currency?: string | null;
+  asOf?: string | null;
+}) {
   const rows = REQUIRED_FIELDS.map(([key, label]) => ({ key, label, value: parseValue(values[key]) }));
   const entered = rows.filter((r) => r.value !== null) as { key: string; label: string; value: number }[];
 
   const title = ticker ? `${ticker.toUpperCase()} — reported financials` : "Reported financials";
+  const subtitle = [asOf && `FY ending ${asOf}`, currency].filter(Boolean).join(" · ");
+  const fmt = (n: number) => formatCompact(n, currency);
 
   if (entered.length === 0) {
     return (
@@ -31,6 +43,7 @@ export default function FinancialsChart({ ticker, values }: { ticker: string; va
   return (
     <section className="card chart-card">
       <h2>{title}</h2>
+      {subtitle && <p className="card-subtitle">{subtitle}</p>}
       {hasNegative && (
         <div className="legend" aria-hidden="true">
           <span className="legend-item">
@@ -68,7 +81,7 @@ export default function FinancialsChart({ ticker, values }: { ticker: string; va
                   style={{ left: `${left}%`, width: `max(${width}%, ${r.value === 0 ? 0 : 2}px)` }}
                 />
               </span>
-              <span className="hbar-value">{formatCompact(r.value)}</span>
+              <span className="hbar-value">{fmt(r.value)}</span>
             </div>
           );
         })}
