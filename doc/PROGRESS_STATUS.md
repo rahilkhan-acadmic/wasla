@@ -5,9 +5,10 @@ session back up.
 
 ## Where things stand (end of 2026-11-15 session)
 
-All work from this session is merged and deployed (PRs #37-#49): #48 added
-the S&P 500, #49 fixed the market status column's universe. #50 (manual
-"Refresh now" for market data) was open at the time of writing. The dashboard has four pages: Company Score, Market Overview,
+All work from this session is merged and deployed (PRs #37-#50). Nothing is
+open. #48 added the S&P 500, #49 fixed the market status column's universe,
+#50 added a manual "Refresh now" for market data (deployed 13:17 UTC;
+`/health` 200, API role has the new `market-data-manual-refresh` policy). The dashboard has four pages: Company Score, Market Overview,
 Insolvency Watch and Model Info.
 
 **Company Score, after PRs #44-#46:**
@@ -62,6 +63,22 @@ Insolvency Watch and Model Info.
 - **#49 (market status fix):** each score now carries its market (the
   loaded company's, else an .NS/.BO suffix, else the index on screen); the
   card switches to it for every new score and marks the company only there.
+
+**Manual refresh (#50):** Market Overview has a "Refresh now" button per
+index (NSE ~12 min, S&P 500 ~3 min in practice).
+- `POST /market/refresh?universe=nse|us` starts the snapshot job in the
+  background (409 while one runs); `GET /market/refresh` reports
+  idle/running/done/failed/stale and progress.
+- Status lives in `market-data/<index>/refresh-status.json`. The API writes
+  it on request and the job itself writes it too, so Sunday's runs show the
+  same way. Stale = no heartbeat for 30 min.
+- On a manual refresh the S&P 500's 4 parts run one after another, each
+  starting the next.
+- The API's snapshot cache is now 5 min (was 1 h).
+- **Not verified live yet:** a real click. The first one creates the status
+  file, and the S&P 500 chain needs the snapshot role's new invoke
+  permission. If the button reports "failed", the error text says which
+  step broke.
 
 **Data state:** the NSE snapshot was re-run manually at 10:57 UTC after the
 currency fix (#41): 250 fetched, 203 complete, 0 errors. Infosys and HCL Tech
