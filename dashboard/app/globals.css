@@ -1511,3 +1511,8 @@ form textarea {
     display: none;
   }
 }
+
+.result-stale .hero,
+.result-stale .gauges {
+  opacity: 0.55;
+}

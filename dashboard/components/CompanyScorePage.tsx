@@ -17,6 +17,7 @@ import TickerCombobox from "./TickerCombobox";
 import DemoTickerPicker from "./DemoTickerPicker";
 import FinancialsChart from "./FinancialsChart";
 import ResultCard from "./ResultCard";
+import { buildRequest, requestSignature, useScorer } from "../lib/useScorer";
 
 const LOOKUP_DEBOUNCE_MS = 700;
 const TICKER_RE = /^[A-Za-z0-9][A-Za-z0-9&-]{1,19}(\.[A-Za-z]{1,3})?$/;
@@ -59,7 +60,11 @@ export default function CompanyScorePage({
 }) {
   const [ticker, setTicker] = useState("");
   const [values, setValues] = useState<FormValues>({});
-  const [result, setResult] = useState<PredictResponse | null>(null);
+  const [headlines, setHeadlines] = useState("");
+  const scorer = useScorer();
+  const { result } = scorer;
+  // Set by an auto-fill: score as soon as the filled values have rendered.
+  const autoScorePending = useRef(false);
 
   const [list, setList] = useState<CompaniesResponse | null>(null);
   const [listError, setListError] = useState(false);
@@ -91,8 +96,23 @@ export default function CompanyScorePage({
   const applyFill = useCallback((c: CompanyFinancials) => {
     setValues(toFormValues(c));
     setFilled({ company: c, edited: false });
-    setResult(null);
+    autoScorePending.current = true;
   }, []);
+
+  const request = buildRequest(ticker, values, headlines);
+  const unchanged = !!request && !!result && requestSignature(request) === scorer.scoredSignature;
+  // A result is on screen but the inputs have moved on since it was scored.
+  const resultStale = !!result && scorer.scoredSignature !== null && !unchanged;
+
+  // Score right after an auto-fill, once its values are in state. Skipped
+  // when the source lacked a required figure: the user fills it in, then
+  // presses Score.
+  useEffect(() => {
+    if (!autoScorePending.current) return;
+    autoScorePending.current = false;
+    if (request) void scorer.score(request);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values, ticker]);
 
   async function handleSelect(c: CompanySummary) {
     setTicker(c.symbol);
@@ -237,7 +257,6 @@ export default function CompanyScorePage({
     <div className="split">
       <div className="split-left">
         <ScoreForm
-          ticker={ticker}
           tickerField={
             <TickerCombobox
               value={ticker}
@@ -259,17 +278,25 @@ export default function CompanyScorePage({
             setValues(v);
             if (filled && !filled.edited) setFilled({ ...filled, edited: true });
           }}
-          onResult={setResult}
+          headlines={headlines}
+          onHeadlinesChange={setHeadlines}
+          canScore={!!request}
+          unchanged={unchanged}
+          loading={scorer.loading}
+          error={scorer.error}
+          onScore={() => void scorer.score(request)}
           onClear={() => {
             setTicker("");
             setValues({});
-            setResult(null);
+            setHeadlines("");
+            scorer.reset();
+            autoScorePending.current = false;
             setFilled(null);
             setTypedQuery(null);
             setLookup({ kind: "idle" });
           }}
         />
-        <DemoTickerPicker onResult={setResult} />
+        <DemoTickerPicker onResult={scorer.showExternal} />
       </div>
       <div className="split-right">
         <FinancialsChart
@@ -279,7 +306,7 @@ export default function CompanyScorePage({
           currency={filled?.company.currency ?? null}
           asOf={filled ? formatDate(filled.company.as_of) : null}
         />
-        {result && <ResultCard result={result} />}
+        {result && <ResultCard result={result} stale={resultStale} />}
       </div>
     </div>
   );
