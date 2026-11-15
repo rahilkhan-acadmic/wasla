@@ -94,14 +94,6 @@ export function useScorer() {
     [scoredSignature, result]
   );
 
-  /** A result that didn't come from the form (sample companies). */
-  const showExternal = useCallback((r: PredictResponse | null) => {
-    latestSig.current = null;
-    setResult(r);
-    setScoredSignature(null);
-    setError(null);
-  }, []);
-
   const reset = useCallback(() => {
     latestSig.current = null;
     inFlight.current = null;
@@ -111,5 +103,5 @@ export function useScorer() {
     setLoading(false);
   }, []);
 
-  return { result, error, loading, scoredSignature, score, showExternal, reset };
+  return { result, error, loading, scoredSignature, score, reset };
 }

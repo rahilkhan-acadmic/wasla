@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MarketOverviewResponse, PredictResponse, RiskBand, getMarketOverview } from "../lib/api";
+import {
+  MarketOverviewResponse,
+  PredictResponse,
+  RiskBand,
+  UNIVERSES,
+  Universe,
+  getMarketOverview,
+  isUniverse,
+} from "../lib/api";
 import { routeHref } from "../lib/routes";
 import RiskDonut from "./RiskDonut";
 import StatusDonut from "./StatusDonut";
@@ -25,27 +33,40 @@ function band(p: number, t: { moderate: number; high: number }): RiskBand {
   return p < t.moderate ? "low" : p < t.high ? "moderate" : "high";
 }
 
-// Universes the dashboard can describe. Only the NSE one has data today; a
-// US universe needs its own snapshot (e.g. S&P 500) before it can appear.
-const UNIVERSES = [
-  { id: "nse", label: "NSE · Nifty LargeMidcap 250", available: true },
-  { id: "us", label: "US companies (not available yet)", available: false },
-];
-
-export default function MarketStatusCard({ result }: { result: PredictResponse | null }) {
-  const [data, setData] = useState<MarketOverviewResponse | null>(null);
+export default function MarketStatusCard({
+  result,
+  companyUniverse = null,
+}: {
+  result: PredictResponse | null;
+  // Market of the company loaded into the form, when known: the card
+  // switches to it, and only marks the company in its own index.
+  companyUniverse?: Universe | null;
+}) {
+  const [universe, setUniverse] = useState<Universe>("nse");
+  const [byUniverse, setByUniverse] = useState<Partial<Record<Universe, MarketOverviewResponse>>>({});
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<View>("zone");
+  const data = byUniverse[universe] ?? null;
 
   useEffect(() => {
+    if (companyUniverse) setUniverse(companyUniverse);
+  }, [companyUniverse]);
+
+  useEffect(() => {
+    if (byUniverse[universe]) return; // loaded once per page view
     let cancelled = false;
-    getMarketOverview()
-      .then((d) => !cancelled && setData(d))
+    setError(null);
+    getMarketOverview(universe)
+      .then((d) => !cancelled && setByUniverse((m) => ({ ...m, [universe]: d })))
       .catch((e) => !cancelled && setError(e instanceof Error ? e.message : "Could not load market data"));
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [universe, byUniverse]);
+
+  // Don't mark an Indian company on the S&P 500 donut or vice versa;
+  // manually typed figures (market unknown) are marked wherever shown.
+  const marked = result && (!companyUniverse || companyUniverse === universe) ? result : null;
 
   const zoneCounts = useMemo(() => {
     const c: Record<string, number> = { safe: 0, grey: 0, distress: 0 };
@@ -60,9 +81,13 @@ export default function MarketStatusCard({ result }: { result: PredictResponse |
       <h2>Market status</h2>
       <label className="universe">
         <span className="sr-only">Universe</span>
-        <select value="nse" onChange={() => {}} aria-label="Universe">
+        <select
+          value={universe}
+          onChange={(e) => isUniverse(e.target.value) && setUniverse(e.target.value)}
+          aria-label="Universe"
+        >
           {UNIVERSES.map((u) => (
-            <option key={u.id} value={u.id} disabled={!u.available}>
+            <option key={u.id} value={u.id}>
               {u.label}
             </option>
           ))}
@@ -81,7 +106,9 @@ export default function MarketStatusCard({ result }: { result: PredictResponse |
       {error && <p className="error-note">{error}</p>}
       {!error && !data && <p className="muted-note">Loading market…</p>}
       {data && !data.available && (
-        <p className="muted-note">The index data hasn’t been collected yet; the weekly refresh runs on Sundays.</p>
+        <p className="muted-note">
+          The {data.index} data hasn’t been collected yet; the weekly refresh runs on Sundays.
+        </p>
       )}
 
       {data?.available &&
@@ -90,32 +117,42 @@ export default function MarketStatusCard({ result }: { result: PredictResponse |
             size={150}
             centerLabel="companies"
             segments={ZONES.map((z) => ({ ...z, count: zoneCounts[z.key] ?? 0 }))}
-            highlight={result?.z_score_zone ?? null}
-            highlightLabel={result ? result.ticker : "this company"}
+            highlight={marked?.z_score_zone ?? null}
+            highlightLabel={marked ? marked.ticker : "this company"}
           />
         ) : (
           <RiskDonut
             size={150}
             bands={data.bands}
             thresholds={data.thresholds}
-            highlight={result ? band(result.probability_distressed, data.thresholds) : null}
-            highlightLabel={result ? result.ticker : undefined}
+            highlight={marked ? band(marked.probability_distressed, data.thresholds) : null}
+            highlightLabel={marked ? marked.ticker : undefined}
           />
         ))}
 
       {data?.available && (
         <p className="muted-note">
           {data.scored} of {data.total} companies with complete figures
-          {notApplicable > 0 && <>; {notApplicable} banks/NBFCs/insurers excluded (model doesn’t apply)</>}. Model{" "}
-          {data.model_version ?? "—"}.{" "}
-          {result ? (
+          {notApplicable > 0 && (
             <>
-              <strong>{result.ticker}</strong> is outlined in its {view === "zone" ? "zone" : "band"}.{" "}
+              ; {notApplicable} {universe === "nse" ? "banks/NBFCs/insurers" : "banks/insurers"} excluded (model
+              doesn’t apply)
+            </>
+          )}
+          . Model {data.model_version ?? "—"}.{" "}
+          {marked ? (
+            <>
+              <strong>{marked.ticker}</strong> is outlined in its {view === "zone" ? "zone" : "band"}.{" "}
+            </>
+          ) : result && companyUniverse ? (
+            <>
+              The company you scored is in the {UNIVERSES.find((u) => u.id === companyUniverse)?.short} market, so it
+              isn’t marked here.{" "}
             </>
           ) : (
             "Score a company to see where it sits. "
           )}
-          <a href={routeHref("market")}>Full market overview</a>
+          <a href={routeHref("market", universe === "nse" ? undefined : universe)}>Full market overview</a>
         </p>
       )}
     </section>

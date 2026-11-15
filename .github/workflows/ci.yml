@@ -64,6 +64,9 @@ jobs:
       - name: Check India training labels against sourced dates + currency guard in the training fetch
         run: python tests/test_india_training_labels.py
 
+      - name: Run US universe tests (S&P 500 parsing, sharded snapshot + merge, ?universe= API, cross-index search)
+        run: python tests/test_us_universe.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

@@ -85,7 +85,23 @@ export function getHealth(): Promise<HealthResponse> {
   return request<HealthResponse>("/health");
 }
 
-// --- Market data (Nifty LargeMidcap 250 snapshot + custom-ticker lookup) ---
+// --- Market data (index snapshots + custom-ticker lookup) ---
+
+/** nse = Nifty LargeMidcap 250, us = S&P 500 (see src/market_data.py). */
+export type Universe = "nse" | "us";
+
+export const UNIVERSES: { id: Universe; label: string; short: string }[] = [
+  { id: "nse", label: "NSE · Nifty LargeMidcap 250", short: "NSE 250" },
+  { id: "us", label: "US · S&P 500", short: "S&P 500" },
+];
+
+export function isUniverse(x: string | null | undefined): x is Universe {
+  return x === "nse" || x === "us";
+}
+
+function universeQuery(u: Universe | undefined, sep: "?" | "&" = "?"): string {
+  return u && u !== "nse" ? `${sep}universe=${u}` : "";
+}
 
 export interface CompanySummary {
   symbol: string;
@@ -125,12 +141,12 @@ export interface LookupResponse {
   company: CompanyFinancials | null;
 }
 
-export function getCompanies(): Promise<CompaniesResponse> {
-  return request<CompaniesResponse>("/companies");
+export function getCompanies(universe?: Universe): Promise<CompaniesResponse> {
+  return request<CompaniesResponse>(`/companies${universeQuery(universe)}`);
 }
 
-export function getCompany(symbol: string): Promise<CompanyFinancials> {
-  return request<CompanyFinancials>(`/companies/${encodeURIComponent(symbol)}`);
+export function getCompany(symbol: string, universe?: Universe): Promise<CompanyFinancials> {
+  return request<CompanyFinancials>(`/companies/${encodeURIComponent(symbol)}${universeQuery(universe)}`);
 }
 
 export function lookupTicker(ticker: string): Promise<LookupResponse> {
@@ -165,6 +181,7 @@ export interface UnscoredCompany {
 
 export interface MarketOverviewResponse {
   index: string;
+  universe: Universe;
   available: boolean;
   snapshot_generated_at: string | null;
   model_version: string | null;
@@ -178,8 +195,8 @@ export interface MarketOverviewResponse {
   unscored: UnscoredCompany[];
 }
 
-export function getMarketOverview(): Promise<MarketOverviewResponse> {
-  return request<MarketOverviewResponse>("/market/overview");
+export function getMarketOverview(universe: Universe = "nse"): Promise<MarketOverviewResponse> {
+  return request<MarketOverviewResponse>(`/market/overview${universeQuery(universe)}`);
 }
 
 // --- Company search (ticker 3+ chars, name 5+ chars; index + Yahoo) ---
@@ -192,6 +209,9 @@ export interface SearchResult {
   industry: string | null;
   in_index: boolean;
   has_financials: boolean | null;
+  // Which index the company is in, when it is in one.
+  universe?: Universe | null;
+  index_label?: string | null; // e.g. "LargeMidcap 250", "S&P 500"
 }
 
 export interface SearchResponse {

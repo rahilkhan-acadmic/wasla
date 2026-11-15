@@ -82,7 +82,7 @@ export default function TickerCombobox({
         aria-describedby={hint ? hintId : undefined}
         autoComplete="off"
         spellCheck={false}
-        placeholder="e.g. TCS, RELIANCE.NS or “Tata Power”"
+        placeholder="e.g. TCS, AAPL or “Tata Power”"
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
@@ -111,7 +111,11 @@ export default function TickerCombobox({
               <span className="opt-symbol">{r.symbol}</span>
               <span className="opt-name">{r.name}</span>
               <span className="opt-flag">
-                {r.in_index ? (r.has_financials === false ? "partial data" : "LargeMidcap 250") : r.exchange ?? "online"}
+                {r.in_index
+                  ? r.has_financials === false
+                    ? "partial data"
+                    : r.index_label ?? "LargeMidcap 250"
+                  : r.exchange ?? "online"}
               </span>
             </li>
           ))}

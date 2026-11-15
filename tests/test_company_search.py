@@ -208,7 +208,8 @@ def test_search_endpoint():
         assert [x["symbol"] for x in body["results"]] == ["TATAPOWER", "TATASTEEL", "TATAMOTORS"], body
         assert body["results"][2] == {"symbol": "TATAMOTORS", "yahoo_ticker": "TATAMOTORS.NS",
                                       "name": "Tata Motors Limited", "exchange": "NSE", "industry": None,
-                                      "in_index": False, "has_financials": None}, body["results"][2]
+                                      "in_index": False, "has_financials": None,
+                                      "universe": None, "index_label": None}, body["results"][2]
         assert body["online_ok"] is True
         app_module.market_data.yahoo_search = real_yahoo
     finally:
