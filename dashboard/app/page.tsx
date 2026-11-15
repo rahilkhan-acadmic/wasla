@@ -4,17 +4,18 @@ import { useState } from "react";
 import AppShell from "../components/AppShell";
 import CompanyScorePage from "../components/CompanyScorePage";
 import ComingSoonPage from "../components/ComingSoonPage";
+import MarketOverviewPage from "../components/MarketOverviewPage";
 import ModelInfoPage from "../components/ModelInfoPage";
 import { useHashRoute } from "../lib/routes";
 
 export default function Page() {
-  const route = useHashRoute();
+  const { route, param } = useHashRoute();
   const [crumb, setCrumb] = useState<string | null>(null);
 
   return (
     <AppShell route={route} extraCrumb={route === "score" ? crumb : null}>
-      {route === "score" && <CompanyScorePage onCrumbChange={setCrumb} />}
-      {route === "market" && <ComingSoonPage page="market" />}
+      {route === "score" && <CompanyScorePage onCrumbChange={setCrumb} initialSymbol={param} />}
+      {route === "market" && <MarketOverviewPage />}
       {route === "insolvency" && <ComingSoonPage page="insolvency" />}
       {route === "model" && <ModelInfoPage />}
     </AppShell>

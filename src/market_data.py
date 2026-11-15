@@ -181,12 +181,16 @@ def normalise_record(raw: dict, meta: dict) -> dict:
     """Shape one company's fetched fields into the snapshot/API record."""
     financials = {f: _clean_number(raw.get(f)) for f in REQUIRED_FIELDS + OPTIONAL_FIELDS}
     missing = [f for f in REQUIRED_FIELDS if financials[f] is None]
-    return {
+    rec = {
         **meta,
         "financials": financials,
         "missing": missing,
         "complete": not missing,
     }
+    if raw.get("currency_mismatch"):
+        rec["note"] = (f"Statements are in {raw.get('currency')}, unlike the share price; "
+                       "market value of equity left out so the score uses book value.")
+    return rec
 
 
 def fetch_company(yahoo_ticker: str) -> dict:

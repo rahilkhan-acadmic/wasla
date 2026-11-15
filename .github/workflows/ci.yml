@@ -52,6 +52,9 @@ jobs:
       - name: Run NSE market-data tests (snapshot job + /companies, /lookup; fake Yahoo, moto S3)
         run: python tests/test_market_data.py
 
+      - name: Run market overview tests (shared scoring, /market/overview bands + loss-making)
+        run: python tests/test_market_overview.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

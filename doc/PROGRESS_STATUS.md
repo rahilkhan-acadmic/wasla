@@ -44,7 +44,29 @@ session as placeholder values, so SigV4 signing fails with
 
 ## Dashboard redesign: agreed plan (2026-11-15)
 
-Status: PR 1 merged (#39). PR 2 open (NSE data layer, see below).
+Status: PR 1 merged (#39), PR 2 merged (#40), PR 3 open (Market Overview).
+
+**First real snapshot (2026-11-15 10:39 UTC, right after PR 2 deployed):**
+the constituent CSV downloaded fine from niftyindices.com (no seed needed);
+250/250 companies fetched with 0 errors; 203 complete. 242 have FY ending
+March 2026. Of the 47 incomplete, 41 are Financial Services: banks, NBFCs
+and insurers have no current assets/liabilities split, so Altman-style
+features don't exist for them. PR 3 labels these "model doesn't apply".
+Infosys's statements are in USD on Yahoo while its market cap is INR,
+which inflates the market-value ratio ~85x. PR 3 detects
+`financialCurrency != trading currency` and drops the market cap (book
+value is used instead). The live snapshot still has the mixed-currency
+Infosys record until the job re-runs (Sunday, or a manual invoke).
+
+**PR 3 as built:** `src/scoring.py` (shared by /predict and the overview,
+identical results, tested); `GET /market/overview` scores every complete
+company with the CURRENT model on request (one batched predict, cached
+per snapshot + model version, so a mid-week promotion shows immediately).
+Dashboard Market Overview: risk donut (click to filter), loss-making tile,
+not-scored tile (split into "doesn't apply" vs missing data), sortable and
+filterable table, rows open `#/score/<SYMBOL>`. On the bundled synthetic
+sample, the current model is very polarised (no "moderate" companies);
+see whether real Indian companies look the same before trusting the pie.
 
 **PR 2 as built:**
 - `src/market_data.py` + Lambda `distress-model-nse-snapshot` (in

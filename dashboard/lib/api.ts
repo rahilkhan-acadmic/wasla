@@ -115,6 +115,7 @@ export interface CompanyFinancials {
   financials: Partial<Record<keyof Financials, number | null>>;
   missing: string[];
   complete: boolean;
+  note?: string | null;
 }
 
 export interface LookupResponse {
@@ -134,4 +135,49 @@ export function getCompany(symbol: string): Promise<CompanyFinancials> {
 
 export function lookupTicker(ticker: string): Promise<LookupResponse> {
   return request<LookupResponse>(`/lookup/${encodeURIComponent(ticker)}`);
+}
+
+// --- Market overview (all constituents scored with the current model) ---
+
+export type RiskBand = "low" | "moderate" | "high";
+
+export interface OverviewCompany {
+  symbol: string;
+  name: string;
+  industry: string | null;
+  as_of: string | null;
+  probability_distressed: number;
+  band: RiskBand;
+  z_score: number;
+  z_score_zone: string;
+  z_double_prime: number;
+  z_double_prime_zone: string;
+  loss_making: boolean;
+}
+
+export interface UnscoredCompany {
+  symbol: string;
+  name: string;
+  industry: string | null;
+  category: "not_applicable" | "missing_data" | "error";
+  reason: string;
+}
+
+export interface MarketOverviewResponse {
+  index: string;
+  available: boolean;
+  snapshot_generated_at: string | null;
+  model_version: string | null;
+  thresholds: { moderate: number; high: number };
+  total: number;
+  scored: number;
+  bands: Record<RiskBand, number>;
+  loss_making: number;
+  ebit_known: number;
+  companies: OverviewCompany[];
+  unscored: UnscoredCompany[];
+}
+
+export function getMarketOverview(): Promise<MarketOverviewResponse> {
+  return request<MarketOverviewResponse>("/market/overview");
 }

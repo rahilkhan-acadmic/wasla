@@ -19,31 +19,44 @@ export interface RouteDef {
 
 export const ROUTES: RouteDef[] = [
   { id: "score", label: "Company Score" },
-  { id: "market", label: "Market Overview", comingSoon: true },
+  { id: "market", label: "Market Overview" },
   { id: "insolvency", label: "Insolvency Watch", comingSoon: true },
   { id: "model", label: "Model Info" },
 ];
 
 export const DEFAULT_ROUTE: RouteId = "score";
 
-function parseHash(hash: string): RouteId {
-  const id = hash.replace(/^#\/?/, "").split("/")[0];
-  return ROUTES.some((r) => r.id === id) ? (id as RouteId) : DEFAULT_ROUTE;
+export interface Location {
+  route: RouteId;
+  // Optional second segment, e.g. the ticker in #/score/RELIANCE.
+  param: string | null;
 }
 
-export function routeHref(id: RouteId): string {
-  return `#/${id}`;
+function parseHash(hash: string): Location {
+  const [id, param] = hash.replace(/^#\/?/, "").split("/");
+  const route = ROUTES.some((r) => r.id === id) ? (id as RouteId) : DEFAULT_ROUTE;
+  let decoded: string | null = null;
+  try {
+    decoded = param ? decodeURIComponent(param) : null;
+  } catch {
+    decoded = null; // malformed escape in a hand-edited URL
+  }
+  return { route, param: decoded };
 }
 
-export function useHashRoute(): RouteId {
-  const [route, setRoute] = useState<RouteId>(DEFAULT_ROUTE);
+export function routeHref(id: RouteId, param?: string): string {
+  return param ? `#/${id}/${encodeURIComponent(param)}` : `#/${id}`;
+}
+
+export function useHashRoute(): Location {
+  const [loc, setLoc] = useState<Location>({ route: DEFAULT_ROUTE, param: null });
 
   useEffect(() => {
-    const sync = () => setRoute(parseHash(window.location.hash));
+    const sync = () => setLoc(parseHash(window.location.hash));
     sync();
     window.addEventListener("hashchange", sync);
     return () => window.removeEventListener("hashchange", sync);
   }, []);
 
-  return route;
+  return loc;
 }
