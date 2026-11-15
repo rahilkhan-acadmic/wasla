@@ -58,6 +58,9 @@ jobs:
       - name: Validate the hand-curated Insolvency Watch data (sources, dates, training-label flags)
         run: python tests/test_insolvency_data.py
 
+      - name: Check India training labels against sourced dates + currency guard in the training fetch
+        run: python tests/test_india_training_labels.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

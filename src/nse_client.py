@@ -68,18 +68,50 @@ def fetch_financials_for_ticker(ticker: str, polite_delay: float = 0.5) -> dict:
         out[field] = _first_available(income_stmt, aliases)
 
     # yfinance gives us live market cap directly -- a real advantage over
-    # EDGAR, which has no price data at all.
-    try:
-        out["market_value_equity"] = t.fast_info.get("marketCap")
-    except Exception:
-        out["market_value_equity"] = t.info.get("marketCap")
+    # EDGAR, which has no price data at all -- but only usable when it's in
+    # the same currency as the statements (see _market_cap_and_currency).
+    out["market_value_equity"], _, _ = _market_cap_and_currency(t)
 
     if out.get("total_assets") is not None and out.get("total_liabilities") is not None:
         out["book_value_equity"] = out["total_assets"] - out["total_liabilities"]
     else:
         out["book_value_equity"] = None
 
+    # NOTE: the returned keys must stay exactly these nine -- this dict goes
+    # straight into features.financials_from_dict -> Financials(**d), which
+    # rejects unknown keys.
     return out
+
+
+def _market_cap_and_currency(t) -> tuple[Optional[float], Optional[str], bool]:
+    """(market_cap_or_None, statements_currency, currency_mismatch).
+
+    The statements' currency can differ from the trading currency: Infosys
+    and HCL Tech trade in INR on NSE, but Yahoo carries their USD
+    statements. Mixing an INR market cap with USD liabilities inflated
+    Infosys's Altman market-value ratio to ~700 (peers: 1.6-17) in the live
+    training dataset of 2026-11-10. On a mismatch the market cap is dropped
+    (None), and features.financials_from_dict falls back to book value of
+    equity, exactly as it does for any missing market cap. Converting with
+    an FX rate would need a rate source and a date policy; not worth it for
+    a handful of companies. Costs one extra request (t.info)."""
+    try:
+        fi = t.fast_info
+        market_cap = fi.get("marketCap")
+        trading_currency = fi.get("currency")
+    except Exception:
+        market_cap, trading_currency = None, None
+
+    info = {}
+    try:
+        info = t.info or {}
+    except Exception:
+        pass
+    if market_cap is None:
+        market_cap = info.get("marketCap")
+    financial_currency = info.get("financialCurrency") or trading_currency
+    mismatch = bool(financial_currency and trading_currency and financial_currency != trading_currency)
+    return (None if mismatch else market_cap), financial_currency, mismatch
 
 
 def _value_at(df, aliases: list[str], column) -> Optional[float]:
@@ -141,31 +173,7 @@ def fetch_financials_with_period(ticker: str, polite_delay: float = 0.5, with_na
     for field, aliases in INCOME_STMT_ALIASES.items():
         out[field] = _value_at(income_stmt, aliases, inc_col)
 
-    try:
-        fi = t.fast_info
-        market_cap = fi.get("marketCap")
-        trading_currency = fi.get("currency")
-    except Exception:
-        market_cap, trading_currency = None, None
-
-    # The statements' currency can differ from the trading currency: e.g.
-    # Infosys trades in INR on NSE but Yahoo carries its USD statements.
-    # Mixing an INR market cap with USD liabilities inflates the Altman
-    # market-value ratio ~85x, so it's read every time (one extra request).
-    info = {}
-    try:
-        info = t.info or {}
-    except Exception:
-        pass
-    financial_currency = info.get("financialCurrency") or trading_currency
-    out["currency"] = financial_currency
-    out["currency_mismatch"] = bool(
-        financial_currency and trading_currency and financial_currency != trading_currency
-    )
-    # On a mismatch, drop the market cap rather than convert it: features.py
-    # then falls back to book value of equity, as it does for any missing
-    # market cap. An FX conversion would need a rate source and a date policy.
-    out["market_value_equity"] = None if out["currency_mismatch"] else market_cap
+    out["market_value_equity"], out["currency"], out["currency_mismatch"] = _market_cap_and_currency(t)
 
     if out.get("total_assets") is not None and out.get("total_liabilities") is not None:
         out["book_value_equity"] = out["total_assets"] - out["total_liabilities"]
@@ -175,6 +183,10 @@ def fetch_financials_with_period(ticker: str, polite_delay: float = 0.5, with_na
     out["as_of"] = bs_col.strftime("%Y-%m-%d") if hasattr(bs_col, "strftime") else (str(bs_col)[:10] if bs_col is not None else None)
 
     if with_name:
+        try:
+            info = t.info or {}
+        except Exception:
+            info = {}
         out["name"] = info.get("shortName") or info.get("longName")
 
     return out

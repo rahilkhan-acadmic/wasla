@@ -55,19 +55,27 @@ sync with `india_distress_labels.csv`. The page shows facts only, with no
 model scores. Status as of 2026-11-15; this needs a manual refresh as cases
 move (RCom, Videocon and Amtek Auto are the open ones).
 
-**Training-label errors found while curating (flagged, NOT fixed;
-these are model training labels, so changing them is a deliberate decision):**
-- `ESSARSHIPPING.BO` in `data/sources/india_distress_labels.csv` is Essar
-  **Shipping**, a different company from Essar **Steel**, whose insolvency
-  event the row describes. The model has been learning Essar Steel's label
-  against Essar Shipping's financials.
-- Videocon's row says admission `2018-01-31` and "later liquidated".
-  The NCLT admitted it on 6 June 2018, and it was not liquidated: Twin Star's
-  plan was approved in 2021, set aside by the NCLAT in January 2022, and the
-  CIRP continues.
-- DHFL's row uses `2019-11-29` (RBI's petition); the NCLT admission order is
-  dated 3 December 2019. Minor, but `event_date` is used for lead-time
-  filtering.
+**Training data fixed (PR after #42):**
+- **Infosys, LIVE training data:** the 2026-11-10 dataset had an INR market
+  cap over USD statements, giving a market-value / liabilities ratio of 707.6
+  (peers 1.6-16.7; Altman Z ~428 instead of ~4.6). `nse_client` now drops a
+  market cap whose currency differs from the statements' in the training
+  fetch too (shared `_market_cap_and_currency`), so the next weekly fetch
+  corrects it. Cross-validated AUC on `real_companies_full.json`:
+  0.829 ± 0.146 before and after. Infosys is healthy either way, so this is a
+  correctness fix, not an accuracy change.
+- `india_distress_labels.csv`: removed `ESSARSHIPPING.BO` (Essar Shipping
+  mislabelled as Essar Steel; Essar Steel delisted in 2015, so there's no
+  ticker to re-point to). Corrected admission dates: Videocon 2018-06-06 (and
+  not liquidated), DHFL 2019-12-03, RCom 2018-05-15 (stayed 2018-05-30 to
+  2019-04-30). These distressed rows only feed the offline `india` source;
+  the live pipeline (`FETCH_MARKETS=us,india_gsm`) uses this file's healthy
+  rows only.
+- `tests/test_india_training_labels.py` ties every "NCLT CIRP admission"
+  date to the sourced Insolvency Watch data, and fails on the old file.
+- Not addressed: `fetch_financials_for_ticker` still fills a blank latest-
+  year field from an older year (mixed periods in one record). That's a
+  training behaviour change, worth its own look.
 
 **First real snapshot (2026-11-15 10:39 UTC, right after PR 2 deployed):**
 the constituent CSV downloaded fine from niftyindices.com (no seed needed);

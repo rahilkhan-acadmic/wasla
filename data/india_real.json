@@ -18,7 +18,7 @@
       "Reliance Communications Ltd: NCLT CIRP admission"
     ],
     "label_distressed": 1,
-    "event_date": "2019-05-08",
+    "event_date": "2018-05-15",
     "source": "NCLT CIRP admission",
     "region": "Indian Subcontinent"
   },
@@ -41,7 +41,7 @@
       "Videocon Industries Ltd: NCLT CIRP admission"
     ],
     "label_distressed": 1,
-    "event_date": "2018-01-31",
+    "event_date": "2018-06-06",
     "source": "NCLT CIRP admission",
     "region": "Indian Subcontinent"
   },
@@ -99,7 +99,7 @@
       "retained_earnings": 13459000000.0,
       "ebit": 4553000000.0,
       "sales": 20158000000.0,
-      "market_value_equity": 4051153677154.47,
+      "market_value_equity": null,
       "book_value_equity": 9840000000.0
     },
     "headlines": [],

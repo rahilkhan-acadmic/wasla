@@ -36,7 +36,7 @@
       "recovery_pct": 83,
       "recovery_note": "Reported between 83% (of ₹49,473 crore admitted claims) and about 92%, depending on the base; ₹42,000 crore paid in total.",
       "summary": "The largest recovery under the IBC. The Supreme Court's 2019 ruling in this case restored financial creditors' priority over operational creditors.",
-      "in_training_labels": true,
+      "in_training_labels": false,
       "sources": [
         {"label": "Business Standard: why Essar is steel's comeback kid", "url": "https://business-standard.com/article/companies/explained-why-essar-is-steel-s-comeback-kid-amid-insolvency-proceedings-122061301102_1.html"},
         {"label": "BloombergQuint: behind India's largest IBC recovery", "url": "https://www.bloombergquint.com/business/behind-indias-largest-ibc-recovery-the-essar-steel-story"}
