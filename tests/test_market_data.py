@@ -233,7 +233,24 @@ def test_nse_client_extracts_latest_period_from_yfinance_frames():
     finally:
         nse_client.yf.Ticker = real
     assert out["ebit"] is None and out["as_of"] == "2025-03-31", out
-    print("PASS: nse_client takes one fiscal year only (alias fallback, never an older year)")
+
+    # Statements in USD while the shares trade in INR (Infosys on Yahoo):
+    # the INR market cap must not be mixed with USD liabilities.
+    class UsdStatements(FakeTicker):
+        def __init__(self, t):
+            super().__init__(t)
+            self.info = {"shortName": "Infosys", "financialCurrency": "USD"}
+
+    nse_client.yf.Ticker = UsdStatements
+    try:
+        out = nse_client.fetch_financials_with_period("INFY.NS", polite_delay=0)
+    finally:
+        nse_client.yf.Ticker = real
+    assert out["currency"] == "USD" and out["currency_mismatch"] is True, out
+    assert out["market_value_equity"] is None and out["book_value_equity"] == 400, out
+    rec = market_data.normalise_record(out, {"symbol": "INFY"})
+    assert "USD" in rec["note"], rec
+    print("PASS: nse_client takes one fiscal year only, and drops a market cap in a different currency")
 
 
 # ------------------------------------------------------------- lookups -----

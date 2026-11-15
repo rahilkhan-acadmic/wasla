@@ -56,6 +56,9 @@ export default function AppShell({
   const signOut = useSignOut();
   const [overlay, setOverlay] = useState(false);
   const [open, setOpen] = useState(false);
+  // Animate the panel only for user toggles, not for the initial
+  // closed -> open restore on page load (which would slide in every time).
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia(OVERLAY_QUERY);
@@ -66,8 +69,12 @@ export default function AppShell({
       setOpen(mq.matches ? false : readPanelPref() ?? true);
     };
     apply();
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setAnimate(true)));
     mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
+    return () => {
+      cancelAnimationFrame(raf);
+      mq.removeEventListener("change", apply);
+    };
   }, []);
 
   const toggle = useCallback(() => {
@@ -121,7 +128,11 @@ export default function AppShell({
   );
 
   return (
-    <div className={`app ${open ? "panel-open" : "panel-closed"} ${overlay ? "panel-overlay" : "panel-docked"}`}>
+    <div
+      className={`app ${open ? "panel-open" : "panel-closed"} ${overlay ? "panel-overlay" : "panel-docked"} ${
+        animate ? "panel-animate" : ""
+      }`}
+    >
       <header className="topbar">
         <div className="topbar-start">
           <button

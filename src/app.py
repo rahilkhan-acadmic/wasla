@@ -13,6 +13,7 @@ Endpoints:
     GET  /companies              Nifty LargeMidcap 250 list for the dashboard (weekly snapshot)
     GET  /companies/{symbol}     Latest annual financials for one constituent
     GET  /lookup/{ticker}        Search a custom ticker (snapshot first, then live Yahoo)
+    GET  /market/overview        All 250 scored with the current model: risk bands + loss-making count
 
 Run locally:
     uvicorn app:app --host 0.0.0.0 --port 8000 --app-dir src
@@ -35,6 +36,7 @@ from features import build_feature_row, financials_from_dict, FEATURE_NAMES
 from altman_zscore import classify_zone
 import model_loader
 import market_data
+import scoring
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SAMPLE_DATA_PATH = os.environ.get(
@@ -102,21 +104,7 @@ class ModelInfoResponse(BaseModel):
 
 def _run_prediction(ticker: str, fin_dict: dict, headlines: list[str]) -> PredictResponse:
     model = get_model()
-    fin = financials_from_dict(fin_dict)
-    feats = build_feature_row(fin, headlines)
-    x = np.array([[feats[name] for name in FEATURE_NAMES]])
-    prob = float(model.predict_proba(x)[0, 1])
-
-    return PredictResponse(
-        ticker=ticker,
-        probability_distressed=round(prob, 4),
-        z_score=round(feats["z_score"], 3),
-        z_score_zone=classify_zone(feats["z_score"], "z"),
-        z_double_prime=round(feats["z_double_prime"], 3),
-        z_double_prime_zone=classify_zone(feats["z_double_prime"], "zpp"),
-        news_sentiment=round(feats["news_sentiment"], 3),
-        cash_burning=bool(feats["cash_burn_flag"]),
-    )
+    return PredictResponse(ticker=ticker, **scoring.score_one(model, fin_dict, headlines))
 
 
 @app.get("/health")
@@ -200,6 +188,7 @@ class CompanyFinancialsOut(BaseModel):
     financials: dict[str, Optional[float]]
     missing: list[str]
     complete: bool
+    note: Optional[str] = None  # e.g. statements in a different currency
 
 
 class LookupResponse(BaseModel):
@@ -222,6 +211,7 @@ def _company_out(rec: dict, source: str, fetched_at: Optional[str]) -> CompanyFi
         financials=rec["financials"],
         missing=rec["missing"],
         complete=rec["complete"],
+        note=rec.get("note"),
     )
 
 
@@ -296,6 +286,135 @@ def lookup_ticker(ticker: str, claims: dict = Depends(auth.require_auth)):
         live = {**live, "name": rec["name"], "industry": rec.get("industry"), "symbol": rec["symbol"]}
     return LookupResponse(query=t, found=True, in_index=rec is not None,
                           company=_company_out(live, "live", _now_iso()))
+
+
+# --- Market overview (Nifty LargeMidcap 250, scored with the live model) ------
+
+class OverviewCompany(BaseModel):
+    symbol: str
+    name: str
+    industry: Optional[str] = None
+    as_of: Optional[str] = None
+    probability_distressed: float
+    band: str  # low | moderate | high
+    z_score: float
+    z_score_zone: str
+    z_double_prime: float
+    z_double_prime_zone: str
+    loss_making: bool
+
+
+class UnscoredCompany(BaseModel):
+    symbol: str
+    name: str
+    industry: Optional[str] = None
+    # "not_applicable": a bank/NBFC/insurer -- no current assets/liabilities
+    #   split, so the Altman-style features don't exist for it.
+    # "missing_data": the source lacked a figure the model needs.
+    # "error": figures present but unusable (e.g. zero total assets).
+    category: str
+    reason: str
+
+
+class MarketOverviewResponse(BaseModel):
+    index: str
+    available: bool
+    snapshot_generated_at: Optional[str] = None
+    model_version: Optional[str] = None
+    thresholds: dict[str, float] = Field(
+        default_factory=lambda: {"moderate": scoring.BAND_MODERATE, "high": scoring.BAND_HIGH})
+    total: int = 0
+    scored: int = 0
+    bands: dict[str, int] = Field(default_factory=lambda: {"low": 0, "moderate": 0, "high": 0})
+    # Loss-making = EBIT below zero in the latest annual figures. Counted over
+    # every company whose EBIT is known (not only fully scored ones), and
+    # reported separately because it overlaps the risk bands.
+    loss_making: int = 0
+    ebit_known: int = 0
+    companies: list[OverviewCompany] = Field(default_factory=list)
+    unscored: list[UnscoredCompany] = Field(default_factory=list)
+
+
+_overview_cache: dict = {"key": None, "value": None}
+
+
+def _is_financial_balance_sheet(c: dict) -> bool:
+    """Banks, NBFCs and insurers present an unclassified balance sheet (no
+    current/non-current split). In the first real snapshot (2026-11-15) that
+    was 41 of the 47 incomplete companies, all in NSE's Financial Services
+    industry."""
+    missing = set(c.get("missing") or [])
+    return c.get("industry") == "Financial Services" and bool(
+        missing & {"current_assets", "current_liabilities"})
+
+
+def _build_overview(snap: dict, model, model_version: Optional[str]) -> MarketOverviewResponse:
+    companies = snap.get("companies", [])
+    complete = [c for c in companies if c.get("complete")]
+    scores = scoring.score_many(model, (c["financials"] for c in complete))
+
+    out = MarketOverviewResponse(
+        index=snap.get("index", market_data.INDEX_NAME),
+        available=True,
+        snapshot_generated_at=snap.get("generated_at"),
+        model_version=model_version,
+        total=len(companies),
+    )
+    for c, s in zip(complete, scores):
+        if "error" in s:
+            out.unscored.append(UnscoredCompany(symbol=c["symbol"], name=c["name"],
+                                                industry=c.get("industry"), category="error",
+                                                reason=f"Could not score: {s['error']}"))
+            continue
+        band = scoring.risk_band(s["probability_distressed"])
+        out.bands[band] += 1
+        out.companies.append(OverviewCompany(
+            symbol=c["symbol"], name=c["name"], industry=c.get("industry"), as_of=c.get("as_of"),
+            probability_distressed=s["probability_distressed"], band=band,
+            z_score=s["z_score"], z_score_zone=s["z_score_zone"],
+            z_double_prime=s["z_double_prime"], z_double_prime_zone=s["z_double_prime_zone"],
+            loss_making=s["cash_burning"],
+        ))
+    for c in companies:
+        if not c.get("complete"):
+            missing = c.get("missing") or []
+            if _is_financial_balance_sheet(c):
+                category = "not_applicable"
+                reason = ("Bank, NBFC or insurer: its balance sheet has no current assets/liabilities "
+                          "split, so this Altman-style model doesn't apply.")
+            else:
+                category = "missing_data"
+                reason = (f"Missing from source: {', '.join(missing)}" if missing
+                          else c.get("error") or "No data")
+            out.unscored.append(UnscoredCompany(symbol=c["symbol"], name=c["name"],
+                                                industry=c.get("industry"), category=category,
+                                                reason=reason[:200]))
+        ebit = (c.get("financials") or {}).get("ebit")
+        if ebit is not None:
+            out.ebit_known += 1
+            out.loss_making += ebit < 0
+
+    out.scored = len(out.companies)
+    out.companies.sort(key=lambda r: r.probability_distressed, reverse=True)
+    out.unscored.sort(key=lambda r: r.symbol)
+    return out
+
+
+@app.get("/market/overview", response_model=MarketOverviewResponse)
+def market_overview(claims: dict = Depends(auth.require_auth)):
+    """Every Nifty LargeMidcap 250 company with complete figures, scored with
+    the CURRENT model (not a stored score), so a mid-week model promotion is
+    reflected immediately. One batched prediction; cached per
+    (snapshot, model version) in a warm container."""
+    snap = market_data.load_snapshot()
+    if not snap:
+        return MarketOverviewResponse(index=market_data.INDEX_NAME, available=False)
+    model = get_model()
+    version = model_loader.current_version()
+    key = (snap.get("generated_at"), version)
+    if _overview_cache["key"] != key:
+        _overview_cache.update(key=key, value=_build_overview(snap, model, version))
+    return _overview_cache["value"]
 
 
 # --- AWS Lambda entry point -------------------------------------------------

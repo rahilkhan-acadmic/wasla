@@ -2,13 +2,6 @@
 // first (doc/PROGRESS_STATUS.md, "Dashboard redesign").
 
 const CONTENT = {
-  market: {
-    title: "Market Overview",
-    body: [
-      "How the Nifty LargeMidcap 250 splits into Low, Moderate and High risk, with a separate count of loss-making companies.",
-      "Needs a weekly job that fetches and scores all 250 companies, which is planned next.",
-    ],
-  },
   insolvency: {
     title: "Insolvency Watch",
     body: [

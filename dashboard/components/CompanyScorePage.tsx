@@ -49,7 +49,14 @@ type LookupState =
 
 // Split view: inputs on the left, chart and result on the right. Stacks to
 // one column on narrow screens (see .split in globals.css).
-export default function CompanyScorePage({ onCrumbChange }: { onCrumbChange: (c: string | null) => void }) {
+export default function CompanyScorePage({
+  onCrumbChange,
+  initialSymbol = null,
+}: {
+  onCrumbChange: (c: string | null) => void;
+  // From #/score/<SYMBOL>, e.g. a click in Market Overview's table.
+  initialSymbol?: string | null;
+}) {
   const [ticker, setTicker] = useState("");
   const [values, setValues] = useState<FormValues>({});
   const [result, setResult] = useState<PredictResponse | null>(null);
@@ -106,6 +113,17 @@ export default function CompanyScorePage({ onCrumbChange }: { onCrumbChange: (c:
     setTypedQuery(text);
     if (lookup.kind !== "idle") setLookup({ kind: "idle" });
   }
+
+  // Arriving via #/score/<SYMBOL>: load that company as if picked from the list.
+  const openedSymbol = useRef<string | null>(null);
+  useEffect(() => {
+    const sym = initialSymbol?.trim().toUpperCase();
+    if (!sym || openedSymbol.current === sym) return;
+    openedSymbol.current = sym;
+    const known = list?.companies.find((c) => c.symbol === sym);
+    handleSelect(known ?? { symbol: sym, name: sym, industry: null, has_financials: true, as_of: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSymbol]);
 
   // Debounced background search for a typed ticker.
   useEffect(() => {
@@ -205,6 +223,7 @@ export default function CompanyScorePage({ onCrumbChange }: { onCrumbChange: (c:
           : "fetched just now"}
         {filled.edited && <> · edited by you</>}
       </p>
+      {filled.company.note && <p className="source-missing">{filled.company.note}</p>}
       {filled.company.missing.length > 0 && (
         <p className="source-missing">
           Not available from the source, please enter:{" "}
