@@ -195,9 +195,9 @@ original CloudFront/Function-URL blocker are resolved (see
 (AWS tightened Function URL requirements in Oct 2025 to need both
 `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction`), not an AWS-side
 account restriction — fixed in code, deployed, verified live
-(`GET /health` → 200 anonymously). Still not yet exercised: a real human
-login (new password → TOTP QR → confirm code) against the live dashboard —
-only unit-tested so far.
+(`GET /health` → 200 anonymously). First real human login (password → TOTP
+QR → confirm code) verified against the live dashboard 2026-11-15, after
+two fixes in PR #37 (new-password step re-sending `email`; no QR code shown).
 
 ## Cost note
 

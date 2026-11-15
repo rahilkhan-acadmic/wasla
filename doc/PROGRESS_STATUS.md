@@ -1,7 +1,70 @@
-# Progress status -- saved 2026-10-17, updated 2026-11-09
+# Progress status -- saved 2026-10-17, updated 2026-11-15
 
 Scratch file for session handoff. Read this first when picking the
 session back up.
+
+## First real human login works end-to-end (2026-11-15)
+
+Worked from a claude.ai/code **cloud** session for the first time (see
+`doc/claude-code-cloud-setup.md`). AWS access there comes through the
+official `aws-core` plugin's MCP server, signed in as
+`finance-distress-deploy`. Plain `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`
+environment variables do **not** work in that sandbox: they reach the
+session as placeholder values, so SigV4 signing fails with
+`InvalidClientTokenId`. The plugin is the working path.
+
+- **First admin user provisioned**: `rahilkhan` in pool
+  `ap-south-1_kcGHQgK50` (created by the account owner as root, via the
+  Cognito console). Status `CONFIRMED`, TOTP MFA registered.
+- **Two login bugs found and fixed**, both in PR #37 (merged and deployed by
+  `deploy.yml` run 42):
+  1. The first-login new-password step failed with *"Cannot modify an
+     already provided email"*. `dashboard/lib/auth.ts` echoed the user's
+     existing attributes back in `completeNewPasswordChallenge`, and Cognito
+     refuses to re-set an attribute the user already has. It now sends `{}`.
+  2. The MFA setup step only printed the raw secret, with no QR code.
+     `dashboard/components/LoginForm.tsx` now renders an `otpauth://` URI as
+     a QR code client-side (`qrcode.react` 4.2.0), with the text key kept as
+     a manual fallback.
+- **Verified by the account owner**: full login (password, then QR scan,
+  then 6-digit code) works against the live dashboard.
+
+**Things noticed but not yet acted on:**
+- `/health` reports `model_version: null` (the registry is configured).
+  Possibly the model only loads on the first prediction. Worth confirming.
+- Next.js 16.4.0 aborts every other `next build` with a "known security
+  vulnerability" notice; the retry passes. Upgrade Next.js in its own PR.
+- `finance-distress-deploy` can't call `cloudformation:ListStacks`,
+  `lambda:ListFunctions`, `cognito-idp:AdminListUserAuthEvents` or
+  `cognito-idp:AdminSetUserMFAPreference`. Describing resources by name
+  works, so nothing is blocked today.
+- The AWS GitSync bot posts "Change set creation failed" on every PR (it
+  also did on PR #36). The `distress-model-claude-code` stack is healthy and
+  the PRs deploy fine; most likely a no-changes preview reported as failed.
+
+## Dashboard redesign: agreed plan (2026-11-15)
+
+Four separate PRs, in this order:
+1. **UI shell** (front-end only): top bar with burger | logo + "WASLA" |
+   breadcrumb | sign-out; collapsible left panel; pages Company Score,
+   Market Overview, Model Info; form-left / chart-right split; bar chart of
+   the entered financials and a Z-score gauge.
+2. **NSE data layer**: weekly snapshot of the **Nifty LargeMidcap 250**
+   (yfinance) to S3/DynamoDB, plus `GET /companies`,
+   `GET /companies/{ticker}` and `GET /lookup/{ticker}`. Powers the ticker
+   dropdown, auto-fill and custom-ticker lookup. Must be backend-side: the
+   browser can't call NSE/Yahoo directly.
+3. **Market Overview**: score all 250 weekly; pie of Low / Moderate / High
+   risk (banded probability) plus a separate "N loss-making" count. Not a
+   pie slice, because loss-making overlaps the risk bands. Needs a visible
+   "screening signal, not a rating" note, given the thin India training data.
+4. **Insolvency Watch**: hand-curated list (IBBI/NCLT sources, one link per
+   row) of major listed CIRP cases since 2016, with outcome (acquired /
+   liquidated / ongoing / withdrawn), acquirer and recovery %. Timeline,
+   outcome and recovery charts. The list can double as training labels, but
+   only with a date split: "what the model would have said" may be shown
+   only for held-out cases, never for training companies. Many pre-2022
+   cases have no pre-failure yfinance data, so they appear facts-only.
 
 ## Dashboard is now fully live end-to-end (2026-11-09)
 
@@ -35,10 +98,8 @@ action needed for either half of the original combined case; both are
 resolved now, one by AWS lifting the CloudFront verification block
 (2026-10-21), the other by this code fix (2026-11-09).
 
-**Next real step:** provision the first admin Cognito user and walk the
-login flow (new password -> TOTP QR -> confirm code) against the live
-dashboard at `https://d3777jqr8y94ft.cloudfront.net/` -- never exercised
-end-to-end as a real human login, only unit-tested so far.
+~~**Next real step:** provision the first admin Cognito user and walk the
+login flow.~~ **Done 2026-11-15**, see the section at the top of this file.
 
 ## What's done and live in production
 
@@ -96,12 +157,14 @@ authenticated routes manually via the dashboard.
 1. ~~Post the Function URL issue to AWS Support.~~ ~~Done 2026-10-22,
    Case ID `179258268000268`.~~ Turned out unnecessary -- root cause found
    and fixed in code 2026-11-09, case can be closed.
-2. Provision the first admin Cognito user (commands in `CLAUDE.md`'s MFA
-   section) and walk through the login flow (new password -> TOTP QR
-   setup -> confirm code) manually in a browser against the now-live
-   dashboard (`https://d3777jqr8y94ft.cloudfront.net/`) -- this has never
-   been tested against a real, reachable frontend yet, only locally/via
-   unit tests.
+2. ~~Provision the first admin Cognito user and walk through the login
+   flow.~~ **Done 2026-11-15**: `rahilkhan` logs in with password + TOTP
+   against the live dashboard, after the two fixes in PR #37.
+3. Close AWS Support case `179258268000268` (needs the account owner's
+   console login; `finance-distress-deploy` only has support read access).
+4. Dashboard redesign, PRs 1-4 in the plan at the top of this file.
+5. Look at the weekly retrain's actual eval numbers per run (still only
+   checked that executions `SUCCEEDED`; last one 2026-11-10).
 
 ## TODO -- 2026-10-22
 
@@ -139,9 +202,8 @@ specific design for that boundary, not as a side effect of convenience.
 
 **Remaining tasks:**
 
-- Test the full MFA login flow (new password -> TOTP QR -> confirm code)
-  against local `uvicorn` + `next dev` -- never exercised end-to-end as a
-  real human login yet, only unit-tested.
+- ~~Test the full MFA login flow (new password -> TOTP QR -> confirm
+  code).~~ Done against the live dashboard 2026-11-15 (PR #37).
 - Widen US `n_healthy`/`n_distressed` now that the CIK-diversity bug is
   fixed (flagged as a follow-up in the time-split work, not yet done).
 - Keep watching the weekly retrain's AUC hold up over more runs before
