@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import Logo from "./Logo";
 import {
   signIn,
   completeNewPasswordChallenge,
@@ -78,7 +79,12 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
   }
 
   return (
-    <section>
+    <div className="login-screen">
+    <section className="card login-card">
+      <div className="login-brand">
+        <Logo size={36} />
+        <span className="brand-name">WASLA</span>
+      </div>
       <h2>Sign in</h2>
 
       {step === "CREDENTIALS" && (
@@ -101,7 +107,7 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
               required
             />
           </label>
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
@@ -124,7 +130,7 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
               required
             />
           </label>
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Setting..." : "Set password"}
           </button>
         </form>
@@ -164,7 +170,7 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
               required
             />
           </label>
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Verifying..." : "Confirm"}
           </button>
         </form>
@@ -187,7 +193,7 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
               required
             />
           </label>
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Verifying..." : "Verify"}
           </button>
         </form>
@@ -195,5 +201,7 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
 
       {error && <p className="error-note">{error}</p>}
     </section>
+    <p className="app-footer">Research/screening tool only — not investment advice.</p>
+    </div>
   );
 }
