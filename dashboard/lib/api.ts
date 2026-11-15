@@ -84,3 +84,54 @@ export function getModelInfo(): Promise<ModelInfoResponse> {
 export function getHealth(): Promise<HealthResponse> {
   return request<HealthResponse>("/health");
 }
+
+// --- Market data (Nifty LargeMidcap 250 snapshot + custom-ticker lookup) ---
+
+export interface CompanySummary {
+  symbol: string;
+  name: string;
+  industry: string | null;
+  has_financials: boolean;
+  as_of: string | null;
+}
+
+export interface CompaniesResponse {
+  index: string;
+  available: boolean;
+  generated_at: string | null;
+  data_source: string | null;
+  companies: CompanySummary[];
+}
+
+export interface CompanyFinancials {
+  symbol: string;
+  yahoo_ticker: string;
+  name: string;
+  industry: string | null;
+  as_of: string | null;
+  currency: string | null;
+  source: "snapshot" | "live";
+  fetched_at: string | null;
+  financials: Partial<Record<keyof Financials, number | null>>;
+  missing: string[];
+  complete: boolean;
+}
+
+export interface LookupResponse {
+  query: string;
+  found: boolean;
+  in_index: boolean;
+  company: CompanyFinancials | null;
+}
+
+export function getCompanies(): Promise<CompaniesResponse> {
+  return request<CompaniesResponse>("/companies");
+}
+
+export function getCompany(symbol: string): Promise<CompanyFinancials> {
+  return request<CompanyFinancials>(`/companies/${encodeURIComponent(symbol)}`);
+}
+
+export function lookupTicker(ticker: string): Promise<LookupResponse> {
+  return request<LookupResponse>(`/lookup/${encodeURIComponent(ticker)}`);
+}

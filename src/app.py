@@ -10,6 +10,9 @@ Endpoints:
     POST /predict                Score a company given its financials + headlines
     POST /predict/demo/{ticker}  Score a company from the bundled synthetic dataset
     GET  /model/info             Current promoted model version + registry metadata
+    GET  /companies              Nifty LargeMidcap 250 list for the dashboard (weekly snapshot)
+    GET  /companies/{symbol}     Latest annual financials for one constituent
+    GET  /lookup/{ticker}        Search a custom ticker (snapshot first, then live Yahoo)
 
 Run locally:
     uvicorn app:app --host 0.0.0.0 --port 8000 --app-dir src
@@ -31,6 +34,7 @@ import auth
 from features import build_feature_row, financials_from_dict, FEATURE_NAMES
 from altman_zscore import classify_zone
 import model_loader
+import market_data
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SAMPLE_DATA_PATH = os.environ.get(
@@ -162,6 +166,136 @@ def model_info(claims: dict = Depends(auth.require_auth)):
         promoted_at=item.get("promoted_at"),
         s3_key=item.get("s3_key"),
     )
+
+
+# --- Market data (dashboard ticker list + auto-fill) -------------------------
+# Display data only; see market_data.py's docstring for why none of this may
+# feed training.
+
+class CompanySummary(BaseModel):
+    symbol: str
+    name: str
+    industry: Optional[str] = None
+    has_financials: bool
+    as_of: Optional[str] = None
+
+
+class CompaniesResponse(BaseModel):
+    index: str
+    available: bool
+    generated_at: Optional[str] = None
+    data_source: Optional[str] = None
+    companies: list[CompanySummary] = Field(default_factory=list)
+
+
+class CompanyFinancialsOut(BaseModel):
+    symbol: str
+    yahoo_ticker: str
+    name: str
+    industry: Optional[str] = None
+    as_of: Optional[str] = None
+    currency: Optional[str] = None
+    source: str  # "snapshot" (weekly job) or "live" (fetched on request)
+    fetched_at: Optional[str] = None
+    financials: dict[str, Optional[float]]
+    missing: list[str]
+    complete: bool
+
+
+class LookupResponse(BaseModel):
+    query: str
+    found: bool
+    in_index: bool = False
+    company: Optional[CompanyFinancialsOut] = None
+
+
+def _company_out(rec: dict, source: str, fetched_at: Optional[str]) -> CompanyFinancialsOut:
+    return CompanyFinancialsOut(
+        symbol=rec["symbol"],
+        yahoo_ticker=rec["yahoo_ticker"],
+        name=rec["name"],
+        industry=rec.get("industry"),
+        as_of=rec.get("as_of"),
+        currency=rec.get("currency"),
+        source=source,
+        fetched_at=fetched_at,
+        financials=rec["financials"],
+        missing=rec["missing"],
+        complete=rec["complete"],
+    )
+
+
+def _now_iso() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+@app.get("/companies", response_model=CompaniesResponse)
+def list_companies(claims: dict = Depends(auth.require_auth)):
+    """Nifty LargeMidcap 250 constituents for the dashboard's ticker list.
+    available=False until the weekly snapshot job has run at least once."""
+    snap = market_data.load_snapshot()
+    if not snap:
+        return CompaniesResponse(index=market_data.INDEX_NAME, available=False)
+    return CompaniesResponse(
+        index=snap.get("index", market_data.INDEX_NAME),
+        available=True,
+        generated_at=snap.get("generated_at"),
+        data_source=snap.get("data_source"),
+        companies=[
+            CompanySummary(
+                symbol=c["symbol"],
+                name=c["name"],
+                industry=c.get("industry"),
+                has_financials=c["complete"],
+                as_of=c.get("as_of"),
+            )
+            for c in snap.get("companies", [])
+        ],
+    )
+
+
+@app.get("/companies/{symbol}", response_model=CompanyFinancialsOut)
+def company_financials(symbol: str, claims: dict = Depends(auth.require_auth)):
+    """Latest annual financials for one index constituent, from the weekly
+    snapshot. A constituent whose snapshot record is incomplete is retried
+    live once, since Yahoo coverage is patchy week to week."""
+    ticker = market_data.normalise_ticker(symbol)
+    if ticker is None:
+        raise HTTPException(status_code=400, detail="Invalid ticker")
+    snap = market_data.load_snapshot()
+    rec = market_data.find_company(snap, ticker)
+    if rec is None:
+        raise HTTPException(status_code=404, detail=f"{ticker} is not in the {market_data.INDEX_NAME} snapshot")
+    if rec["complete"]:
+        return _company_out(rec, "snapshot", snap.get("generated_at"))
+    live = market_data.live_lookup(rec["yahoo_ticker"])
+    if live and len(live["missing"]) < len(rec["missing"]):
+        live = {**live, "name": rec["name"], "industry": rec.get("industry"), "symbol": rec["symbol"]}
+        return _company_out(live, "live", _now_iso())
+    return _company_out(rec, "snapshot", snap.get("generated_at"))
+
+
+@app.get("/lookup/{ticker}", response_model=LookupResponse)
+def lookup_ticker(ticker: str, claims: dict = Depends(auth.require_auth)):
+    """Search for a custom ticker. Index members come from the snapshot;
+    anything else is fetched live from Yahoo Finance (bare tickers are tried
+    as NSE, then BSE, then as-is)."""
+    t = market_data.normalise_ticker(ticker)
+    if t is None:
+        raise HTTPException(status_code=400, detail="Invalid ticker")
+    snap = market_data.load_snapshot()
+    rec = market_data.find_company(snap, t) if "." not in t or t.endswith(".NS") else None
+    if rec is not None and rec["complete"]:
+        return LookupResponse(query=t, found=True, in_index=True,
+                              company=_company_out(rec, "snapshot", snap.get("generated_at")))
+    live = market_data.live_lookup(t)
+    if live is None:
+        return LookupResponse(query=t, found=False, in_index=rec is not None)
+    if rec is not None:
+        live = {**live, "name": rec["name"], "industry": rec.get("industry"), "symbol": rec["symbol"]}
+    return LookupResponse(query=t, found=True, in_index=rec is not None,
+                          company=_company_out(live, "live", _now_iso()))
 
 
 # --- AWS Lambda entry point -------------------------------------------------

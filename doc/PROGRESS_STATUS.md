@@ -44,6 +44,30 @@ session as placeholder values, so SigV4 signing fails with
 
 ## Dashboard redesign: agreed plan (2026-11-15)
 
+Status: PR 1 merged (#39). PR 2 open (NSE data layer, see below).
+
+**PR 2 as built:**
+- `src/market_data.py` + Lambda `distress-model-nse-snapshot` (in
+  `aws/automation-stack.json`, schedule Sundays 01:30 UTC) writes
+  `s3://distress-model-<account>/market-data/nse-largemidcap250/latest.json`
+  plus `history/<date>.json`. The constituent list comes from niftyindices.com,
+  then NSE's archive host, then a manually uploaded seed CSV at
+  `market-data/nse-largemidcap250/constituents.csv` (same columns as NSE's
+  CSV) if both hosts block AWS. Neither host was reachable from the
+  claude.ai cloud sandbox, so this is untested against the real sites.
+- `deploy.yml` async-invokes the job once if `latest.json` doesn't exist, so
+  the ticker list fills in a few minutes after the first deploy rather
+  than on the next Sunday.
+- API: `GET /companies`, `GET /companies/{symbol}`, `GET /lookup/{ticker}`
+  (auth required). Custom tickers are fetched live (NSE, then BSE, then
+  bare), cached 6h per warm Lambda, 20s deadline.
+- Auto-fill takes every figure from **one fiscal year**
+  (`nse_client.fetch_financials_with_period`). The older
+  `fetch_financials_for_ticker`, used by **training**, still falls back to
+  an older year per field when the latest is blank. Not changed in PR 2;
+  worth a deliberate look, since it mixes periods in training records.
+- Display data only: nothing from the snapshot feeds training.
+
 Four separate PRs, in this order:
 1. **UI shell** (front-end only): top bar with burger | logo + "WASLA" |
    breadcrumb | sign-out; collapsible left panel; pages Company Score,
