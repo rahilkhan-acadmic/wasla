@@ -18,6 +18,9 @@
   --accent-text: #1c5cab;
   --series-positive: #2a78d6;
   --series-negative: #e34948;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
   --status-good: #0ca30c;
   --status-warning: #fab219;
   --status-critical: #d03b3b;
@@ -46,6 +49,12 @@
     --accent-text: #86b6ef;
     --series-positive: #3987e5;
     --series-negative: #e66767;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
     --good-text: #4cc94c;
     --warning-text: #fab219;
     --critical-text: #f08080;
@@ -69,6 +78,9 @@
   --accent-text: #86b6ef;
   --series-positive: #3987e5;
   --series-negative: #e66767;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
   --good-text: #4cc94c;
   --warning-text: #fab219;
   --critical-text: #f08080;
@@ -1283,4 +1295,219 @@ form textarea {
   font-size: 0.85rem;
   margin: 1rem 0 0;
   color: var(--text-secondary);
+}
+
+/* ---------- Insolvency Watch ---------- */
+.method summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.method p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.outcome-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 1.25rem;
+}
+
+.outcome-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.outcome-tile .stat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.outcome-tile-active {
+  border-color: var(--text-secondary);
+  box-shadow: inset 0 0 0 1px var(--text-secondary);
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.timeline {
+  margin-top: 0.5rem;
+}
+
+.tl-axis,
+.tl-row {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.tl-axis {
+  height: 1.4rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.tl-row {
+  min-height: 30px;
+  border-radius: 6px;
+}
+
+.tl-row:hover {
+  background: var(--hover);
+}
+
+.tl-label-col {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 0.25rem;
+}
+
+.tl-track {
+  position: relative;
+  height: 100%;
+  min-height: 18px;
+  align-self: stretch;
+}
+
+.tl-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--hairline);
+}
+
+.tl-bar {
+  position: absolute;
+  top: 50%;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 4px;
+}
+
+/* Ongoing: the open end fades out rather than stopping as if decided. */
+.tl-bar-ongoing {
+  border-radius: 4px 0 0 4px;
+  -webkit-mask-image: linear-gradient(to right, #000 75%, transparent);
+  mask-image: linear-gradient(to right, #000 75%, transparent);
+}
+
+.tl-dur {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-legend {
+  margin-top: 0.9rem;
+}
+
+.case-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.case {
+  padding: 1rem 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.case-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.case-name {
+  font-weight: 600;
+}
+
+.outcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.case-facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+  margin: 0.6rem 0;
+  font-size: 0.85rem;
+}
+
+.case-facts dt {
+  color: var(--text-muted);
+}
+
+.case-facts dd {
+  margin: 0;
+}
+
+.case-summary {
+  margin: 0.4rem 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.case-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  font-size: 0.78rem;
+}
+
+.case-foot .chip {
+  margin: 0;
+}
+
+.sources {
+  color: var(--text-muted);
+}
+
+@media (max-width: 599px) {
+  .tl-axis,
+  .tl-row {
+    grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+  .tl-dur {
+    display: none;
+  }
 }

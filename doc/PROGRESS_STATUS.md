@@ -44,7 +44,30 @@ session as placeholder values, so SigV4 signing fails with
 
 ## Dashboard redesign: agreed plan (2026-11-15)
 
-Status: PR 1 merged (#39), PR 2 merged (#40), PR 3 open (Market Overview).
+Status: PR 1 (#39), PR 2 (#40) and PR 3 (#41) merged; PR 4 open (Insolvency Watch).
+
+**PR 4 as built:** `dashboard/data/insolvency_cases.json`, 20 hand-curated
+cases (13 acquired, 4 liquidated, 3 ongoing; 11 of RBI's first 12, Era Infra
+left out as unverifiable), each with at least one source link. Unverifiable
+fields are null rather than estimated. `tests/test_insolvency_data.py`
+validates the structure and keeps the `in_training_labels` flags in exact
+sync with `india_distress_labels.csv`. The page shows facts only, with no
+model scores. Status as of 2026-11-15; this needs a manual refresh as cases
+move (RCom, Videocon and Amtek Auto are the open ones).
+
+**Training-label errors found while curating (flagged, NOT fixed;
+these are model training labels, so changing them is a deliberate decision):**
+- `ESSARSHIPPING.BO` in `data/sources/india_distress_labels.csv` is Essar
+  **Shipping**, a different company from Essar **Steel**, whose insolvency
+  event the row describes. The model has been learning Essar Steel's label
+  against Essar Shipping's financials.
+- Videocon's row says admission `2018-01-31` and "later liquidated".
+  The NCLT admitted it on 6 June 2018, and it was not liquidated: Twin Star's
+  plan was approved in 2021, set aside by the NCLAT in January 2022, and the
+  CIRP continues.
+- DHFL's row uses `2019-11-29` (RBI's petition); the NCLT admission order is
+  dated 3 December 2019. Minor, but `event_date` is used for lead-time
+  filtering.
 
 **First real snapshot (2026-11-15 10:39 UTC, right after PR 2 deployed):**
 the constituent CSV downloaded fine from niftyindices.com (no seed needed);
