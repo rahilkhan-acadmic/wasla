@@ -3,6 +3,43 @@
 Scratch file for session handoff. Read this first when picking the
 session back up.
 
+## Where things stand (end of 2026-11-15 session)
+
+All work from this session is merged and deployed (PRs #37-#46). Nothing is
+open. The dashboard has four pages: Company Score, Market Overview,
+Insolvency Watch and Model Info.
+
+**Company Score, after PRs #44-#46:**
+- **Search (#45):** the ticker box searches by ticker (3+ characters) or
+  company name (5+). `GET /search` returns index members from the weekly
+  snapshot first, then Yahoo Finance matches (`yfinance.Search`, equities
+  only, cached 6h, 8s cap). If Yahoo fails, index results come back with
+  `online_ok: false`. Exactly one match auto-fills the form. This replaced
+  the old "Data available, autopopulate?" prompt.
+- **Scoring (#44):** figures are scored as soon as an auto-fill completes.
+  `dashboard/lib/useScorer.ts` fingerprints each request and never re-sends
+  identical inputs: unchanged -> skipped ("Scored ✓"); identical in-flight
+  -> joined; superseded responses -> dropped. POST /predict is unchanged.
+- **Market status column (#46):** a donut of the NSE LargeMidcap 250 by
+  Altman Z zone (safe / grey / distress) or model risk band, from
+  `/market/overview`, with the scored company outlined. Three columns at
+  1500px and wider, stacked below. `StatusDonut` is shared with Market
+  Overview's `RiskDonut`.
+
+**Data state:** the NSE snapshot was re-run manually at 10:57 UTC after the
+currency fix (#41): 250 fetched, 203 complete, 0 errors. Infosys and HCL Tech
+report in USD, so their market caps are dropped. The live training dataset
+still has the old Infosys record until the next weekly fetch (Sunday), since
+the #43 fix only applies to new fetches.
+
+**Not verified yet:**
+- **Live Yahoo search from Lambda (#45).** The sandbox can't reach Yahoo,
+  and `/search` needs a login token, so this needs a manual check on the
+  dashboard: type "zomat" and expect Zomato to auto-fill. Index-only
+  results with "Online search unavailable" mean Yahoo is failing from AWS.
+- **Whether real Indian companies score as polarised** (near 2% / 98%) as
+  the synthetic sample does. Look at the live Market Overview donut.
+
 ## First real human login works end-to-end (2026-11-15)
 
 Worked from a claude.ai/code **cloud** session for the first time (see
@@ -44,7 +81,10 @@ session as placeholder values, so SigV4 signing fails with
 
 ## Dashboard redesign: agreed plan (2026-11-15)
 
-Status: PR 1 (#39), PR 2 (#40) and PR 3 (#41) merged; PR 4 open (Insolvency Watch).
+Status: all four PRs merged: #39 (UI shell), #40 (NSE data layer),
+#41 (Market Overview), #42 (Insolvency Watch). Follow-ups #43 (training data),
+#44 (auto-score + dedup), #45 (search), #46 (market status column) are
+merged too; see "Where things stand" at the top.
 
 **PR 4 as built:** `dashboard/data/insolvency_cases.json`, 20 hand-curated
 cases (13 acquired, 4 liquidated, 3 ongoing; 11 of RBI's first 12, Era Infra
@@ -239,9 +279,25 @@ authenticated routes manually via the dashboard.
    against the live dashboard, after the two fixes in PR #37.
 3. Close AWS Support case `179258268000268` (needs the account owner's
    console login; `finance-distress-deploy` only has support read access).
-4. Dashboard redesign, PRs 1-4 in the plan at the top of this file.
-5. Look at the weekly retrain's actual eval numbers per run (still only
-   checked that executions `SUCCEEDED`; last one 2026-11-10).
+4. ~~Dashboard redesign, PRs 1-4.~~ **Done 2026-11-15** (#39-#42, plus
+   #44-#46).
+5. Check the live Yahoo search on the dashboard (see "Not verified yet" at
+   the top).
+6. Look at the weekly retrain's actual eval numbers per run (still only
+   checked that executions `SUCCEEDED`; last one 2026-11-10). After Sunday's
+   run, confirm Infosys's market value / liabilities ratio in
+   `datasets/real_companies.json` is ~1.5, not ~700.
+7. **US universe** for the market status column and Market Overview: a
+   weekly US snapshot (e.g. S&P 500) alongside the NSE one. The selector is
+   already in the card, disabled.
+8. **Mixed fiscal years in training records:** `fetch_financials_for_ticker`
+   fills a blank latest-year field from an older year. The dashboard path
+   doesn't; the training path should get the same one-year rule, checked
+   with `cross_validate.py` before and after.
+9. Upgrade Next.js (16.4.0 aborts every other build with a vulnerability
+   notice).
+10. Refresh `dashboard/data/insolvency_cases.json` as RCom, Videocon and
+    Amtek Auto move; `tests/test_insolvency_data.py` validates edits.
 
 ## TODO -- 2026-10-22
 
