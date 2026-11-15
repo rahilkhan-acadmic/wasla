@@ -372,7 +372,11 @@ export default function CompanyScorePage({
         {result && <ResultCard result={result} stale={resultStale} />}
       </div>
       <div className="split-market">
-        <MarketStatusCard result={result} companyUniverse={filled ? marketOf(filled.company) : null} />
+        <MarketStatusCard
+          result={result}
+          // Only while the ticker box still names the loaded company.
+          companyUniverse={filled && !stale ? marketOf(filled.company) : null}
+        />
       </div>
     </div>
   );
