@@ -1516,3 +1516,9 @@ form textarea {
 .result-stale .gauges {
   opacity: 0.55;
 }
+
+.combobox-status {
+  padding: 0.5rem 0.55rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}

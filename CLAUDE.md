@@ -27,6 +27,7 @@ python tests/test_healthy_sample_diversity.py
 python tests/test_model_info_endpoint.py
 python tests/test_auth.py
 python tests/test_market_data.py
+python tests/test_company_search.py
 python tests/test_market_overview.py
 python tests/test_insolvency_data.py
 python tests/test_india_training_labels.py

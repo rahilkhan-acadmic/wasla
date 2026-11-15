@@ -40,8 +40,8 @@ export default function ScoreForm({
     <section className="card">
       <h2>Company Score</h2>
       <p className="card-subtitle">
-        Pick a Nifty LargeMidcap 250 company to fill in its latest annual figures, or type any ticker. All figures
-        must be in the same currency and unit.
+        Search by ticker (3+ letters) or company name (5+ letters) to fill in the latest annual figures; a single
+        match fills in on its own. All figures must be in the same currency and unit.
       </p>
       <form
         onSubmit={(e) => {

@@ -384,6 +384,128 @@ def live_lookup(
 
 
 # --------------------------------------------------------------------------
+# Company search (ticker or name) for the dashboard's ticker box
+# --------------------------------------------------------------------------
+
+# Ticker-style matching starts at 3 characters, name matching at 5 -- short
+# name fragments ("tat", "ind") would match half the market.
+MIN_TICKER_QUERY = 3
+MIN_NAME_QUERY = 5
+MAX_SEARCH_RESULTS = 15
+_QUERY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 &.\-']{2,39}$")
+_SEARCH_TTL_SECONDS = 6 * 3600
+_search_cache: dict[str, tuple[float, list[dict]]] = {}
+
+
+def normalise_query(raw: str) -> Optional[str]:
+    q = " ".join((raw or "").split())
+    return q if _QUERY_RE.match(q) else None
+
+
+def _index_matches(snapshot: Optional[dict], q: str) -> list[dict]:
+    if not snapshot:
+        return []
+    qu = q.upper()
+    by_name = len(q) >= MIN_NAME_QUERY
+    ranked = []
+    for c in snapshot.get("companies", []):
+        sym, name = c["symbol"], c["name"].upper()
+        if sym == qu:
+            rank = 0
+        elif sym.startswith(qu):
+            rank = 1
+        elif by_name and name.startswith(qu):
+            rank = 2
+        elif qu in sym:
+            rank = 3
+        elif by_name and qu in name:
+            rank = 4
+        else:
+            continue
+        ranked.append((rank, sym, {
+            "symbol": sym,
+            "yahoo_ticker": c["yahoo_ticker"],
+            "name": c["name"],
+            "exchange": "NSE",
+            "industry": c.get("industry"),
+            "in_index": True,
+            "has_financials": bool(c.get("complete")),
+        }))
+    ranked.sort(key=lambda t: (t[0], t[1]))
+    return [r for _, _, r in ranked]
+
+
+def yahoo_search(q: str) -> list[dict]:
+    """Yahoo Finance's own search (ticker or company name). Raw quotes, each
+    with symbol, longname/shortname, exchDisp, quoteType; _online_matches
+    keeps the equities."""
+    import yfinance as yf
+    s = yf.Search(q, max_results=10, news_count=0, lists_count=0, include_cb=False,
+                  recommended=0, timeout=8, raise_errors=True)
+    return list(s.quotes or [])
+
+
+def _online_matches(q: str, searcher: Callable[[str], list[dict]], timeout_seconds: float) -> list[dict]:
+    key = q.lower()
+    hit = _search_cache.get(key)
+    if hit and time.time() - hit[0] < _SEARCH_TTL_SECONDS:
+        return hit[1]
+    quotes = _lookup_pool.submit(searcher, q).result(timeout=timeout_seconds)
+    qu = q.upper()
+    out = []
+    for x in quotes:
+        # Equities only: Yahoo also returns funds, indices, futures, crypto.
+        if x.get("quoteType") != "EQUITY" or not x.get("symbol"):
+            continue
+        yahoo = str(x["symbol"]).upper()
+        root = yahoo.split(".")[0]
+        # Below the name threshold only ticker-like matches count, so a
+        # 3-letter query doesn't return whatever names Yahoo associates.
+        if len(q) < MIN_NAME_QUERY and qu not in root:
+            continue
+        out.append({
+            "symbol": root,
+            "yahoo_ticker": yahoo,
+            "name": x.get("longname") or x.get("shortname") or yahoo,
+            "exchange": x.get("exchDisp") or x.get("exchange"),
+            "industry": x.get("industry") or x.get("sectorDisp") or None,
+            "in_index": False,
+            "has_financials": None,  # unknown until fetched
+        })
+    _search_cache[key] = (time.time(), out)
+    return out
+
+
+def search_companies(
+    q: str,
+    snapshot: Optional[dict],
+    searcher: Optional[Callable[[str], list[dict]]] = None,
+    timeout_seconds: float = 8.0,
+) -> dict:
+    """Index constituents first (from the weekly snapshot, instant), then
+    Yahoo Finance matches not already listed. If Yahoo is slow or down the
+    index matches are still returned, with online_ok=False."""
+    if searcher is None:
+        searcher = yahoo_search  # looked up at call time, so tests can patch it
+    results = _index_matches(snapshot, q)
+    online_ok = True
+    try:
+        online = _online_matches(q, searcher, timeout_seconds)
+    except Exception as e:  # timeout, network, Yahoo format change
+        logger.warning("Online search failed for %r: %s", q, e)
+        online, online_ok = [], False
+
+    seen = {r["symbol"] for r in results} | {r["yahoo_ticker"] for r in results}
+    for r in online:
+        # The same company on NSE (.NS) and BSE (.BO) is listed once: NSE first.
+        if r["yahoo_ticker"] in seen or r["symbol"] in seen:
+            continue
+        seen.update({r["yahoo_ticker"], r["symbol"]})
+        results.append(r)
+    return {"query": q, "results": results[:MAX_SEARCH_RESULTS], "online_ok": online_ok}
+
+
+# --------------------------------------------------------------------------
 # Lambda entry point for the weekly job
 # --------------------------------------------------------------------------
 
