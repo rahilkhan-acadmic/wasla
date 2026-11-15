@@ -10,11 +10,13 @@ Endpoints:
     POST /predict                Score a company given its financials + headlines
     POST /predict/demo/{ticker}  Score a company from the bundled synthetic dataset
     GET  /model/info             Current promoted model version + registry metadata
-    GET  /companies              Nifty LargeMidcap 250 list for the dashboard (weekly snapshot)
-    GET  /companies/{symbol}     Latest annual financials for one constituent
+    GET  /companies              Index constituents for the dashboard (weekly snapshot);
+                                 ?universe=nse (Nifty LargeMidcap 250, default) | us (S&P 500)
+    GET  /companies/{symbol}     Latest annual financials for one constituent (?universe= as above)
     GET  /lookup/{ticker}        Search a custom ticker (snapshot first, then live Yahoo)
-    GET  /search?q=              Find companies by ticker (3+ chars) or name (5+ chars)
-    GET  /market/overview        All 250 scored with the current model: risk bands + loss-making count
+    GET  /search?q=              Find companies by ticker (3+ chars) or name (5+ chars), both indexes
+    GET  /market/overview        A whole index scored with the current model: risk bands +
+                                 loss-making count (?universe= as above)
 
 Run locally:
     uvicorn app:app --host 0.0.0.0 --port 8000 --app-dir src
@@ -29,7 +31,7 @@ from typing import Optional
 
 import numpy as np
 import xgboost as xgb
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
 import auth
@@ -216,20 +218,32 @@ def _company_out(rec: dict, source: str, fetched_at: Optional[str]) -> CompanyFi
     )
 
 
+UniverseParam = Query("nse", description="nse = Nifty LargeMidcap 250, us = S&P 500")
+
+
+def _universe(universe_id: str) -> "market_data.Universe":
+    try:
+        return market_data.get_universe(universe_id)
+    except KeyError:
+        raise HTTPException(status_code=400,
+                            detail=f"Unknown universe {universe_id!r}; use one of: {', '.join(market_data.UNIVERSES)}")
+
+
 def _now_iso() -> str:
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 @app.get("/companies", response_model=CompaniesResponse)
-def list_companies(claims: dict = Depends(auth.require_auth)):
-    """Nifty LargeMidcap 250 constituents for the dashboard's ticker list.
+def list_companies(universe: str = UniverseParam, claims: dict = Depends(auth.require_auth)):
+    """An index's constituents for the dashboard's ticker list.
     available=False until the weekly snapshot job has run at least once."""
-    snap = market_data.load_snapshot()
+    u = _universe(universe)
+    snap = market_data.load_snapshot(universe=u.id)
     if not snap:
-        return CompaniesResponse(index=market_data.INDEX_NAME, available=False)
+        return CompaniesResponse(index=u.index, available=False)
     return CompaniesResponse(
-        index=snap.get("index", market_data.INDEX_NAME),
+        index=snap.get("index", u.index),
         available=True,
         generated_at=snap.get("generated_at"),
         data_source=snap.get("data_source"),
@@ -247,17 +261,19 @@ def list_companies(claims: dict = Depends(auth.require_auth)):
 
 
 @app.get("/companies/{symbol}", response_model=CompanyFinancialsOut)
-def company_financials(symbol: str, claims: dict = Depends(auth.require_auth)):
+def company_financials(symbol: str, universe: str = UniverseParam,
+                       claims: dict = Depends(auth.require_auth)):
     """Latest annual financials for one index constituent, from the weekly
     snapshot. A constituent whose snapshot record is incomplete is retried
     live once, since Yahoo coverage is patchy week to week."""
+    u = _universe(universe)
     ticker = market_data.normalise_ticker(symbol)
     if ticker is None:
         raise HTTPException(status_code=400, detail="Invalid ticker")
-    snap = market_data.load_snapshot()
+    snap = market_data.load_snapshot(universe=u.id)
     rec = market_data.find_company(snap, ticker)
     if rec is None:
-        raise HTTPException(status_code=404, detail=f"{ticker} is not in the {market_data.INDEX_NAME} snapshot")
+        raise HTTPException(status_code=404, detail=f"{ticker} is not in the {u.index} snapshot")
     if rec["complete"]:
         return _company_out(rec, "snapshot", snap.get("generated_at"))
     live = market_data.live_lookup(rec["yahoo_ticker"])
@@ -269,14 +285,20 @@ def company_financials(symbol: str, claims: dict = Depends(auth.require_auth)):
 
 @app.get("/lookup/{ticker}", response_model=LookupResponse)
 def lookup_ticker(ticker: str, claims: dict = Depends(auth.require_auth)):
-    """Search for a custom ticker. Index members come from the snapshot;
-    anything else is fetched live from Yahoo Finance (bare tickers are tried
-    as NSE, then BSE, then as-is)."""
+    """Search for a custom ticker. Index members come from the snapshots
+    (Nifty LargeMidcap 250 first, then the S&P 500); anything else is
+    fetched live from Yahoo Finance (bare tickers are tried as NSE, then
+    BSE, then as-is)."""
     t = market_data.normalise_ticker(ticker)
     if t is None:
         raise HTTPException(status_code=400, detail="Invalid ticker")
     snap = market_data.load_snapshot()
     rec = market_data.find_company(snap, t) if "." not in t or t.endswith(".NS") else None
+    if rec is None and not t.endswith((".NS", ".BO")):
+        us = market_data.load_snapshot(universe="us")
+        us_rec = market_data.find_company(us, t)
+        if us_rec is not None:
+            snap, rec = us, us_rec
     if rec is not None and rec["complete"]:
         return LookupResponse(query=t, found=True, in_index=True,
                               company=_company_out(rec, "snapshot", snap.get("generated_at")))
@@ -297,6 +319,8 @@ class SearchResult(BaseModel):
     industry: Optional[str] = None
     in_index: bool
     has_financials: Optional[bool] = None
+    universe: Optional[str] = None      # index the company is in: nse | us, else None
+    index_label: Optional[str] = None   # e.g. "LargeMidcap 250", "S&P 500"
 
 
 class SearchResponse(BaseModel):
@@ -308,18 +332,19 @@ class SearchResponse(BaseModel):
 @app.get("/search", response_model=SearchResponse)
 def search(q: str, claims: dict = Depends(auth.require_auth)):
     """Find companies by ticker (3+ characters) or name (5+ characters):
-    Nifty LargeMidcap 250 members from the snapshot first, then Yahoo
-    Finance matches beyond the index."""
+    Nifty LargeMidcap 250 and S&P 500 members from the snapshots first,
+    then Yahoo Finance matches beyond them."""
     query = market_data.normalise_query(q)
     if query is None:
         raise HTTPException(
             status_code=400,
             detail=f"Search needs {market_data.MIN_TICKER_QUERY}-40 characters: letters, digits, spaces or & . - '",
         )
-    return SearchResponse(**market_data.search_companies(query, market_data.load_snapshot()))
+    snapshots = [market_data.load_snapshot(universe=uid) for uid in market_data.UNIVERSES]
+    return SearchResponse(**market_data.search_companies(query, snapshots))
 
 
-# --- Market overview (Nifty LargeMidcap 250, scored with the live model) ------
+# --- Market overview (a whole index, scored with the live model) --------------
 
 class OverviewCompany(BaseModel):
     symbol: str
@@ -349,6 +374,7 @@ class UnscoredCompany(BaseModel):
 
 class MarketOverviewResponse(BaseModel):
     index: str
+    universe: str = "nse"
     available: bool
     snapshot_generated_at: Optional[str] = None
     model_version: Optional[str] = None
@@ -366,26 +392,29 @@ class MarketOverviewResponse(BaseModel):
     unscored: list[UnscoredCompany] = Field(default_factory=list)
 
 
-_overview_cache: dict = {"key": None, "value": None}
+_overview_cache: dict = {}  # universe -> {"key": (generated_at, model version), "value": ...}
 
 
-def _is_financial_balance_sheet(c: dict) -> bool:
+def _is_financial_balance_sheet(c: dict, u: "market_data.Universe") -> bool:
     """Banks, NBFCs and insurers present an unclassified balance sheet (no
-    current/non-current split). In the first real snapshot (2026-11-15) that
-    was 41 of the 47 incomplete companies, all in NSE's Financial Services
-    industry."""
+    current/non-current split). In the first real NSE snapshot (2026-11-15)
+    that was 41 of the 47 incomplete companies, all in NSE's Financial
+    Services industry; the S&P 500's equivalent is the GICS Financials sector."""
     missing = set(c.get("missing") or [])
-    return c.get("industry") == "Financial Services" and bool(
+    return c.get("industry") in u.financial_industries and bool(
         missing & {"current_assets", "current_liabilities"})
 
 
-def _build_overview(snap: dict, model, model_version: Optional[str]) -> MarketOverviewResponse:
+def _build_overview(snap: dict, model, model_version: Optional[str],
+                    u: Optional["market_data.Universe"] = None) -> MarketOverviewResponse:
+    u = u or market_data.get_universe(snap.get("universe"))
     companies = snap.get("companies", [])
     complete = [c for c in companies if c.get("complete")]
     scores = scoring.score_many(model, (c["financials"] for c in complete))
 
     out = MarketOverviewResponse(
-        index=snap.get("index", market_data.INDEX_NAME),
+        index=snap.get("index", u.index),
+        universe=u.id,
         available=True,
         snapshot_generated_at=snap.get("generated_at"),
         model_version=model_version,
@@ -409,9 +438,10 @@ def _build_overview(snap: dict, model, model_version: Optional[str]) -> MarketOv
     for c in companies:
         if not c.get("complete"):
             missing = c.get("missing") or []
-            if _is_financial_balance_sheet(c):
+            if _is_financial_balance_sheet(c, u):
                 category = "not_applicable"
-                reason = ("Bank, NBFC or insurer: its balance sheet has no current assets/liabilities "
+                kind = "Bank, NBFC or insurer" if u.id == "nse" else "Bank or insurer"
+                reason = (f"{kind}: its balance sheet has no current assets/liabilities "
                           "split, so this Altman-style model doesn't apply.")
             else:
                 category = "missing_data"
@@ -432,20 +462,23 @@ def _build_overview(snap: dict, model, model_version: Optional[str]) -> MarketOv
 
 
 @app.get("/market/overview", response_model=MarketOverviewResponse)
-def market_overview(claims: dict = Depends(auth.require_auth)):
-    """Every Nifty LargeMidcap 250 company with complete figures, scored with
-    the CURRENT model (not a stored score), so a mid-week model promotion is
+def market_overview(universe: str = UniverseParam, claims: dict = Depends(auth.require_auth)):
+    """Every company in the index with complete figures, scored with the
+    CURRENT model (not a stored score), so a mid-week model promotion is
     reflected immediately. One batched prediction; cached per
-    (snapshot, model version) in a warm container."""
-    snap = market_data.load_snapshot()
+    (universe, snapshot, model version) in a warm container."""
+    u = _universe(universe)
+    snap = market_data.load_snapshot(universe=u.id)
     if not snap:
-        return MarketOverviewResponse(index=market_data.INDEX_NAME, available=False)
+        return MarketOverviewResponse(index=u.index, universe=u.id, available=False)
     model = get_model()
     version = model_loader.current_version()
     key = (snap.get("generated_at"), version)
-    if _overview_cache["key"] != key:
-        _overview_cache.update(key=key, value=_build_overview(snap, model, version))
-    return _overview_cache["value"]
+    cached = _overview_cache.get(u.id)
+    if not cached or cached["key"] != key:
+        cached = {"key": key, "value": _build_overview(snap, model, version, u)}
+        _overview_cache[u.id] = cached
+    return cached["value"]
 
 
 # --- AWS Lambda entry point -------------------------------------------------

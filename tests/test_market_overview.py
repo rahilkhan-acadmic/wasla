@@ -199,7 +199,7 @@ def test_overview_cache_follows_snapshot_and_model_version():
     client, app_module = _client(_snapshot("2026-11-15T01:42:00Z"))
     h = _auth_header()
     first = client.get("/market/overview", headers=h).json()
-    key1 = app_module._overview_cache["key"]
+    key1 = app_module._overview_cache["nse"]["key"]
     assert key1 == ("2026-11-15T01:42:00Z", "local")
 
     # A new model version must re-score even with the same snapshot.
@@ -210,7 +210,7 @@ def test_overview_cache_follows_snapshot_and_model_version():
         second = client.get("/market/overview", headers=h).json()
     finally:
         app_module.get_model = real_get_model
-    assert app_module._overview_cache["key"] == ("2026-11-15T01:42:00Z", "v99")
+    assert app_module._overview_cache["nse"]["key"] == ("2026-11-15T01:42:00Z", "v99")
     assert second["model_version"] == "v99" and second["bands"] == first["bands"]
     model_loader.get_model(force_reload=True)
     print("PASS: overview cache is keyed on (snapshot, model version)")

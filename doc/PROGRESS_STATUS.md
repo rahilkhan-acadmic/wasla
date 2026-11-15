@@ -5,8 +5,8 @@ session back up.
 
 ## Where things stand (end of 2026-11-15 session)
 
-All work from this session is merged and deployed (PRs #37-#46). Nothing is
-open. The dashboard has four pages: Company Score, Market Overview,
+All work from this session is merged and deployed (PRs #37-#47), plus #48
+(S&P 500 universe). The dashboard has four pages: Company Score, Market Overview,
 Insolvency Watch and Model Info.
 
 **Company Score, after PRs #44-#46:**
@@ -25,6 +25,30 @@ Insolvency Watch and Model Info.
   `/market/overview`, with the scored company outlined. Three columns at
   1500px and wider, stacked below. `StatusDonut` is shared with Market
   Overview's `RiskDonut`.
+
+**S&P 500 universe (#48, this PR):** a second index next to the NSE one.
+- `src/market_data.py` has a `UNIVERSES` registry (`nse`, `us`). The S&P 500
+  list comes from the datasets/s-and-p-500-companies CSV on GitHub (S3 seed
+  at `market-data/us-sp500/constituents.csv` as fallback). Yahoo tickers use
+  dashes for class shares (BRK.B -> BRK-B). Industry = GICS sector.
+- New Lambda `distress-model-us-snapshot`, run as **4 shards** on staggered
+  Sunday schedules (02:00, 02:25, 02:50, 03:15 UTC): 500 companies don't fit
+  in one 15-minute run at the NSE pace (250 in ~12 min). Each shard writes
+  `market-data/us-sp500/parts/part-<i>-of-4.json`; once all four exist,
+  each shard re-merges them into `latest.json` (newer record wins). Past the
+  time budget, remaining companies are recorded as "Skipped", not lost.
+- API: `?universe=nse|us` on `/companies`, `/companies/{symbol}` and
+  `/market/overview`; `/search` and `/lookup` cover both indexes. HAL is a
+  real collision (Hindustan Aeronautics on NSE, Halliburton in the S&P 500),
+  so links carry the universe: `#/score/HAL/us`, `#/market/us`.
+- Dashboard: the market status column's selector is enabled and follows
+  the loaded company's market; Market Overview has an NSE 250 / S&P 500
+  switch. The "Try a sample company" card is removed (synthetic SYN tickers;
+  `/predict/demo` stays on the API for the post-deploy check).
+- **First US snapshot:** not run by CI (four shards at once would quadruple
+  the load on Yahoo). Invoke the four shards one after another by hand after
+  the deploy, or wait for Sunday. Then check the S&P 500's Financials sector:
+  US banks should land under "model doesn't apply" the way NSE's do.
 
 **Data state:** the NSE snapshot was re-run manually at 10:57 UTC after the
 currency fix (#41): 250 fetched, 203 complete, 0 errors. Infosys and HCL Tech
@@ -287,9 +311,8 @@ authenticated routes manually via the dashboard.
    checked that executions `SUCCEEDED`; last one 2026-11-10). After Sunday's
    run, confirm Infosys's market value / liabilities ratio in
    `datasets/real_companies.json` is ~1.5, not ~700.
-7. **US universe** for the market status column and Market Overview: a
-   weekly US snapshot (e.g. S&P 500) alongside the NSE one. The selector is
-   already in the card, disabled.
+7. **US universe:** shipped in #48 (S&P 500). Left: confirm the first full
+   sharded run's timing and completeness (see "S&P 500 universe" above).
 8. **Mixed fiscal years in training records:** `fetch_financials_for_ticker`
    fills a blank latest-year field from an older year. The dashboard path
    doesn't; the training path should get the same one-year rule, checked

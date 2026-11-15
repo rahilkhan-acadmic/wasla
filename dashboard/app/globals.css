@@ -489,12 +489,6 @@ form textarea {
   margin-top: 0.75rem;
 }
 
-.demo-tickers {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
 /* ---------- Financials chart ---------- */
 .empty-state {
   margin: 1.5rem 0;
@@ -1592,6 +1586,88 @@ form textarea {
   color: var(--brand-ink);
 }
 
+/* Link variant (Market Overview's index switch: the choice is in the URL). */
+.segmented .segmented-link {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.segmented .segmented-link:hover {
+  color: var(--text);
+}
+
+.segmented .segmented-link[aria-current="page"] {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.overview-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.overview-title h2 {
+  margin-bottom: 0;
+}
+
+.overview-title .segmented {
+  margin-bottom: 0;
+}
+
 .legend-you {
   color: var(--text);
+}
+
+/* ---------- Collapsible cards (Market Overview, Insolvency Watch) ---------- */
+.collapsible-head h2 {
+  margin: 0;
+}
+
+.collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.collapse-toggle:hover:not(:disabled) {
+  background: none;
+  color: var(--brand);
+}
+
+.collapse-toggle:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.collapse-chevron {
+  flex: none;
+  color: var(--text-secondary);
+  transition: transform 0.15s ease;
+}
+
+.collapse-toggle[aria-expanded="true"] .collapse-chevron {
+  transform: rotate(90deg);
+}
+
+.collapsible.collapsed .collapsible-head {
+  margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapse-chevron {
+    transition: none;
+  }
 }

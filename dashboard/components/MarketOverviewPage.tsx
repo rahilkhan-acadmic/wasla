@@ -1,8 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MarketOverviewResponse, OverviewCompany, RiskBand, getMarketOverview } from "../lib/api";
+import {
+  MarketOverviewResponse,
+  OverviewCompany,
+  RiskBand,
+  UNIVERSES,
+  Universe,
+  getMarketOverview,
+} from "../lib/api";
 import { routeHref } from "../lib/routes";
+import CollapsibleCard from "./CollapsibleCard";
 import RiskDonut, { BAND_META } from "./RiskDonut";
 
 type SortKey = "probability" | "name" | "industry" | "z";
@@ -15,7 +23,32 @@ function formatDate(iso: string | null): string {
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export default function MarketOverviewPage() {
+// The index switcher is a pair of links, so the choice lives in the URL
+// (#/market, #/market/us) and survives a reload or a shared link.
+function UniverseSwitch({ current }: { current: Universe }) {
+  return (
+    <nav className="segmented" aria-label="Index">
+      {UNIVERSES.map((u) => (
+        <a
+          key={u.id}
+          href={routeHref("market", u.id === "nse" ? undefined : u.id)}
+          aria-current={u.id === current ? "page" : undefined}
+          className="segmented-link"
+        >
+          {u.short}
+        </a>
+      ))}
+    </nav>
+  );
+}
+
+// Who the model has and hasn't seen, per index -- stated next to the scores.
+const CAVEAT: Record<Universe, string> = {
+  nse: "A screening signal, not a credit rating: the model has seen few Indian companies.",
+  us: "A screening signal, not a credit rating: the model's US training data is a few dozen EDGAR filers.",
+};
+
+export default function MarketOverviewPage({ universe = "nse" }: { universe?: Universe }) {
   const [data, setData] = useState<MarketOverviewResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [band, setBand] = useState<RiskBand | null>(null);
@@ -26,13 +59,21 @@ export default function MarketOverviewPage() {
 
   useEffect(() => {
     let cancelled = false;
-    getMarketOverview()
+    setData(null);
+    setError(null);
+    setBand(null);
+    setIndustry("");
+    setQuery("");
+    setLossOnly(false);
+    getMarketOverview(universe)
       .then((d) => !cancelled && setData(d))
       .catch((e) => !cancelled && setError(e instanceof Error ? e.message : "Could not load the overview"));
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [universe]);
+  const scoreHref = (symbol: string) => routeHref("score", symbol, universe === "nse" ? undefined : universe);
+  const financialsLabel = universe === "nse" ? "banks, NBFCs and insurers" : "banks and insurers";
 
   const industries = useMemo(
     () => Array.from(new Set((data?.companies ?? []).map((c) => c.industry).filter(Boolean) as string[])).sort(),
@@ -62,7 +103,10 @@ export default function MarketOverviewPage() {
   if (error) {
     return (
       <section className="card">
-        <h2>Market Overview</h2>
+        <div className="overview-title">
+          <h2>Market Overview</h2>
+          <UniverseSwitch current={universe} />
+        </div>
         <p className="error-note">{error}</p>
       </section>
     );
@@ -70,7 +114,10 @@ export default function MarketOverviewPage() {
   if (!data) {
     return (
       <section className="card">
-        <h2>Market Overview</h2>
+        <div className="overview-title">
+          <h2>Market Overview</h2>
+          <UniverseSwitch current={universe} />
+        </div>
         <p className="muted-note">Scoring the index…</p>
       </section>
     );
@@ -78,10 +125,13 @@ export default function MarketOverviewPage() {
   if (!data.available) {
     return (
       <section className="card">
-        <h2>Market Overview</h2>
+        <div className="overview-title">
+          <h2>Market Overview</h2>
+          <UniverseSwitch current={universe} />
+        </div>
         <p>
-          The {data.index} data hasn’t been collected yet. The weekly refresh runs on Sundays (and once right after
-          the first deploy); check back in a few minutes.
+          The {data.index} data hasn’t been collected yet. The weekly refresh runs on Sundays; check back after the
+          next run.
         </p>
       </section>
     );
@@ -108,27 +158,28 @@ export default function MarketOverviewPage() {
   const filtersActive = band || industry || query || lossOnly;
   const notApplicable = data.unscored.filter((u) => u.category === "not_applicable").length;
   const unscoredGroups: [string, typeof data.unscored][] = [
-    ["Model doesn’t apply (banks, NBFCs, insurers)", data.unscored.filter((u) => u.category === "not_applicable")],
+    [`Model doesn’t apply (${financialsLabel})`, data.unscored.filter((u) => u.category === "not_applicable")],
     ["Missing or unusable figures", data.unscored.filter((u) => u.category !== "not_applicable")],
   ];
 
   return (
     <div className="overview">
       <section className="card overview-head">
-        <h2>Market Overview — {data.index}</h2>
+        <div className="overview-title">
+          <h2>Market Overview — {data.index}</h2>
+          <UniverseSwitch current={universe} />
+        </div>
         <p className="card-subtitle">
           {data.scored} of {data.total} companies scored with model {data.model_version ?? "—"}, from annual figures
-          collected {formatDate(data.snapshot_generated_at)}. A screening signal, not a credit rating: the model has
-          seen few Indian companies.
+          collected {formatDate(data.snapshot_generated_at)}. {CAVEAT[universe]}
         </p>
       </section>
 
       <div className="overview-grid">
-        <section className="card">
-          <h2>Distress risk across the index</h2>
+        <CollapsibleCard title="Distress risk across the index" storageKey="market-risk">
           <p className="card-subtitle">Click a band to filter the table.</p>
           <RiskDonut bands={data.bands} thresholds={data.thresholds} selected={band} onSelect={setBand} />
-        </section>
+        </CollapsibleCard>
 
         <div className="stat-stack">
           <section className="card stat-tile">
@@ -148,7 +199,7 @@ export default function MarketOverviewPage() {
             <div className="stat-caption">
               {notApplicable > 0 && (
                 <>
-                  {notApplicable} banks, NBFCs and insurers, where this model doesn’t apply
+                  {notApplicable} {financialsLabel}, where this model doesn’t apply
                   {data.unscored.length - notApplicable > 0 ? "; " : "."}
                 </>
               )}
@@ -161,10 +212,11 @@ export default function MarketOverviewPage() {
         </div>
       </div>
 
-      <section className="card">
-        <div className="table-toolbar">
-          <h2>Companies</h2>
-          <div className="filters">
+      <CollapsibleCard
+        title="Companies"
+        storageKey="market-companies"
+        actions={
+          <>
             <input
               type="search"
               placeholder="Search ticker or name"
@@ -202,8 +254,9 @@ export default function MarketOverviewPage() {
                 Clear filters
               </button>
             )}
-          </div>
-        </div>
+          </>
+        }
+      >
         <p className="muted-note" aria-live="polite">
           Showing {rows.length} of {data.scored}. Open a company to see its figures and full score.
         </p>
@@ -223,7 +276,7 @@ export default function MarketOverviewPage() {
               {rows.map((c) => (
                 <tr key={c.symbol}>
                   <th scope="row">
-                    <a href={routeHref("score", c.symbol)} className="company-link">
+                    <a href={scoreHref(c.symbol)} className="company-link">
                       <span className="opt-symbol">{c.symbol}</span>
                       <span className="company-name">{c.name}</span>
                     </a>
@@ -247,14 +300,11 @@ export default function MarketOverviewPage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </CollapsibleCard>
 
       {data.unscored.length > 0 && (
-        <section className="card">
-          <details>
-            <summary>
-              <strong>Not scored ({data.unscored.length})</strong>
-            </summary>
+        <CollapsibleCard title={`Not scored (${data.unscored.length})`} storageKey="market-unscored" defaultOpen={false}>
+          <>
             {unscoredGroups
               .filter(([, list]) => list.length > 0)
               .map(([title, list]) => (
@@ -267,13 +317,13 @@ export default function MarketOverviewPage() {
                       {list.map((u) => (
                         <tr key={u.symbol}>
                           <th scope="row">
-                            <a href={routeHref("score", u.symbol)} className="company-link">
+                            <a href={scoreHref(u.symbol)} className="company-link">
                               <span className="opt-symbol">{u.symbol}</span>
                               <span className="company-name">{u.name}</span>
                             </a>
                           </th>
                           <td className="muted-cell">
-                            {u.category === "not_applicable" ? (u.industry ?? "Financial Services") : u.reason}
+                            {u.category === "not_applicable" ? (u.industry ?? "Financials") : u.reason}
                           </td>
                         </tr>
                       ))}
@@ -283,13 +333,14 @@ export default function MarketOverviewPage() {
               ))}
             {notApplicable > 0 && (
               <p className="muted-note">
-                Banks, NBFCs and insurers present an unclassified balance sheet, with no split into current and
+                {financialsLabel.charAt(0).toUpperCase() + financialsLabel.slice(1)} present an unclassified balance
+                sheet, with no split into current and
                 non-current assets and liabilities. Altman-style ratios, which this model is built on, need that split,
                 so these companies are left out rather than scored on made-up figures.
               </p>
             )}
-          </details>
-        </section>
+          </>
+        </CollapsibleCard>
       )}
     </div>
   );

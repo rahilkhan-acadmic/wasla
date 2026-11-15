@@ -1,5 +1,6 @@
 "use client";
 
+import CollapsibleCard from "./CollapsibleCard";
 import { useMemo, useState } from "react";
 import data from "../data/insolvency_cases.json";
 
@@ -113,10 +114,11 @@ export default function InsolvencyWatchPage() {
         ))}
       </div>
 
-      <section className="card">
-        <div className="table-toolbar">
-          <h2>Time in insolvency</h2>
-          <div className="filters">
+      <CollapsibleCard
+        title="Time in insolvency"
+        storageKey="insolvency-timeline"
+        actions={
+          <>
             <label className="check">
               <input type="checkbox" checked={rbiOnly} onChange={(e) => setRbiOnly(e.target.checked)} /> RBI’s first 12
               referrals (2017, as reported) only
@@ -129,26 +131,25 @@ export default function InsolvencyWatchPage() {
                 </button>
               </span>
             )}
-          </div>
-        </div>
+          </>
+        }
+      >
         <p className="card-subtitle">
           From admission to the deciding order (plan approval, completion or liquidation). Ongoing cases run to{" "}
           {formatDate(AS_OF)}.
         </p>
         <Timeline cases={visible} />
-      </section>
+      </CollapsibleCard>
 
-      <section className="card">
-        <h2>How much lenders got back</h2>
+      <CollapsibleCard title="How much lenders got back" storageKey="insolvency-recovery">
         <p className="card-subtitle">
           Share of financial creditors’ admitted claims recovered, as reported (approximate: reports differ on the
           base). Cases without a reliable figure are left out rather than estimated.
         </p>
         <RecoveryBars cases={visible.filter((c) => c.recovery_pct !== null)} />
-      </section>
+      </CollapsibleCard>
 
-      <section className="card">
-        <h2>Cases ({visible.length})</h2>
+      <CollapsibleCard title={`Cases (${visible.length})`} storageKey="insolvency-cases">
         <ul className="case-list">
           {visible.map((c) => (
             <li key={c.id} className="case">
@@ -209,7 +210,7 @@ export default function InsolvencyWatchPage() {
             </li>
           ))}
         </ul>
-      </section>
+      </CollapsibleCard>
     </div>
   );
 }

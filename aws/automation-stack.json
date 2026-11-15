@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Automated retrain pipeline plus the weekly NSE market-data snapshot for the dashboard. Retrain: two Lambda functions (train+evaluate, register) sharing the same image as the inference API, orchestrated by Step Functions, triggered weekly via EventBridge Scheduler. Deploy AFTER distress-model-lambda stack exists (reuses its image). Usage: aws cloudformation deploy --template-file aws/automation-stack.json --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest",
+  "Description": "Automated retrain pipeline plus the weekly NSE and S&P 500 market-data snapshots for the dashboard. Retrain: two Lambda functions (train+evaluate, register) sharing the same image as the inference API, orchestrated by Step Functions, triggered weekly via EventBridge Scheduler. Deploy AFTER distress-model-lambda stack exists (reuses its image). Usage: aws cloudformation deploy --template-file aws/automation-stack.json --stack-name distress-model-automation --profile finance-distress --region ap-south-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ImageUri=<account-id>.dkr.ecr.ap-south-1.amazonaws.com/distress-model-api:latest",
 
   "Parameters": {
     "ImageUri": {
@@ -134,6 +134,27 @@
       }
     },
 
+    "UsSnapshotFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "distress-model-us-snapshot",
+        "Description": "Weekly: S&P 500 constituents + latest annual financials (yfinance) to S3 for the dashboard's US market view. Runs as 4 shards (one schedule each), merged into latest.json once all parts exist. Display data only, never training data.",
+        "PackageType": "Image",
+        "Code": { "ImageUri": { "Ref": "ImageUri" } },
+        "ImageConfig": { "Command": ["market_data.snapshot_handler"] },
+        "Role": { "Fn::GetAtt": ["RetrainLambdaRole", "Arn"] },
+        "Timeout": 900,
+        "MemorySize": 1024,
+        "Environment": {
+          "Variables": {
+            "MODEL_BUCKET": { "Fn::Sub": "distress-model-${AWS::AccountId}" },
+            "MARKET_UNIVERSE": "us",
+            "SNAPSHOT_WORKERS": "6"
+          }
+        }
+      }
+    },
+
     "RetrainNotificationsTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -230,14 +251,17 @@
             }
           },
           {
-            "PolicyName": "invoke-nse-snapshot",
+            "PolicyName": "invoke-market-snapshots",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
                 {
                   "Effect": "Allow",
                   "Action": "lambda:InvokeFunction",
-                  "Resource": { "Fn::GetAtt": ["NseSnapshotFunction", "Arn"] }
+                  "Resource": [
+                    { "Fn::GetAtt": ["NseSnapshotFunction", "Arn"] },
+                    { "Fn::GetAtt": ["UsSnapshotFunction", "Arn"] }
+                  ]
                 }
               ]
             }
@@ -273,6 +297,74 @@
           "Arn": { "Fn::GetAtt": ["NseSnapshotFunction", "Arn"] },
           "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
           "Input": "{\"trigger_reason\": \"scheduled\"}",
+          "RetryPolicy": { "MaximumRetryAttempts": 1 }
+        }
+      }
+    },
+
+    "WeeklyUsSnapshotShard0Schedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": "distress-model-weekly-us-snapshot-0",
+        "Description": "S&P 500 snapshot, shard 1 of 4, every Sunday 02:00 UTC. Shards are staggered so only one hits Yahoo at a time, after the NSE run (01:30).",
+        "ScheduleExpression": "cron(0 2 ? * SUN *)",
+        "FlexibleTimeWindow": { "Mode": "OFF" },
+        "State": "ENABLED",
+        "Target": {
+          "Arn": { "Fn::GetAtt": ["UsSnapshotFunction", "Arn"] },
+          "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
+          "Input": "{\"trigger_reason\": \"scheduled\", \"universe\": \"us\", \"shard\": 0, \"shards\": 4}",
+          "RetryPolicy": { "MaximumRetryAttempts": 1 }
+        }
+      }
+    },
+
+    "WeeklyUsSnapshotShard1Schedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": "distress-model-weekly-us-snapshot-1",
+        "Description": "S&P 500 snapshot, shard 2 of 4, every Sunday 02:25 UTC. Shards are staggered so only one hits Yahoo at a time, after the NSE run (01:30).",
+        "ScheduleExpression": "cron(25 2 ? * SUN *)",
+        "FlexibleTimeWindow": { "Mode": "OFF" },
+        "State": "ENABLED",
+        "Target": {
+          "Arn": { "Fn::GetAtt": ["UsSnapshotFunction", "Arn"] },
+          "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
+          "Input": "{\"trigger_reason\": \"scheduled\", \"universe\": \"us\", \"shard\": 1, \"shards\": 4}",
+          "RetryPolicy": { "MaximumRetryAttempts": 1 }
+        }
+      }
+    },
+
+    "WeeklyUsSnapshotShard2Schedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": "distress-model-weekly-us-snapshot-2",
+        "Description": "S&P 500 snapshot, shard 3 of 4, every Sunday 02:50 UTC. Shards are staggered so only one hits Yahoo at a time, after the NSE run (01:30).",
+        "ScheduleExpression": "cron(50 2 ? * SUN *)",
+        "FlexibleTimeWindow": { "Mode": "OFF" },
+        "State": "ENABLED",
+        "Target": {
+          "Arn": { "Fn::GetAtt": ["UsSnapshotFunction", "Arn"] },
+          "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
+          "Input": "{\"trigger_reason\": \"scheduled\", \"universe\": \"us\", \"shard\": 2, \"shards\": 4}",
+          "RetryPolicy": { "MaximumRetryAttempts": 1 }
+        }
+      }
+    },
+
+    "WeeklyUsSnapshotShard3Schedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": "distress-model-weekly-us-snapshot-3",
+        "Description": "S&P 500 snapshot, shard 4 of 4, every Sunday 03:15 UTC. Shards are staggered so only one hits Yahoo at a time, after the NSE run (01:30).",
+        "ScheduleExpression": "cron(15 3 ? * SUN *)",
+        "FlexibleTimeWindow": { "Mode": "OFF" },
+        "State": "ENABLED",
+        "Target": {
+          "Arn": { "Fn::GetAtt": ["UsSnapshotFunction", "Arn"] },
+          "RoleArn": { "Fn::GetAtt": ["SchedulerRole", "Arn"] },
+          "Input": "{\"trigger_reason\": \"scheduled\", \"universe\": \"us\", \"shard\": 3, \"shards\": 4}",
           "RetryPolicy": { "MaximumRetryAttempts": 1 }
         }
       }

@@ -6,6 +6,7 @@ import {
   CompanyFinancials,
   CompanySummary,
   SearchResult,
+  Universe,
   getCompanies,
   getCompany,
   lookupTicker,
@@ -14,7 +15,6 @@ import {
 import { FormValues, OPTIONAL_FIELDS, REQUIRED_FIELDS } from "../lib/financials";
 import ScoreForm from "./ScoreForm";
 import TickerCombobox from "./TickerCombobox";
-import DemoTickerPicker from "./DemoTickerPicker";
 import FinancialsChart from "./FinancialsChart";
 import ResultCard from "./ResultCard";
 import MarketStatusCard from "./MarketStatusCard";
@@ -37,6 +37,8 @@ function asResult(c: CompanySummary): SearchResult {
     industry: c.industry,
     in_index: true,
     has_financials: c.has_financials,
+    universe: "nse",
+    index_label: "LargeMidcap 250",
   };
 }
 
@@ -48,6 +50,14 @@ function localMatches(companies: CompanySummary[], text: string): SearchResult[]
     .filter((c) => c.symbol.startsWith(q))
     .slice(0, MAX_LOCAL_OPTIONS)
     .map(asResult);
+}
+
+/** Which index's market a loaded company belongs to: NSE/BSE tickers are
+ * Indian, a bare ticker is US (Yahoo's convention), other suffixes neither. */
+function marketOf(c: CompanyFinancials): Universe | null {
+  const t = c.yahoo_ticker.toUpperCase();
+  if (t.endsWith(".NS") || t.endsWith(".BO")) return "nse";
+  return t.includes(".") ? null : "us";
 }
 
 const FIELD_LABELS: Record<string, string> = Object.fromEntries([...REQUIRED_FIELDS, ...OPTIONAL_FIELDS]);
@@ -80,10 +90,12 @@ type SearchState =
 export default function CompanyScorePage({
   onCrumbChange,
   initialSymbol = null,
+  initialUniverse = "nse",
 }: {
   onCrumbChange: (c: string | null) => void;
-  // From #/score/<SYMBOL>, e.g. a click in Market Overview's table.
+  // From #/score/<SYMBOL>[/<universe>], e.g. a click in Market Overview's table.
   initialSymbol?: string | null;
+  initialUniverse?: Universe;
 }) {
   const [ticker, setTicker] = useState("");
   const [values, setValues] = useState<FormValues>({});
@@ -155,7 +167,7 @@ export default function CompanyScorePage({
     setLoadingCompany(r.name || r.symbol);
     try {
       if (r.in_index) {
-        applyFill(await getCompany(r.symbol));
+        applyFill(await getCompany(r.symbol, r.universe ?? "nse"));
       } else {
         const found = await lookupTicker(r.yahoo_ticker);
         if (!found.found || !found.company) {
@@ -191,15 +203,21 @@ export default function CompanyScorePage({
   const openedSymbol = useRef<string | null>(null);
   useEffect(() => {
     const sym = initialSymbol?.trim().toUpperCase();
-    if (!sym || openedSymbol.current === sym) return;
-    openedSymbol.current = sym;
+    const key = sym ? `${initialUniverse}:${sym}` : null;
+    if (!sym || openedSymbol.current === key) return;
+    openedSymbol.current = key;
+    if (initialUniverse === "us") {
+      void handleSelect({ symbol: sym, yahoo_ticker: sym, name: sym, exchange: "NYSE/Nasdaq", industry: null,
+        in_index: true, has_financials: true, universe: "us", index_label: "S&P 500" });
+      return;
+    }
     const known = list?.companies.find((c) => c.symbol === sym);
     void handleSelect(
       known ? asResult(known) : { symbol: sym, yahoo_ticker: `${sym}.NS`, name: sym, exchange: "NSE",
-        industry: null, in_index: true, has_financials: true }
+        industry: null, in_index: true, has_financials: true, universe: "nse", index_label: "LargeMidcap 250" }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialSymbol]);
+  }, [initialSymbol, initialUniverse]);
 
   // Debounced backend search: ticker from 3 characters, name from 5.
   // Exactly one result is loaded straight into the form.
@@ -342,7 +360,6 @@ export default function CompanyScorePage({
             autoFilledFor.current = null;
           }}
         />
-        <DemoTickerPicker onResult={scorer.showExternal} />
       </div>
       <div className="split-right">
         <FinancialsChart
@@ -355,7 +372,7 @@ export default function CompanyScorePage({
         {result && <ResultCard result={result} stale={resultStale} />}
       </div>
       <div className="split-market">
-        <MarketStatusCard result={result} />
+        <MarketStatusCard result={result} companyUniverse={filled ? marketOf(filled.company) : null} />
       </div>
     </div>
   );
