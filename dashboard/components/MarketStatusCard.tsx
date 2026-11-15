@@ -125,7 +125,9 @@ export default function MarketStatusCard({
       {!error && !data && <p className="muted-note">Loading market…</p>}
       {data && !data.available && (
         <p className="muted-note">
-          The {data.index} data hasn’t been collected yet; the weekly refresh runs on Sundays.
+          The {data.index} data hasn’t been collected yet. It refreshes every Sunday, or{" "}
+          <a href={routeHref("market", universe === "nse" ? undefined : universe)}>refresh it now</a> from Market
+          Overview.
         </p>
       )}
 

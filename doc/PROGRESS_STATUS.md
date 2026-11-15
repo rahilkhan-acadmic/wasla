@@ -5,8 +5,9 @@ session back up.
 
 ## Where things stand (end of 2026-11-15 session)
 
-All work from this session is merged and deployed (PRs #37-#47), plus #48
-(S&P 500 universe). The dashboard has four pages: Company Score, Market Overview,
+All work from this session is merged and deployed (PRs #37-#49): #48 added
+the S&P 500, #49 fixed the market status column's universe. #50 (manual
+"Refresh now" for market data) was open at the time of writing. The dashboard has four pages: Company Score, Market Overview,
 Insolvency Watch and Model Info.
 
 **Company Score, after PRs #44-#46:**
@@ -45,10 +46,22 @@ Insolvency Watch and Model Info.
   the loaded company's market; Market Overview has an NSE 250 / S&P 500
   switch. The "Try a sample company" card is removed (synthetic SYN tickers;
   `/predict/demo` stays on the API for the post-deploy check).
-- **First US snapshot:** not run by CI (four shards at once would quadruple
-  the load on Yahoo). Invoke the four shards one after another by hand after
-  the deploy, or wait for Sunday. Then check the S&P 500's Financials sector:
-  US banks should land under "model doesn't apply" the way NSE's do.
+- **First US snapshot: done 2026-11-15 12:58 UTC** (shards invoked by hand,
+  one after another). 503 companies, **450 complete**, 0 fetch errors, 0
+  skipped for time, all USD. Of the 53 incomplete: **44 Financials** (banks,
+  insurers, brokers: AIG, C, MS, ...) without the current/non-current split,
+  shown as "model doesn't apply"; 9 others missing one figure (REITs ARE,
+  DLR, DOC, VTR and JNJ, HONA, VYLR without retained earnings; ELV, HUM
+  without the current split). As-of years: 410 FY2025, 93 FY2026.
+- **Timing surprise:** each US shard took ~40 s (126 companies), so the
+  whole S&P 500 takes ~3 min, not the ~30 planned for from the NSE run
+  (250 in ~12 min on Sunday 01:30). The 4-shard split is therefore far more
+  than needed; it's harmless, but one shard would do. Worth checking whether
+  the NSE run is slow because of NSE/Indian tickers on Yahoo or because of
+  rate limiting at that hour before changing anything.
+- **#49 (market status fix):** each score now carries its market (the
+  loaded company's, else an .NS/.BO suffix, else the index on screen); the
+  card switches to it for every new score and marks the company only there.
 
 **Data state:** the NSE snapshot was re-run manually at 10:57 UTC after the
 currency fix (#41): 250 fetched, 203 complete, 0 errors. Infosys and HCL Tech
@@ -311,8 +324,9 @@ authenticated routes manually via the dashboard.
    checked that executions `SUCCEEDED`; last one 2026-11-10). After Sunday's
    run, confirm Infosys's market value / liabilities ratio in
    `datasets/real_companies.json` is ~1.5, not ~700.
-7. **US universe:** shipped in #48 (S&P 500). Left: confirm the first full
-   sharded run's timing and completeness (see "S&P 500 universe" above).
+7. **US universe:** shipped (#48), first snapshot done (450/503 complete).
+   Left: look at the live S&P 500 donut, and consider 1 shard instead of 4
+   (see the timing note above).
 8. **Mixed fiscal years in training records:** `fetch_financials_for_ticker`
    fills a blank latest-year field from an older year. The dashboard path
    doesn't; the training path should get the same one-year rule, checked

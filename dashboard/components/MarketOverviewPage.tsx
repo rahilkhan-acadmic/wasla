@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   MarketOverviewResponse,
   OverviewCompany,
@@ -11,6 +11,7 @@ import {
 } from "../lib/api";
 import { routeHref } from "../lib/routes";
 import CollapsibleCard from "./CollapsibleCard";
+import RefreshControl from "./RefreshControl";
 import RiskDonut, { BAND_META } from "./RiskDonut";
 
 type SortKey = "probability" | "name" | "industry" | "z";
@@ -57,21 +58,28 @@ export default function MarketOverviewPage({ universe = "nse" }: { universe?: Un
   const [lossOnly, setLossOnly] = useState(false);
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: "probability", desc: true });
 
+  // Bumped when a refresh finishes: reload the data, keep the filters.
+  const [reloadKey, setReloadKey] = useState(0);
+  const reload = useCallback(() => setReloadKey((k) => k + 1), []);
+
   useEffect(() => {
-    let cancelled = false;
     setData(null);
-    setError(null);
     setBand(null);
     setIndustry("");
     setQuery("");
     setLossOnly(false);
+  }, [universe]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
     getMarketOverview(universe)
       .then((d) => !cancelled && setData(d))
       .catch((e) => !cancelled && setError(e instanceof Error ? e.message : "Could not load the overview"));
     return () => {
       cancelled = true;
     };
-  }, [universe]);
+  }, [universe, reloadKey]);
   const scoreHref = (symbol: string) => routeHref("score", symbol, universe === "nse" ? undefined : universe);
   const financialsLabel = universe === "nse" ? "banks, NBFCs and insurers" : "banks and insurers";
 
@@ -130,9 +138,10 @@ export default function MarketOverviewPage({ universe = "nse" }: { universe?: Un
           <UniverseSwitch current={universe} />
         </div>
         <p>
-          The {data.index} data hasn’t been collected yet. The weekly refresh runs on Sundays; check back after the
-          next run.
+          The {data.index} data hasn’t been collected yet. It refreshes automatically every Sunday, or start a
+          refresh now.
         </p>
+        <RefreshControl universe={universe} onFinished={reload} />
       </section>
     );
   }
@@ -173,6 +182,7 @@ export default function MarketOverviewPage({ universe = "nse" }: { universe?: Un
           {data.scored} of {data.total} companies scored with model {data.model_version ?? "—"}, from annual figures
           collected {formatDate(data.snapshot_generated_at)}. {CAVEAT[universe]}
         </p>
+        <RefreshControl universe={universe} onFinished={reload} />
       </section>
 
       <div className="overview-grid">
