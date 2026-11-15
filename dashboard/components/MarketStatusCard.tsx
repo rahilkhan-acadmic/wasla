@@ -29,6 +29,11 @@ const ZONES = [
   { key: "distress", label: "Distress zone", icon: "✕", colorVar: "var(--status-critical)", toneClass: "zone-distress", note: "Z below 1.81" },
 ];
 
+/** .NS/.BO tickers are Indian; a bare ticker could be either market. */
+function tickerMarket(ticker: string): Universe | null {
+  return /\.(NS|BO)$/i.test(ticker.trim()) ? "nse" : null;
+}
+
 function band(p: number, t: { moderate: number; high: number }): RiskBand {
   return p < t.moderate ? "low" : p < t.high ? "moderate" : "high";
 }
@@ -48,9 +53,23 @@ export default function MarketStatusCard({
   const [view, setView] = useState<View>("zone");
   const data = byUniverse[universe] ?? null;
 
+  // The market a score belongs to, fixed when the score arrives: the loaded
+  // company's market if known, else an .NS/.BO ticker's, else whichever
+  // index was on screen (manually typed figures). Each new score switches
+  // the card to its market; a later manual switch to the other index then
+  // shows no marker, since the company isn't in it.
+  const [resultUniverse, setResultUniverse] = useState<Universe | null>(null);
   useEffect(() => {
-    if (companyUniverse) setUniverse(companyUniverse);
-  }, [companyUniverse]);
+    if (!result) {
+      setResultUniverse(null);
+      return;
+    }
+    const u = companyUniverse ?? tickerMarket(result.ticker) ?? universe;
+    setResultUniverse(u);
+    setUniverse(u);
+    // Only a new result re-decides; companyUniverse/universe are read as of then.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
 
   useEffect(() => {
     if (byUniverse[universe]) return; // loaded once per page view
@@ -64,9 +83,8 @@ export default function MarketStatusCard({
     };
   }, [universe, byUniverse]);
 
-  // Don't mark an Indian company on the S&P 500 donut or vice versa;
-  // manually typed figures (market unknown) are marked wherever shown.
-  const marked = result && (!companyUniverse || companyUniverse === universe) ? result : null;
+  // Never mark an Indian company on the S&P 500 donut or vice versa.
+  const marked = result && resultUniverse === universe ? result : null;
 
   const zoneCounts = useMemo(() => {
     const c: Record<string, number> = { safe: 0, grey: 0, distress: 0 };
@@ -144,10 +162,10 @@ export default function MarketStatusCard({
             <>
               <strong>{marked.ticker}</strong> is outlined in its {view === "zone" ? "zone" : "band"}.{" "}
             </>
-          ) : result && companyUniverse ? (
+          ) : result && resultUniverse ? (
             <>
-              The company you scored is in the {UNIVERSES.find((u) => u.id === companyUniverse)?.short} market, so it
-              isn’t marked here.{" "}
+              <strong>{result.ticker}</strong> is scored against the{" "}
+              {UNIVERSES.find((u) => u.id === resultUniverse)?.short}, so it isn’t marked here.{" "}
             </>
           ) : (
             "Score a company to see where it sits. "
