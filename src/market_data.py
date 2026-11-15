@@ -159,6 +159,9 @@ class Universe:
     # Industry labels whose banks/insurers have no current/non-current
     # balance-sheet split (see app._is_financial_balance_sheet).
     financial_industries: frozenset
+    function_name: str = ""      # the snapshot job's Lambda
+    shards: int = 1              # how many runs the job is split into
+    expected_minutes: int = 15   # typical length of a full refresh, for the dashboard
 
     @property
     def snapshot_key(self) -> str:
@@ -179,6 +182,10 @@ class Universe:
     def part_key(self, shard: int, shards: int) -> str:
         return f"{self.prefix}/parts/part-{shard}-of-{shards}.json"
 
+    @property
+    def status_key(self) -> str:
+        return f"{self.prefix}/refresh-status.json"
+
 
 UNIVERSES: dict[str, Universe] = {
     "nse": Universe(
@@ -186,12 +193,14 @@ UNIVERSES: dict[str, Universe] = {
         prefix="market-data/nse-largemidcap250", constituent_urls=tuple(CONSTITUENT_URLS),
         parser=parse_constituents_csv, min_rows=200, yahoo_suffix=".NS", exchange="NSE",
         financial_industries=frozenset({"Financial Services"}),
+        function_name="distress-model-nse-snapshot", shards=1, expected_minutes=12,
     ),
     "us": Universe(
         id="us", index=SP500_INDEX_NAME, short_label="S&P 500",
         prefix="market-data/us-sp500", constituent_urls=tuple(SP500_CONSTITUENT_URLS),
         parser=parse_sp500_csv, min_rows=450, yahoo_suffix="", exchange="NYSE/Nasdaq",
         financial_industries=frozenset({"Financials"}),
+        function_name="distress-model-us-snapshot", shards=4, expected_minutes=30,
     ),
 }
 DEFAULT_UNIVERSE = "nse"
@@ -456,7 +465,9 @@ def shard_constituents(constituents: list[dict], shard: int, shards: int) -> lis
     return [c for i, c in enumerate(ordered) if i % shards == shard]
 
 
-_SNAPSHOT_TTL_SECONDS = 3600
+# Short enough that a manual refresh shows up within minutes in every warm
+# API container, not just the one that saw the run finish.
+_SNAPSHOT_TTL_SECONDS = 300
 # One cache per universe. _snapshot_cache is NSE's, kept as a module name
 # because tests reset it directly.
 _snapshot_cache: dict = {"value": None, "loaded_at": 0.0}
@@ -468,7 +479,7 @@ _snapshot_lock = threading.Lock()
 
 def load_snapshot(force: bool = False, universe: str = DEFAULT_UNIVERSE) -> Optional[dict]:
     """The latest snapshot, or None if the job hasn't produced one yet.
-    Cached for an hour per warm Lambda container."""
+    Cached for 5 minutes per warm Lambda container."""
     u = get_universe(universe)
     cache = _snapshot_caches[u.id]
     with _snapshot_lock:
@@ -719,6 +730,113 @@ def search_companies(
 
 
 # --------------------------------------------------------------------------
+# Refresh status + manual refresh ("Refresh now" on the dashboard)
+# --------------------------------------------------------------------------
+#
+# One small JSON document per universe, <prefix>/refresh-status.json:
+#   {"state": "running"|"done"|"failed", "trigger": "manual"|"scheduled"|...,
+#    "started_at", "finished_at", "progress", "error", "requested_by"}
+# Written by the API when a manual refresh is requested (so a second click
+# is refused before the job has even started) and by the job itself, so
+# Sunday's scheduled runs show up the same way.
+
+# A run "running" with no sign of life (heartbeat_at, written when each
+# part starts and ends) for this long died without reporting (timeout, out
+# of memory); a new refresh is then allowed. One part is at most a
+# 15-minute Lambda run, and Sunday's parts start 25 minutes apart, so the
+# longest healthy silence is ~25 minutes.
+_HEARTBEAT_WINDOW_SECONDS = 30 * 60
+
+
+class RefreshInProgress(Exception):
+    def __init__(self, status: dict):
+        super().__init__("A refresh is already running")
+        self.status = status
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _parse_iso(s: Optional[str]) -> Optional[float]:
+    if not s:
+        return None
+    try:
+        return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()
+    except ValueError:
+        return None
+
+
+def read_refresh_status(universe: str) -> Optional[dict]:
+    return _get_json(get_universe(universe).status_key)
+
+
+def write_refresh_status(universe: str, status: dict) -> None:
+    import boto3
+    boto3.client("s3").put_object(
+        Bucket=os.environ["MODEL_BUCKET"], Key=get_universe(universe).status_key,
+        Body=json.dumps(status, separators=(",", ":")).encode("utf-8"), ContentType="application/json")
+
+
+def effective_state(status: Optional[dict], universe: str, now: Optional[float] = None) -> str:
+    """idle (never ran), running, done, failed, or stale (said running but
+    is past its time budget: the run died without reporting back)."""
+    if not status:
+        return "idle"
+    state = status.get("state") or "idle"
+    if state == "running":
+        seen = [t for t in (_parse_iso(status.get("started_at")), _parse_iso(status.get("heartbeat_at"))) if t]
+        now = time.time() if now is None else now
+        if not seen or now - max(seen) > _HEARTBEAT_WINDOW_SECONDS:
+            return "stale"
+    return state
+
+
+def _invoke_async(function_name: str, event: dict) -> None:
+    import boto3
+    boto3.client("lambda").invoke(FunctionName=function_name, InvocationType="Event",
+                                  Payload=json.dumps(event).encode("utf-8"))
+
+
+def start_refresh(
+    universe: str,
+    requested_by: Optional[str] = None,
+    invoker: Optional[Callable[[str, dict], None]] = None,
+) -> dict:
+    """Start the snapshot job now (asynchronously). Raises RefreshInProgress
+    while a run is going. A sharded universe runs its shards one after
+    another: each starts the next ("chain"), so they never hit Yahoo at once."""
+    u = get_universe(universe)
+    current = read_refresh_status(u.id)
+    if effective_state(current, u.id) == "running":
+        raise RefreshInProgress(current)
+    now = _now_iso()
+    status = {"state": "running", "trigger": "manual", "started_at": now, "heartbeat_at": now,
+              "finished_at": None, "error": None, "requested_by": requested_by,
+              "progress": f"starting (0 of {u.shards} parts done)" if u.shards > 1 else "starting"}
+    write_refresh_status(u.id, status)
+    event = {"trigger_reason": "manual", "universe": u.id}
+    if u.shards > 1:
+        event.update(shard=0, shards=u.shards, chain=True)
+    try:
+        (invoker or _invoke_async)(os.environ.get(f"SNAPSHOT_FUNCTION_{u.id.upper()}", u.function_name), event)
+    except Exception as e:
+        write_refresh_status(u.id, {**status, "state": "failed", "finished_at": _now_iso(),
+                                    "error": f"Could not start the job: {type(e).__name__}: {e}"[:300]})
+        raise
+    return status
+
+
+def _update_status_quietly(universe: str, **fields) -> None:
+    """Status is advisory: a failed write must never fail the data job."""
+    try:
+        current = read_refresh_status(universe) or {}
+        write_refresh_status(universe, {**current, **fields})
+    except Exception as e:
+        logger.warning("Could not update refresh status for %s: %s", universe, e)
+
+
+# --------------------------------------------------------------------------
 # Lambda entry point for the weekly job
 # --------------------------------------------------------------------------
 
@@ -728,17 +846,62 @@ MAX_SHARDS = 10
 _DEADLINE_MARGIN_SECONDS = 90
 
 
-def snapshot_handler(event, context):
-    """Event (all optional): {"universe": "nse"|"us", "shard": i, "shards": N}.
-    shards=1 (the default) fetches the whole list and writes latest.json;
-    shards>1 fetches every N-th company, writes its part, then merges."""
+def snapshot_handler(event, context, invoker: Optional[Callable[[str, dict], None]] = None):
+    """Event (all optional): {"universe": "nse"|"us", "shard": i, "shards": N,
+    "chain": bool}. shards=1 (the default) fetches the whole list and writes
+    latest.json; shards>1 fetches every N-th company, writes its part, then
+    merges. chain=true (manual refresh) starts shard i+1 when shard i is
+    done. Progress goes to the universe's refresh-status.json."""
     event = event if isinstance(event, dict) else {}
     u = get_universe(event.get("universe") or os.environ.get("MARKET_UNIVERSE"))
     shards = int(event.get("shards", 1))
     shard = int(event.get("shard", 0))
     if not (1 <= shards <= MAX_SHARDS and 0 <= shard < shards):
         raise ValueError(f"Bad shard {shard} of {shards}")
+    trigger = str(event.get("trigger_reason") or "scheduled")[:40]
 
+    if shard == 0:
+        current = read_refresh_status_quietly(u.id)
+        # A manual request already wrote "running" moments ago; keep its
+        # started_at and requester. Otherwise (Sunday's schedule) start fresh.
+        if not (current and current.get("state") == "running" and current.get("trigger") == trigger
+                and effective_state(current, u.id) == "running"):
+            _update_status_quietly(u.id, state="running", trigger=trigger, started_at=_now_iso(),
+                                   finished_at=None, error=None, requested_by=None)
+    _update_status_quietly(u.id, heartbeat_at=_now_iso(),
+                           progress=f"part {shard + 1} of {shards} running" if shards > 1 else "running")
+    try:
+        summary = _run_snapshot(u, shard, shards, context)
+    except Exception as e:
+        _update_status_quietly(u.id, state="failed", finished_at=_now_iso(),
+                               error=f"Part {shard + 1} of {shards}: {type(e).__name__}: {e}"[:300])
+        raise
+
+    if shard == shards - 1:
+        _update_status_quietly(u.id, state="done", finished_at=_now_iso(), heartbeat_at=_now_iso(), error=None,
+                               progress=f"{shards} of {shards} parts done" if shards > 1 else None)
+    else:
+        _update_status_quietly(u.id, heartbeat_at=_now_iso(), progress=f"{shard + 1} of {shards} parts done")
+        if event.get("chain"):
+            name = getattr(context, "function_name", None) or u.function_name
+            try:
+                (invoker or _invoke_async)(name, {**event, "shard": shard + 1})
+            except Exception as e:
+                _update_status_quietly(u.id, state="failed", finished_at=_now_iso(),
+                                       error=f"Could not start part {shard + 2}: {type(e).__name__}: {e}"[:300])
+                raise
+    return summary
+
+
+def read_refresh_status_quietly(universe: str) -> Optional[dict]:
+    try:
+        return read_refresh_status(universe)
+    except Exception as e:
+        logger.warning("Could not read refresh status for %s: %s", universe, e)
+        return None
+
+
+def _run_snapshot(u: "Universe", shard: int, shards: int, context) -> dict:
     deadline = None
     if context is not None and hasattr(context, "get_remaining_time_in_millis"):
         deadline = time.time() + context.get_remaining_time_in_millis() / 1000 - _DEADLINE_MARGIN_SECONDS

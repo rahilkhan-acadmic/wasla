@@ -199,6 +199,46 @@ export function getMarketOverview(universe: Universe = "nse"): Promise<MarketOve
   return request<MarketOverviewResponse>(`/market/overview${universeQuery(universe)}`);
 }
 
+// --- Manual market-data refresh ---
+
+export type RefreshState = "idle" | "running" | "done" | "failed" | "stale";
+
+export interface RefreshStatus {
+  universe: Universe;
+  index: string;
+  state: RefreshState;
+  trigger: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+  progress: string | null;
+  error: string | null;
+  snapshot_generated_at: string | null;
+  expected_minutes: number;
+}
+
+export function getRefreshStatus(universe: Universe): Promise<RefreshStatus> {
+  return request<RefreshStatus>(`/market/refresh?universe=${universe}`);
+}
+
+/** Start a refresh. A run already in progress (409) is not an error here:
+ * its status is returned, so the page simply shows it. */
+export async function startRefresh(universe: Universe): Promise<RefreshStatus> {
+  const idToken = getIdToken();
+  const res = await fetch(`${API_BASE_URL}/market/refresh?universe=${universe}`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      ...(idToken ? { authorization: `Bearer ${idToken}` } : {}),
+    },
+  });
+  if (res.status === 409) {
+    const body = await res.json();
+    return body.detail.status as RefreshStatus;
+  }
+  if (!res.ok) throw new Error(`Refresh failed to start: ${res.status} ${await res.text()}`);
+  return res.json() as Promise<RefreshStatus>;
+}
+
 // --- Company search (ticker 3+ chars, name 5+ chars; index + Yahoo) ---
 
 export interface SearchResult {

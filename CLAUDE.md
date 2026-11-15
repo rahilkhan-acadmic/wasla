@@ -32,6 +32,7 @@ python tests/test_market_overview.py
 python tests/test_insolvency_data.py
 python tests/test_india_training_labels.py
 python tests/test_us_universe.py
+python tests/test_market_refresh.py
 cfn-lint aws/*-stack.json aws/infrastructure.json
 cd dashboard && npm ci && npm run build && cd ..
 ```

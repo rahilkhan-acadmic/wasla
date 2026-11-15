@@ -64,6 +64,29 @@
                 }
               ]
             }
+          },
+          {
+            "PolicyName": "market-data-manual-refresh",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "StartSnapshotJobs",
+                  "Effect": "Allow",
+                  "Action": ["lambda:InvokeFunction"],
+                  "Resource": [
+                    { "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:distress-model-nse-snapshot" },
+                    { "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:distress-model-us-snapshot" }
+                  ]
+                },
+                {
+                  "Sid": "WriteRefreshStatusOnly",
+                  "Effect": "Allow",
+                  "Action": ["s3:PutObject"],
+                  "Resource": { "Fn::Sub": "arn:aws:s3:::distress-model-${AWS::AccountId}/market-data/*/refresh-status.json" }
+                }
+              ]
+            }
           }
         ]
       }

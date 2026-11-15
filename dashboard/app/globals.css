@@ -1671,3 +1671,41 @@ form textarea {
     transition: none;
   }
 }
+
+/* ---------- Manual market-data refresh ---------- */
+.refresh-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.refresh-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.refresh-note {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.refresh-control .spin {
+  animation: refresh-spin 1s linear infinite;
+}
+
+@keyframes refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refresh-control .spin {
+    animation: none;
+  }
+}

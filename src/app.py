@@ -17,6 +17,8 @@ Endpoints:
     GET  /search?q=              Find companies by ticker (3+ chars) or name (5+ chars), both indexes
     GET  /market/overview        A whole index scored with the current model: risk bands +
                                  loss-making count (?universe= as above)
+    GET  /market/refresh         State of the index's data refresh (?universe= as above)
+    POST /market/refresh         Start a refresh now instead of waiting for Sunday (409 if one is running)
 
 Run locally:
     uvicorn app:app --host 0.0.0.0 --port 8000 --app-dir src
@@ -479,6 +481,69 @@ def market_overview(universe: str = UniverseParam, claims: dict = Depends(auth.r
         cached = {"key": key, "value": _build_overview(snap, model, version, u)}
         _overview_cache[u.id] = cached
     return cached["value"]
+
+
+# --- Manual market-data refresh ----------------------------------------------
+
+class RefreshStatusResponse(BaseModel):
+    universe: str
+    index: str
+    # idle (never ran) | running | done | failed | stale (said running, but
+    # is past its time budget: it died without reporting back)
+    state: str
+    trigger: Optional[str] = None       # manual | scheduled | ...
+    started_at: Optional[str] = None
+    finished_at: Optional[str] = None
+    progress: Optional[str] = None      # e.g. "2 of 4 parts done"
+    error: Optional[str] = None
+    snapshot_generated_at: Optional[str] = None
+    expected_minutes: int
+
+
+def _refresh_out(u: "market_data.Universe", status: Optional[dict]) -> RefreshStatusResponse:
+    status = status or {}
+    snap = market_data.load_snapshot(universe=u.id)
+    return RefreshStatusResponse(
+        universe=u.id, index=u.index, state=market_data.effective_state(status, u.id),
+        trigger=status.get("trigger"), started_at=status.get("started_at"),
+        finished_at=status.get("finished_at"), progress=status.get("progress"), error=status.get("error"),
+        snapshot_generated_at=(snap or {}).get("generated_at"), expected_minutes=u.expected_minutes,
+    )
+
+
+@app.get("/market/refresh", response_model=RefreshStatusResponse)
+def refresh_status(universe: str = UniverseParam, claims: dict = Depends(auth.require_auth)):
+    """Where the index's data refresh stands. Once a run is done, the next
+    snapshot read picks up its data (the snapshot cache is dropped here)."""
+    u = _universe(universe)
+    status = market_data.read_refresh_status(u.id)
+    if market_data.effective_state(status, u.id) == "done":
+        # The warm container caches the snapshot for an hour; if that copy
+        # predates the run that just finished, reload it.
+        snap = market_data.load_snapshot(universe=u.id)
+        started = market_data._parse_iso((status or {}).get("started_at"))
+        generated = market_data._parse_iso((snap or {}).get("generated_at"))
+        if started and (generated is None or generated < started):
+            market_data.load_snapshot(force=True, universe=u.id)
+    return _refresh_out(u, status)
+
+
+@app.post("/market/refresh", response_model=RefreshStatusResponse, status_code=202)
+def start_market_refresh(universe: str = UniverseParam, claims: dict = Depends(auth.require_auth)):
+    """Start the index's snapshot job now. The job runs in the background
+    (NSE ~12 min; S&P 500 ~30 min, as 4 parts one after another); poll
+    GET /market/refresh. Refused with 409 while a run is in progress."""
+    u = _universe(universe)
+    who = claims.get("cognito:username") or claims.get("sub")
+    try:
+        status = market_data.start_refresh(u.id, requested_by=who)
+    except market_data.RefreshInProgress as e:
+        raise HTTPException(status_code=409, detail={
+            "message": f"A {u.index} refresh is already running (started {e.status.get('started_at')}).",
+            "status": _refresh_out(u, e.status).model_dump()})
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Could not start the refresh: {type(e).__name__}")
+    return _refresh_out(u, status)
 
 
 # --- AWS Lambda entry point -------------------------------------------------

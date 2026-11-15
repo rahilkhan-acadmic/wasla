@@ -67,6 +67,9 @@ jobs:
       - name: Run US universe tests (S&P 500 parsing, sharded snapshot + merge, ?universe= API, cross-index search)
         run: python tests/test_us_universe.py
 
+      - name: Run manual market refresh tests (status file, 409 while running, chained US parts)
+        run: python tests/test_market_refresh.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

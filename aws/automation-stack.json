@@ -40,6 +40,12 @@
                   "Resource": { "Fn::Sub": "arn:aws:s3:::distress-model-${AWS::AccountId}/*" }
                 },
                 {
+                  "Sid": "ChainSnapshotShards",
+                  "Effect": "Allow",
+                  "Action": "lambda:InvokeFunction",
+                  "Resource": { "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:distress-model-us-snapshot" }
+                },
+                {
                   "Sid": "ReadWriteRegistryPointer",
                   "Effect": "Allow",
                   "Action": ["dynamodb:GetItem", "dynamodb:PutItem"],
