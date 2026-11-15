@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   signIn,
   completeNewPasswordChallenge,
@@ -8,6 +9,26 @@ import {
   submitMfaCode,
   AuthChallenge,
 } from "../lib/auth";
+
+// Name shown for this account inside the authenticator app.
+const TOTP_ISSUER = "Wasla Distress Dashboard";
+
+// Standard otpauth:// URI (Google Authenticator "Key Uri Format") that every
+// mainstream authenticator app reads from a QR code. Built and rendered
+// entirely in the browser -- the secret is never sent to a QR service.
+function otpauthUri(username: string, secret: string): string {
+  // encodeURIComponent, not URLSearchParams: the latter encodes spaces as
+  // "+", which some authenticator apps then display literally.
+  const label = encodeURIComponent(`${TOTP_ISSUER}:${username}`);
+  const query = [
+    `secret=${encodeURIComponent(secret)}`,
+    `issuer=${encodeURIComponent(TOTP_ISSUER)}`,
+    "algorithm=SHA1",
+    "digits=6",
+    "period=30",
+  ].join("&");
+  return `otpauth://totp/${label}?${query}`;
+}
 
 type Step =
   | "CREDENTIALS"
@@ -116,7 +137,22 @@ export default function LoginForm({ onAuthenticated }: { onAuthenticated: () => 
             run(() => verifySoftwareToken(code));
           }}
         >
-          <p>Scan this secret into an authenticator app (Google Authenticator, Authy, etc.), then enter the 6-digit code it generates:</p>
+          <p>
+            Scan this QR code with an authenticator app (Google Authenticator, Authy, etc.),
+            then enter the 6-digit code it generates:
+          </p>
+          <div className="mfa-qr">
+            <QRCodeSVG
+              value={otpauthUri(username, mfaSecret)}
+              size={200}
+              level="M"
+              marginSize={4}
+              bgColor="#ffffff"
+              fgColor="#000000"
+              title="Authenticator setup QR code"
+            />
+          </div>
+          <p>Can&apos;t scan it? Enter this key manually instead (time-based):</p>
           <p className="mfa-secret">{mfaSecret}</p>
           <label>
             Authenticator code

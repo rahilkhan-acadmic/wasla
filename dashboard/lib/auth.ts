@@ -25,7 +25,6 @@ export type AuthChallenge =
   | { type: "DONE"; idToken: string };
 
 let _pendingUser: CognitoUser | null = null;
-let _pendingAttrs: Record<string, unknown> = {};
 
 export function signIn(username: string, password: string): Promise<AuthChallenge> {
   return new Promise((resolve, reject) => {
@@ -39,8 +38,7 @@ export function signIn(username: string, password: string): Promise<AuthChalleng
           resolve({ type: "DONE", idToken: session.getIdToken().getJwtToken() });
         },
         onFailure: (err) => reject(err),
-        newPasswordRequired: (userAttributes) => {
-          _pendingAttrs = userAttributes;
+        newPasswordRequired: () => {
           resolve({ type: "NEW_PASSWORD_REQUIRED" });
         },
         totpRequired: () => resolve({ type: "SOFTWARE_TOKEN_MFA" }),
@@ -59,10 +57,12 @@ export function signIn(username: string, password: string): Promise<AuthChalleng
 export function completeNewPasswordChallenge(newPassword: string): Promise<AuthChallenge> {
   return new Promise((resolve, reject) => {
     if (!_pendingUser) return reject(new Error("No sign-in in progress"));
-    const cleanAttrs = { ..._pendingAttrs };
-    delete (cleanAttrs as Record<string, unknown>).email_verified;
-    delete (cleanAttrs as Record<string, unknown>).phone_number_verified;
-    _pendingUser.completeNewPasswordChallenge(newPassword, cleanAttrs, {
+    // Send no attributes back. Cognito's NEW_PASSWORD_REQUIRED challenge
+    // echoes the user's existing attributes (email, etc.), and re-sending any
+    // already-set one fails with "Cannot modify an already provided email".
+    // This pool has no required attributes the admin-created user could be
+    // missing, so the challenge only needs the new password.
+    _pendingUser.completeNewPasswordChallenge(newPassword, {}, {
       onSuccess: (session) => {
         _persistSession(session);
         resolve({ type: "DONE", idToken: session.getIdToken().getJwtToken() });
