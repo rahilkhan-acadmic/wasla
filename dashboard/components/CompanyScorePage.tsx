@@ -17,6 +17,7 @@ import TickerCombobox from "./TickerCombobox";
 import DemoTickerPicker from "./DemoTickerPicker";
 import FinancialsChart from "./FinancialsChart";
 import ResultCard from "./ResultCard";
+import MarketStatusCard from "./MarketStatusCard";
 import { buildRequest, requestSignature, useScorer } from "../lib/useScorer";
 
 const SEARCH_DEBOUNCE_MS = 400;
@@ -352,6 +353,9 @@ export default function CompanyScorePage({
           asOf={filled ? formatDate(filled.company.as_of) : null}
         />
         {result && <ResultCard result={result} stale={resultStale} />}
+      </div>
+      <div className="split-market">
+        <MarketStatusCard result={result} />
       </div>
     </div>
   );

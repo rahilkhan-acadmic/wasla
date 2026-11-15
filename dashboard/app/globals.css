@@ -418,10 +418,30 @@ button:disabled {
   max-width: 1200px;
 }
 
+/* Two columns: form | chart + result, with the market column under the
+   result. Three columns once there's room for all of them side by side. */
 @media (min-width: 1000px) {
   .split {
     grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr);
+    grid-template-areas: "left right" "left market";
     align-items: start;
+  }
+  .split-left {
+    grid-area: left;
+  }
+  .split-right {
+    grid-area: right;
+  }
+  .split-market {
+    grid-area: market;
+  }
+}
+
+@media (min-width: 1500px) {
+  .split {
+    max-width: 1640px;
+    grid-template-columns: minmax(320px, 4fr) minmax(0, 6fr) minmax(300px, 3.5fr);
+    grid-template-areas: "left right market";
   }
 }
 
@@ -1521,4 +1541,57 @@ form textarea {
   padding: 0.5rem 0.55rem;
   font-size: 0.82rem;
   color: var(--text-muted);
+}
+
+/* ---------- Market status column ---------- */
+.market-status .donut-wrap {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.market-status .donut {
+  align-self: center;
+}
+
+.market-status .donut-legend {
+  min-width: 0;
+}
+
+.universe select {
+  width: 100%;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.55rem;
+  margin: 0.4rem 0 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.segmented button {
+  border: none;
+  border-radius: 0;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.legend-you {
+  color: var(--text);
 }
