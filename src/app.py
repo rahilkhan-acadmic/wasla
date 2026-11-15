@@ -13,6 +13,7 @@ Endpoints:
     GET  /companies              Nifty LargeMidcap 250 list for the dashboard (weekly snapshot)
     GET  /companies/{symbol}     Latest annual financials for one constituent
     GET  /lookup/{ticker}        Search a custom ticker (snapshot first, then live Yahoo)
+    GET  /search?q=              Find companies by ticker (3+ chars) or name (5+ chars)
     GET  /market/overview        All 250 scored with the current model: risk bands + loss-making count
 
 Run locally:
@@ -286,6 +287,36 @@ def lookup_ticker(ticker: str, claims: dict = Depends(auth.require_auth)):
         live = {**live, "name": rec["name"], "industry": rec.get("industry"), "symbol": rec["symbol"]}
     return LookupResponse(query=t, found=True, in_index=rec is not None,
                           company=_company_out(live, "live", _now_iso()))
+
+
+class SearchResult(BaseModel):
+    symbol: str
+    yahoo_ticker: str
+    name: str
+    exchange: Optional[str] = None
+    industry: Optional[str] = None
+    in_index: bool
+    has_financials: Optional[bool] = None
+
+
+class SearchResponse(BaseModel):
+    query: str
+    results: list[SearchResult]
+    online_ok: bool  # False when Yahoo search failed and only index matches are shown
+
+
+@app.get("/search", response_model=SearchResponse)
+def search(q: str, claims: dict = Depends(auth.require_auth)):
+    """Find companies by ticker (3+ characters) or name (5+ characters):
+    Nifty LargeMidcap 250 members from the snapshot first, then Yahoo
+    Finance matches beyond the index."""
+    query = market_data.normalise_query(q)
+    if query is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Search needs {market_data.MIN_TICKER_QUERY}-40 characters: letters, digits, spaces or & . - '",
+        )
+    return SearchResponse(**market_data.search_companies(query, market_data.load_snapshot()))
 
 
 # --- Market overview (Nifty LargeMidcap 250, scored with the live model) ------

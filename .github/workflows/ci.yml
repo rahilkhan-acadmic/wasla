@@ -52,6 +52,9 @@ jobs:
       - name: Run NSE market-data tests (snapshot job + /companies, /lookup; fake Yahoo, moto S3)
         run: python tests/test_market_data.py
 
+      - name: Run company search tests (ticker 3+ / name 5+, index + Yahoo merge, fake Yahoo)
+        run: python tests/test_company_search.py
+
       - name: Run market overview tests (shared scoring, /market/overview bands + loss-making)
         run: python tests/test_market_overview.py
 

@@ -1,35 +1,30 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
-import { CompanySummary } from "../lib/api";
+import { useEffect, useId, useRef, useState } from "react";
+import { SearchResult } from "../lib/api";
 
-const MAX_OPTIONS = 50;
-
-function rank(c: CompanySummary, q: string): number {
-  const sym = c.symbol.toUpperCase();
-  const name = c.name.toUpperCase();
-  if (sym === q) return 0;
-  if (sym.startsWith(q)) return 1;
-  if (name.startsWith(q)) return 2;
-  if (sym.includes(q) || name.includes(q)) return 3;
-  return -1;
-}
-
-// Editable combobox (ARIA 1.2 pattern): type freely, or pick an index
-// constituent from the list. Picking calls onSelect; typing calls onChange,
-// and the parent decides whether to search for typed text.
+// Editable combobox (ARIA 1.2 pattern). The page decides what the options
+// are -- local index matches for 1-2 typed characters, backend search
+// results (index + Yahoo Finance) from 3 -- and this just shows them, with
+// keyboard support. Picking an option calls onSelect; typing calls onChange.
 export default function TickerCombobox({
   value,
   onChange,
   onSelect,
-  companies,
+  options,
+  status,
   hint,
+  closeSignal = 0,
 }: {
   value: string;
   onChange: (text: string) => void;
-  onSelect: (c: CompanySummary) => void;
-  companies: CompanySummary[];
+  onSelect: (r: SearchResult) => void;
+  options: SearchResult[];
+  status?: React.ReactNode; // e.g. "Searching…" shown inside the open list
   hint?: React.ReactNode;
+  // Bump to close the list from outside, e.g. after the page auto-fills a
+  // single search match while the input still has focus.
+  closeSignal?: number;
 }) {
   const id = useId();
   const listId = `${id}-list`;
@@ -38,61 +33,56 @@ export default function TickerCombobox({
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const matches = useMemo(() => {
-    const q = value.trim().toUpperCase();
-    if (!q) return companies.slice(0, MAX_OPTIONS);
-    return companies
-      .map((c) => [c, rank(c, q)] as const)
-      .filter(([, r]) => r >= 0)
-      .sort((a, b) => a[1] - b[1] || a[0].symbol.localeCompare(b[0].symbol))
-      .slice(0, MAX_OPTIONS)
-      .map(([c]) => c);
-  }, [value, companies]);
+  useEffect(() => {
+    if (closeSignal) setOpen(false);
+  }, [closeSignal]);
 
-  const showList = open && companies.length > 0 && matches.length > 0;
+  const showList = open && (options.length > 0 || !!status);
 
-  function choose(c: CompanySummary) {
-    onSelect(c);
+  function choose(r: SearchResult) {
+    onSelect(r);
     setOpen(false);
+  }
+
+  function scrollTo(i: number) {
+    const el = listRef.current?.querySelectorAll('[role="option"]')[i] as HTMLElement | undefined;
+    el?.scrollIntoView({ block: "nearest" });
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (!open) setOpen(true);
-      setActive((i) => Math.min(i + 1, matches.length - 1));
-      scrollActive(active + 1);
+      setOpen(true);
+      const i = Math.min(active + 1, options.length - 1);
+      setActive(i);
+      scrollTo(i);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActive((i) => Math.max(i - 1, 0));
-      scrollActive(active - 1);
-    } else if (e.key === "Enter" && showList && matches[active]) {
+      const i = Math.max(active - 1, 0);
+      setActive(i);
+      scrollTo(i);
+    } else if (e.key === "Enter" && showList && options[active]) {
       e.preventDefault();
-      choose(matches[active]);
+      choose(options[active]);
     } else if (e.key === "Escape") {
       setOpen(false);
     }
   }
 
-  function scrollActive(i: number) {
-    const el = listRef.current?.children[Math.max(0, Math.min(i, matches.length - 1))] as HTMLElement | undefined;
-    el?.scrollIntoView({ block: "nearest" });
-  }
-
   return (
     <div className="combobox">
-      <label htmlFor={`${id}-input`}>Ticker</label>
+      <label htmlFor={`${id}-input`}>Ticker or company name</label>
       <input
         id={`${id}-input`}
         role="combobox"
         aria-expanded={showList}
         aria-controls={listId}
         aria-autocomplete="list"
-        aria-activedescendant={showList && matches[active] ? `${id}-opt-${active}` : undefined}
+        aria-activedescendant={showList && options[active] ? `${id}-opt-${active}` : undefined}
         aria-describedby={hint ? hintId : undefined}
         autoComplete="off"
         spellCheck={false}
-        placeholder={companies.length ? "Search NSE LargeMidcap 250, or type any ticker" : "e.g. RELIANCE or TCS.NS"}
+        placeholder="e.g. TCS, RELIANCE.NS or “Tata Power”"
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
@@ -107,22 +97,29 @@ export default function TickerCombobox({
       />
       {showList && (
         <ul id={listId} role="listbox" className="combobox-list" ref={listRef}>
-          {matches.map((c, i) => (
+          {options.map((r, i) => (
             <li
-              key={c.symbol}
+              key={r.yahoo_ticker}
               id={`${id}-opt-${i}`}
               role="option"
               aria-selected={i === active}
               className={`combobox-option ${i === active ? "combobox-option-active" : ""}`}
               onMouseDown={(e) => e.preventDefault()}
               onMouseEnter={() => setActive(i)}
-              onClick={() => choose(c)}
+              onClick={() => choose(r)}
             >
-              <span className="opt-symbol">{c.symbol}</span>
-              <span className="opt-name">{c.name}</span>
-              {!c.has_financials && <span className="opt-flag">partial data</span>}
+              <span className="opt-symbol">{r.symbol}</span>
+              <span className="opt-name">{r.name}</span>
+              <span className="opt-flag">
+                {r.in_index ? (r.has_financials === false ? "partial data" : "LargeMidcap 250") : r.exchange ?? "online"}
+              </span>
             </li>
           ))}
+          {status && (
+            <li className="combobox-status" role="presentation">
+              {status}
+            </li>
+          )}
         </ul>
       )}
       {hint && (

@@ -5,11 +5,11 @@ import {
   CompaniesResponse,
   CompanyFinancials,
   CompanySummary,
-  LookupResponse,
-  PredictResponse,
+  SearchResult,
   getCompanies,
   getCompany,
   lookupTicker,
+  searchCompanies,
 } from "../lib/api";
 import { FormValues, OPTIONAL_FIELDS, REQUIRED_FIELDS } from "../lib/financials";
 import ScoreForm from "./ScoreForm";
@@ -19,8 +19,35 @@ import FinancialsChart from "./FinancialsChart";
 import ResultCard from "./ResultCard";
 import { buildRequest, requestSignature, useScorer } from "../lib/useScorer";
 
-const LOOKUP_DEBOUNCE_MS = 700;
-const TICKER_RE = /^[A-Za-z0-9][A-Za-z0-9&-]{1,19}(\.[A-Za-z]{1,3})?$/;
+const SEARCH_DEBOUNCE_MS = 400;
+// Backend search starts at 3 characters (ticker matching; name matching
+// from 5 -- see src/market_data.py). Below that the index list filters
+// locally, with no request.
+const MIN_SEARCH_CHARS = 3;
+const QUERY_RE = /^[A-Za-z0-9][A-Za-z0-9 &.\-']{2,39}$/;
+const MAX_LOCAL_OPTIONS = 50;
+
+function asResult(c: CompanySummary): SearchResult {
+  return {
+    symbol: c.symbol,
+    yahoo_ticker: `${c.symbol}.NS`,
+    name: c.name,
+    exchange: "NSE",
+    industry: c.industry,
+    in_index: true,
+    has_financials: c.has_financials,
+  };
+}
+
+/** 1-2 typed characters: rank index members locally (symbol first). */
+function localMatches(companies: CompanySummary[], text: string): SearchResult[] {
+  const q = text.trim().toUpperCase();
+  if (!q) return companies.slice(0, MAX_LOCAL_OPTIONS).map(asResult);
+  return companies
+    .filter((c) => c.symbol.startsWith(q))
+    .slice(0, MAX_LOCAL_OPTIONS)
+    .map(asResult);
+}
 
 const FIELD_LABELS: Record<string, string> = Object.fromEntries([...REQUIRED_FIELDS, ...OPTIONAL_FIELDS]);
 
@@ -41,12 +68,11 @@ function toFormValues(c: CompanyFinancials): FormValues {
   return v;
 }
 
-type LookupState =
+type SearchState =
   | { kind: "idle" }
   | { kind: "searching"; query: string }
-  | { kind: "prompt"; data: LookupResponse }
-  | { kind: "notfound"; query: string }
-  | { kind: "error"; message: string };
+  | { kind: "done"; query: string; results: SearchResult[]; onlineOk: boolean }
+  | { kind: "error"; query: string; message: string };
 
 // Split view: inputs on the left, chart and result on the right. Stacks to
 // one column on narrow screens (see .split in globals.css).
@@ -70,13 +96,17 @@ export default function CompanyScorePage({
   const [listError, setListError] = useState(false);
   const [filled, setFilled] = useState<{ company: CompanyFinancials; edited: boolean } | null>(null);
   const [loadingCompany, setLoadingCompany] = useState<string | null>(null);
-  const [lookup, setLookup] = useState<LookupState>({ kind: "idle" });
+  const [search, setSearch] = useState<SearchState>({ kind: "idle" });
+  const [notice, setNotice] = useState<{ kind: "info" | "error"; text: React.ReactNode } | null>(null);
 
-  // Only text the user typed is searched; picking from the list sets this to
-  // null so a selection never triggers a second, redundant lookup.
+  // Only text the user typed is searched; picking an option sets this to
+  // null so a selection never triggers a second, redundant search.
   const [typedQuery, setTypedQuery] = useState<string | null>(null);
-  const declined = useRef(new Set<string>());
-  const lookupSeq = useRef(0);
+  const searchSeq = useRef(0);
+  // The single-match auto-fill fires once per company, not on every
+  // further keystroke that still matches only it.
+  const autoFilledFor = useRef<string | null>(null);
+  const [closeList, setCloseList] = useState(0);
 
   useEffect(() => {
     onCrumbChange(result ? result.ticker : null);
@@ -114,15 +144,33 @@ export default function CompanyScorePage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values, ticker]);
 
-  async function handleSelect(c: CompanySummary) {
-    setTicker(c.symbol);
+  /** Load an option's latest figures into the form (then auto-score). */
+  async function handleSelect(r: SearchResult, how: "picked" | "only-match" = "picked") {
+    setTicker(r.symbol);
     setTypedQuery(null);
-    setLookup({ kind: "idle" });
-    setLoadingCompany(c.symbol);
+    setSearch({ kind: "idle" });
+    setNotice(null);
+    setCloseList((n) => n + 1);
+    setLoadingCompany(r.name || r.symbol);
     try {
-      applyFill(await getCompany(c.symbol));
+      if (r.in_index) {
+        applyFill(await getCompany(r.symbol));
+      } else {
+        const found = await lookupTicker(r.yahoo_ticker);
+        if (!found.found || !found.company) {
+          setNotice({
+            kind: "info",
+            text: <>No financial statements available online for {r.name}. Enter the figures manually.</>,
+          });
+          return;
+        }
+        applyFill(found.company);
+      }
+      if (how === "only-match") {
+        setNotice({ kind: "info", text: <>Only one match, <strong>{r.name}</strong>: its figures are filled in.</> });
+      }
     } catch (err) {
-      setLookup({ kind: "error", message: err instanceof Error ? err.message : "Could not load company data" });
+      setNotice({ kind: "error", text: err instanceof Error ? err.message : "Could not load company data" });
     } finally {
       setLoadingCompany(null);
     }
@@ -131,7 +179,11 @@ export default function CompanyScorePage({
   function handleTyped(text: string) {
     setTicker(text);
     setTypedQuery(text);
-    if (lookup.kind !== "idle") setLookup({ kind: "idle" });
+    setNotice(null);
+    if (text.trim().length < MIN_SEARCH_CHARS) {
+      setSearch({ kind: "idle" });
+      autoFilledFor.current = null;
+    }
   }
 
   // Arriving via #/score/<SYMBOL>: load that company as if picked from the list.
@@ -141,34 +193,62 @@ export default function CompanyScorePage({
     if (!sym || openedSymbol.current === sym) return;
     openedSymbol.current = sym;
     const known = list?.companies.find((c) => c.symbol === sym);
-    handleSelect(known ?? { symbol: sym, name: sym, industry: null, has_financials: true, as_of: null });
+    void handleSelect(
+      known ? asResult(known) : { symbol: sym, yahoo_ticker: `${sym}.NS`, name: sym, exchange: "NSE",
+        industry: null, in_index: true, has_financials: true }
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSymbol]);
 
-  // Debounced background search for a typed ticker.
+  // Debounced backend search: ticker from 3 characters, name from 5.
+  // Exactly one result is loaded straight into the form.
   useEffect(() => {
-    const q = typedQuery?.trim().toUpperCase() ?? "";
-    if (!q || !TICKER_RE.test(q) || declined.current.has(q)) return;
-    if (filled && filled.company.symbol === q) return;
-    const seq = ++lookupSeq.current;
+    const q = typedQuery?.trim().replace(/\s+/g, " ") ?? "";
+    if (q.length < MIN_SEARCH_CHARS || !QUERY_RE.test(q)) return;
+    const seq = ++searchSeq.current;
     const timer = setTimeout(async () => {
-      setLookup({ kind: "searching", query: q });
+      setSearch({ kind: "searching", query: q });
       try {
-        const r = await lookupTicker(q);
-        if (seq !== lookupSeq.current) return; // a newer keystroke won
-        setLookup(r.found && r.company ? { kind: "prompt", data: r } : { kind: "notfound", query: q });
+        const r = await searchCompanies(q);
+        if (seq !== searchSeq.current) return; // a newer keystroke won
+        setSearch({ kind: "done", query: q, results: r.results, onlineOk: r.online_ok });
+        if (r.results.length === 1 && autoFilledFor.current !== r.results[0].yahoo_ticker) {
+          autoFilledFor.current = r.results[0].yahoo_ticker;
+          void handleSelect(r.results[0], "only-match");
+        }
       } catch (err) {
-        if (seq !== lookupSeq.current) return;
-        setLookup({ kind: "error", message: err instanceof Error ? err.message : "Search failed" });
+        if (seq !== searchSeq.current) return;
+        setSearch({ kind: "error", query: q, message: err instanceof Error ? err.message : "Search failed" });
       }
-    }, LOOKUP_DEBOUNCE_MS);
+    }, SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
-  }, [typedQuery, filled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typedQuery]);
+
+  const typedLen = typedQuery?.trim().length ?? 0;
+  const options: SearchResult[] =
+    typedQuery !== null && typedLen >= MIN_SEARCH_CHARS
+      ? search.kind === "done"
+        ? search.results
+        : []
+      : localMatches(list?.companies ?? [], typedQuery ?? "");
+  const listStatus: React.ReactNode =
+    typedQuery === null || typedLen < MIN_SEARCH_CHARS
+      ? null
+      : search.kind === "searching" || search.kind === "idle"
+        ? "Searching…"
+        : search.kind === "error"
+          ? `Search failed: ${search.message}`
+          : search.results.length === 0
+            ? `No companies found for “${search.query}”.`
+            : !search.onlineOk
+              ? "Online search unavailable; showing index matches only."
+              : null;
 
   const listHint = listError ? (
-    "Company list unavailable right now; you can still type any ticker."
+    "Company list unavailable right now; you can still search any ticker or name."
   ) : list && !list.available ? (
-    "The NSE company list is being prepared (first weekly refresh). You can still type any ticker."
+    "The NSE company list is being prepared (first weekly refresh). You can still search any ticker or name."
   ) : list?.available ? (
     <>
       {list.companies.length} companies from the {list.index}, refreshed {formatDate(list.generated_at)}.
@@ -177,50 +257,11 @@ export default function CompanyScorePage({
     "Loading company list…"
   );
 
-  let notice: React.ReactNode = null;
-  if (loadingCompany) {
-    notice = <p className="notice notice-info">Loading {loadingCompany}’s latest figures…</p>;
-  } else if (lookup.kind === "searching") {
-    notice = <p className="notice notice-info">Searching online for {lookup.query}…</p>;
-  } else if (lookup.kind === "prompt" && lookup.data.company) {
-    const c = lookup.data.company;
-    notice = (
-      <div className="notice notice-prompt" role="alert">
-        <p>
-          <strong>Data available</strong> for {c.name} ({c.yahoo_ticker})
-          {c.as_of && <>, financial year ending {formatDate(c.as_of)}</>}. Do you want to autopopulate the fields?
-        </p>
-        <div className="notice-actions">
-          <button
-            type="button"
-            className="button-primary"
-            onClick={() => {
-              applyFill(c);
-              setLookup({ kind: "idle" });
-              setTypedQuery(null);
-            }}
-          >
-            Yes, fill in
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              declined.current.add(lookup.data.query);
-              setLookup({ kind: "idle" });
-            }}
-          >
-            No
-          </button>
-        </div>
-      </div>
-    );
-  } else if (lookup.kind === "notfound") {
-    notice = (
-      <p className="notice notice-info">No online data found for {lookup.query}. Enter the figures manually.</p>
-    );
-  } else if (lookup.kind === "error") {
-    notice = <p className="notice notice-error">{lookup.message}</p>;
-  }
+  const noticeEl: React.ReactNode = loadingCompany ? (
+    <p className="notice notice-info">Loading {loadingCompany}’s latest figures…</p>
+  ) : notice ? (
+    <p className={`notice notice-${notice.kind}`}>{notice.text}</p>
+  ) : null;
 
   // The ticker box no longer names the company the figures came from.
   const typed = ticker.trim().toUpperCase();
@@ -261,14 +302,16 @@ export default function CompanyScorePage({
             <TickerCombobox
               value={ticker}
               onChange={handleTyped}
-              onSelect={handleSelect}
-              companies={list?.companies ?? []}
+              onSelect={(r) => void handleSelect(r)}
+              options={options}
+              status={listStatus}
               hint={listHint}
+              closeSignal={closeList}
             />
           }
           notice={
             <>
-              {notice}
+              {noticeEl}
               {sourceNote}
             </>
           }
@@ -293,7 +336,9 @@ export default function CompanyScorePage({
             autoScorePending.current = false;
             setFilled(null);
             setTypedQuery(null);
-            setLookup({ kind: "idle" });
+            setSearch({ kind: "idle" });
+            setNotice(null);
+            autoFilledFor.current = null;
           }}
         />
         <DemoTickerPicker onResult={scorer.showExternal} />

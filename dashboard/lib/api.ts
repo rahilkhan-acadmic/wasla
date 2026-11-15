@@ -181,3 +181,25 @@ export interface MarketOverviewResponse {
 export function getMarketOverview(): Promise<MarketOverviewResponse> {
   return request<MarketOverviewResponse>("/market/overview");
 }
+
+// --- Company search (ticker 3+ chars, name 5+ chars; index + Yahoo) ---
+
+export interface SearchResult {
+  symbol: string;
+  yahoo_ticker: string;
+  name: string;
+  exchange: string | null;
+  industry: string | null;
+  in_index: boolean;
+  has_financials: boolean | null;
+}
+
+export interface SearchResponse {
+  query: string;
+  results: SearchResult[];
+  online_ok: boolean;
+}
+
+export function searchCompanies(q: string): Promise<SearchResponse> {
+  return request<SearchResponse>(`/search?q=${encodeURIComponent(q)}`);
+}
