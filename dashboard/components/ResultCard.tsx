@@ -9,12 +9,17 @@ function probabilityBand(p: number): { key: "low" | "medium" | "high"; label: st
   return { key: "high", label: "High risk", icon: "✕" };
 }
 
-export default function ResultCard({ result }: { result: PredictResponse }) {
+export default function ResultCard({ result, stale = false }: { result: PredictResponse; stale?: boolean }) {
   const band = probabilityBand(result.probability_distressed);
 
   return (
-    <section className="card result-card" aria-live="polite">
+    <section className={`card result-card ${stale ? "result-stale" : ""}`} aria-live="polite">
       <h2>Result — {result.ticker}</h2>
+      {stale && (
+        <p className="notice notice-info">
+          The figures have changed since this score. Press <strong>Score</strong> to update it.
+        </p>
+      )}
 
       <div className="hero">
         <div className="hero-figure">{(result.probability_distressed * 100).toFixed(1)}%</div>

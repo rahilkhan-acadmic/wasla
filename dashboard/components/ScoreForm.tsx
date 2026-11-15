@@ -1,72 +1,41 @@
 "use client";
 
-import { useState } from "react";
-import { predict, PredictResponse } from "../lib/api";
 import { FormValues, OPTIONAL_FIELDS, REQUIRED_FIELDS, formatCompact, parseValue } from "../lib/financials";
 
-// The form's values live in the parent (CompanyScorePage) so the financials
-// chart beside it can redraw as the user types.
+// Presentational: the values, headlines and scoring state all live in
+// CompanyScorePage (see lib/useScorer.ts), which also scores automatically
+// after an auto-fill and never re-sends identical inputs.
 export default function ScoreForm({
-  ticker,
   tickerField,
   notice,
   values,
   currency = null,
+  headlines,
+  onHeadlinesChange,
   onValuesChange,
-  onResult,
+  canScore,
+  unchanged,
+  loading,
+  error,
+  onScore,
   onClear,
 }: {
-  ticker: string;
   // The ticker input (a searchable combobox) and any auto-fill notice are
   // owned by CompanyScorePage, which knows about the NSE company list.
   tickerField: React.ReactNode;
   notice?: React.ReactNode;
   values: FormValues;
   currency?: string | null;
+  headlines: string;
+  onHeadlinesChange: (h: string) => void;
   onValuesChange: (v: FormValues) => void;
-  onResult: (r: PredictResponse | null) => void;
+  canScore: boolean; // ticker + every required figure present
+  unchanged: boolean; // the result on screen is for exactly these inputs
+  loading: boolean;
+  error: string | null;
+  onScore: () => void;
   onClear: () => void;
 }) {
-  const [headlines, setHeadlines] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const missingRequired = !ticker || REQUIRED_FIELDS.some(([key]) => parseValue(values[key]) === null);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (missingRequired) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const financials: Record<string, number> = {};
-      for (const [key] of [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS]) {
-        const v = parseValue(values[key]);
-        if (v !== null) financials[key] = v;
-      }
-      const response = await predict({
-        ticker,
-        financials: financials as any,
-        headlines: headlines
-          .split("\n")
-          .map((h) => h.trim())
-          .filter(Boolean),
-      });
-      onResult(response);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Request failed");
-      onResult(null);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function handleClear() {
-    setHeadlines("");
-    setError(null);
-    onClear();
-  }
-
   return (
     <section className="card">
       <h2>Company Score</h2>
@@ -74,7 +43,12 @@ export default function ScoreForm({
         Pick a Nifty LargeMidcap 250 company to fill in its latest annual figures, or type any ticker. All figures
         must be in the same currency and unit.
       </p>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onScore();
+        }}
+      >
         {tickerField}
         {notice}
 
@@ -113,18 +87,26 @@ export default function ScoreForm({
           <summary>Headlines (optional, no effect on the score yet)</summary>
           <label>
             One per line
-            <textarea value={headlines} onChange={(e) => setHeadlines(e.target.value)} rows={3} />
+            <textarea value={headlines} onChange={(e) => onHeadlinesChange(e.target.value)} rows={3} />
           </label>
         </details>
 
         <div className="form-actions">
-          <button type="submit" className="button-primary" disabled={missingRequired || loading}>
-            {loading ? "Scoring..." : "Score"}
+          <button
+            type="submit"
+            className="button-primary"
+            disabled={!canScore || loading || unchanged}
+            title={unchanged ? "Already scored. Change a figure to score again." : undefined}
+          >
+            {loading ? "Scoring..." : unchanged ? "Scored ✓" : "Score"}
           </button>
-          <button type="button" onClick={handleClear}>
+          <button type="button" onClick={onClear}>
             Clear
           </button>
         </div>
+        {unchanged && !loading && (
+          <p className="muted-note">Scored with these figures. Change any figure to score again.</p>
+        )}
       </form>
 
       {error && <p className="error-note">{error}</p>}
