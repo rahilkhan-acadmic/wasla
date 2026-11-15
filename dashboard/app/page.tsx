@@ -3,7 +3,7 @@
 import { useState } from "react";
 import AppShell from "../components/AppShell";
 import CompanyScorePage from "../components/CompanyScorePage";
-import ComingSoonPage from "../components/ComingSoonPage";
+import InsolvencyWatchPage from "../components/InsolvencyWatchPage";
 import MarketOverviewPage from "../components/MarketOverviewPage";
 import ModelInfoPage from "../components/ModelInfoPage";
 import { useHashRoute } from "../lib/routes";
@@ -16,7 +16,7 @@ export default function Page() {
     <AppShell route={route} extraCrumb={route === "score" ? crumb : null}>
       {route === "score" && <CompanyScorePage onCrumbChange={setCrumb} initialSymbol={param} />}
       {route === "market" && <MarketOverviewPage />}
-      {route === "insolvency" && <ComingSoonPage page="insolvency" />}
+      {route === "insolvency" && <InsolvencyWatchPage />}
       {route === "model" && <ModelInfoPage />}
     </AppShell>
   );

@@ -55,6 +55,9 @@ jobs:
       - name: Run market overview tests (shared scoring, /market/overview bands + loss-making)
         run: python tests/test_market_overview.py
 
+      - name: Validate the hand-curated Insolvency Watch data (sources, dates, training-label flags)
+        run: python tests/test_insolvency_data.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

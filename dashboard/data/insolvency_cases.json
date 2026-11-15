@@ -1,0 +1,389 @@
+{
+  "title": "Insolvency Watch: major listed Indian companies under the Insolvency and Bankruptcy Code",
+  "status_as_of": "2026-11-15",
+  "method": "Hand-curated from tribunal records, IBBI filings, company exchange filings and financial press. Every case cites at least one source. Where sources disagree, the note says so and the more official source (NCLT/IBBI order or exchange filing) is used. A field that could not be verified is null rather than estimated. “RBI's first 12” are the accounts the RBI sent for insolvency in June 2017; the RBI did not publish the names, so membership is as reported by the press. Eleven appear here; the twelfth, Era Infra Engineering, is left out because its outcome could not be verified. Recovery is the share of financial creditors' admitted claims recovered, as reported; reports differ on the base, so treat it as approximate.",
+  "training_data_note": "Companies marked in_training_labels also appear in data/sources/india_distress_labels.csv, which the model trains on. This page shows facts only, never a model score for them: a score for a company the model learned from is not a prediction.",
+  "cases": [
+    {
+      "id": "bhushan-steel",
+      "company": "Bhushan Steel Ltd",
+      "industry": "Steel",
+      "rbi_first_list": true,
+      "admitted": "2017-07-26",
+      "outcome": "acquired",
+      "outcome_event": "NCLT approved Tata Steel's resolution plan",
+      "outcome_date": "2018-05-15",
+      "acquirer": "Tata Steel",
+      "recovery_pct": 63,
+      "recovery_note": "Financial creditors' haircut reported at about 37% of admitted claims of about ₹56,080 crore.",
+      "summary": "The first of RBI's 12 large referrals to be resolved: NCLT approval came about 10 months after admission.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "BloombergQuint: Tata Steel completes Bhushan Steel acquisition", "url": "https://www.bloombergquint.com/insolvency/tata-steel-completes-bhushan-steel-acquisition"},
+        {"label": "Business Standard: Bhushan Steel an outlier in IBC landscape", "url": "https://www.business-standard.com/article/companies/from-debt-trap-to-firm-resolve-bhushan-steel-an-outlier-in-ibc-landscape-122061301078_1.html"}
+      ]
+    },
+    {
+      "id": "essar-steel",
+      "company": "Essar Steel India Ltd",
+      "industry": "Steel",
+      "rbi_first_list": true,
+      "admitted": "2017-08-02",
+      "outcome": "acquired",
+      "outcome_event": "ArcelorMittal and Nippon Steel completed the acquisition",
+      "outcome_date": "2019-12-16",
+      "acquirer": "ArcelorMittal Nippon Steel India",
+      "recovery_pct": 83,
+      "recovery_note": "Reported between 83% (of ₹49,473 crore admitted claims) and about 92%, depending on the base; ₹42,000 crore paid in total.",
+      "summary": "The largest recovery under the IBC. The Supreme Court's 2019 ruling in this case restored financial creditors' priority over operational creditors.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "Business Standard: why Essar is steel's comeback kid", "url": "https://business-standard.com/article/companies/explained-why-essar-is-steel-s-comeback-kid-amid-insolvency-proceedings-122061301102_1.html"},
+        {"label": "BloombergQuint: behind India's largest IBC recovery", "url": "https://www.bloombergquint.com/business/behind-indias-largest-ibc-recovery-the-essar-steel-story"}
+      ]
+    },
+    {
+      "id": "electrosteel-steels",
+      "company": "Electrosteel Steels Ltd",
+      "industry": "Steel",
+      "rbi_first_list": true,
+      "admitted": "2017-07-21",
+      "outcome": "acquired",
+      "outcome_event": "NCLT Kolkata approved Vedanta's resolution plan",
+      "outcome_date": "2018-04-17",
+      "acquirer": "Vedanta",
+      "recovery_pct": 40,
+      "recovery_note": "Reported as a haircut of about 60%; ₹5,320 crore was remitted to lenders upfront.",
+      "summary": "Admission date per IBBI's records (another source gives 18 July 2017). The NCLAT later upheld the sale.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "BloombergQuint: NCLAT upholds Electrosteel Steels sale to Vedanta", "url": "https://www.bloombergquint.com/insolvency/nclat-upholds-electrosteel-steels-sale-to-vedanta"},
+        {"label": "Moneylife: ₹5,320 crore remitted to lenders", "url": "https://moneylife.in/article/electrosteel-acquisition-rs5320-cr-remitted-to-lenders/54428.html"}
+      ]
+    },
+    {
+      "id": "monnet-ispat",
+      "company": "Monnet Ispat & Energy Ltd",
+      "industry": "Steel",
+      "rbi_first_list": true,
+      "admitted": "2017-07-18",
+      "outcome": "acquired",
+      "outcome_event": "NCLT Mumbai approved the JSW Steel-AION plan",
+      "outcome_date": "2018-07",
+      "acquirer": "JSW Steel and AION Capital",
+      "recovery_pct": 25,
+      "recovery_note": "Banks' haircut reported at about 75%.",
+      "summary": "Third of RBI's first 12 accounts to be resolved.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Business Standard: NCLT approves JSW-AION plan for Monnet Ispat", "url": "https://business-standard.com/article/companies/nclt-approves-jsw-steel-aion-resolution-plan-for-debt-laden-monnet-ispat-118072000039_1.html"},
+        {"label": "Bar & Bench: Monnet Ispat, third from RBI list", "url": "https://www.barandbench.com/news/nclt-approves-monnet-ispat-rp-third-from-rbi-list"}
+      ]
+    },
+    {
+      "id": "alok-industries",
+      "company": "Alok Industries Ltd",
+      "industry": "Textiles",
+      "rbi_first_list": true,
+      "admitted": "2017-07-18",
+      "outcome": "acquired",
+      "outcome_event": "NCLT Ahmedabad approved the Reliance Industries-JM Financial ARC plan",
+      "outcome_date": "2019-03-08",
+      "acquirer": "Reliance Industries and JM Financial ARC",
+      "recovery_pct": 17,
+      "recovery_note": "₹5,052 crore for financial creditors against about ₹29,500 crore of claims.",
+      "summary": "One of the deepest haircuts among the first 12. An earlier bid was rejected in April 2018.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "Business Standard: banks take 86% haircut on Alok Industries", "url": "https://business-standard.com/article/companies/ril-jm-financial-arc-set-to-buy-alok-industries-banks-to-take-86-haircut-118062200673_1.html"},
+        {"label": "Insolvency Tracker: Alok Industries remains an IBC outlier", "url": "https://insolvencytracker.in/?p=6111"}
+      ]
+    },
+    {
+      "id": "jyoti-structures",
+      "company": "Jyoti Structures Ltd",
+      "industry": "Power transmission (EPC)",
+      "rbi_first_list": true,
+      "admitted": "2017-07",
+      "outcome": "acquired",
+      "outcome_event": "NCLT Mumbai approved the Sharad Sanghi-led plan",
+      "outcome_date": "2019-03-27",
+      "acquirer": "Investor group led by Sharad Sanghi",
+      "recovery_pct": 55,
+      "recovery_note": "Reported as about a 45% haircut on a ₹3,965 crore plan.",
+      "summary": "The NCLT first rejected the plan and ordered liquidation in 2018; the NCLAT stopped the liquidation and sent the plan back for approval.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Bar & Bench: NCLT approves Jyoti Structures plan, 5th from RBI 12", "url": "https://www.barandbench.com/news/nclt-approves-jyoti-structures-resolution-plan-5th-from-rbi-12"},
+        {"label": "IBBI: NCLT order of 27 March 2019", "url": "https://ibbi.gov.in/webadmin/pdf/order/2019/Apr/27th%20Mar%202019%20in%20the%20matter%20of%20Jyoti%20Structures%20Limited%20MA%201129-2019%20In%20CP(IB)1137(MB)-2017_2019-04-01%2018:34:13.pdf"}
+      ]
+    },
+    {
+      "id": "amtek-auto",
+      "company": "Amtek Auto Ltd",
+      "industry": "Auto components",
+      "rbi_first_list": true,
+      "admitted": "2017-07-24",
+      "outcome": "ongoing",
+      "outcome_event": "NCLT approved Deccan Value Investors' plan; its implementation was disputed",
+      "outcome_date": "2020-07-09",
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "Liberty House's 2018 plan collapsed when it withdrew; the NCLAT ordered liquidation in 2019 before the Supreme Court reopened bidding. Deccan Value Investors then invoked force majeure. Final implementation after 2021 could not be verified, so this is shown as unresolved.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "BloombergQuint: NCLT approves Deccan Value Investors' bid for Amtek Auto", "url": "https://www.bloombergquint.com/insolvency/nclt-approves-deccan-value-investors-bid-for-amtek-auto"},
+        {"label": "Business Standard: NCLAT dismissal of DVI appeal (2021)", "url": "https://www.business-standard.com/amp/article/companies/nclat-s-dismissal-of-dvi-appeal-may-pave-the-way-for-amtek-resolution-121041601080_1.html"}
+      ]
+    },
+    {
+      "id": "lanco-infratech",
+      "company": "Lanco Infratech Ltd",
+      "industry": "Infrastructure and power",
+      "rbi_first_list": true,
+      "admitted": "2017-08-08",
+      "outcome": "liquidated",
+      "outcome_event": "NCLT Hyderabad ordered liquidation",
+      "outcome_date": "2018-08-27",
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "Creditors rejected Thriveni Earthmovers' revised plan. The first of RBI's 12 to go into liquidation.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Lanco Infratech exchange filing (NSE), 29 Aug 2018", "url": "https://nsearchives.nseindia.com/corporate/LITL_29082018174643_LITLIntimation29082018Reg30_278.pdf"},
+        {"label": "Business Standard: NCLT orders liquidation of Lanco Infratech", "url": "https://www.business-standard.com/article/pti-stories/nclt-orders-liquidation-of-lanco-infratech-118082701098_1.html"}
+      ]
+    },
+    {
+      "id": "abg-shipyard",
+      "company": "ABG Shipyard Ltd",
+      "industry": "Shipbuilding",
+      "rbi_first_list": true,
+      "admitted": "2017-08",
+      "outcome": "liquidated",
+      "outcome_event": "NCLT Ahmedabad ordered liquidation",
+      "outcome_date": "2019-04-25",
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "Ordered into liquidation despite the sole bidder, Liberty House, arguing its offer exceeded liquidation value.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "TradeWinds: tribunal orders liquidation of ABG Shipyard", "url": "https://www.tradewindsnews.com/shipyards/tribunal-orders-liquidation-of-abg-shipyard/2-1-594475"},
+        {"label": "IBBI corporate process record", "url": "https://www.ibbi.gov.in/hi/claims/order-process/L61200GJ1985PLC007730"}
+      ]
+    },
+    {
+      "id": "jaypee-infratech",
+      "company": "Jaypee Infratech Ltd",
+      "industry": "Real estate and infrastructure",
+      "rbi_first_list": true,
+      "admitted": "2017-08-09",
+      "outcome": "acquired",
+      "outcome_event": "NCLT approved Suraksha Realty's resolution plan",
+      "outcome_date": "2023-03-07",
+      "acquirer": "Suraksha Realty",
+      "recovery_pct": null,
+      "recovery_note": "Homebuyers are to receive their flats rather than cash, so a single recovery percentage doesn't apply.",
+      "summary": "One of the longest cases: over five and a half years to an approved plan, which the NCLAT upheld in May 2024. About 20,000 stalled flats are to be completed.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Outlook Business: NCLT approves Suraksha's bid for Jaypee Infratech", "url": "https://business.outlookindia.com/news/nclt-approves-suraksha-group-s-bid-for-jaypee-infratech-relief-for-more-than-20-000-homebuyers-news-268093"},
+        {"label": "Bar & Bench: NCLAT upholds Suraksha's plan", "url": "https://www.barandbench.com/news/nclat-upholds-suraksha-realty-resolution-plan-for-jaypee-infra"}
+      ]
+    },
+    {
+      "id": "bhushan-power-steel",
+      "company": "Bhushan Power & Steel Ltd",
+      "industry": "Steel",
+      "rbi_first_list": true,
+      "admitted": "2017-07-26",
+      "outcome": "acquired",
+      "outcome_event": "NCLT approved JSW Steel's ₹19,700 crore plan (upheld by the Supreme Court, September 2025)",
+      "outcome_date": "2019-09-05",
+      "acquirer": "JSW Steel",
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "In May 2025 the Supreme Court rejected the plan and ordered liquidation, then recalled that judgment in July and upheld JSW's plan on 26 September 2025.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Business Standard: JSW gets NCLT nod for Bhushan Power", "url": "https://business-standard.com/article/companies/jsw-gets-nclt-nod-to-acquire-bhushan-power-and-steel-for-rs-19-700-crore-119090501400_1.html"},
+        {"label": "Bar & Bench: Supreme Court upholds JSW's plan", "url": "https://www.barandbench.com/law-firms/view-point/supreme-court-upholds-jsws-resolution-plan-in-bhushan-power-case-a-correction-of-course"},
+        {"label": "The Wire: Bhushan and Essar firms among RBI's insolvency referrals", "url": "https://m.thewire.in/article/banking/bhushan-essar-firms-rbi-insolvency/amp"}
+      ]
+    },
+    {
+      "id": "binani-cement",
+      "company": "Binani Cement Ltd",
+      "industry": "Cement",
+      "rbi_first_list": false,
+      "admitted": "2017-07-25",
+      "outcome": "acquired",
+      "outcome_event": "UltraTech completed the acquisition",
+      "outcome_date": "2018-11-20",
+      "acquirer": "UltraTech Cement",
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "A bidding contest: the NCLAT approved UltraTech's ₹7,950 crore offer over Rajputana Properties' lower offer, and the Supreme Court upheld it. Renamed UltraTech Nathdwara Cement.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Aditya Birla Group: Binani Cement now a wholly owned UltraTech subsidiary", "url": "https://www.adityabirla.com/media/press-releases/binani-cement-limited-wholly-owned-subsidiary-ultratech/"},
+        {"label": "CemNet: Bank of Baroda's petition admitted", "url": "https://cemnet.com/News/story/162165/binani-cement-insolvency-petition-by-bank-of-baroda-admitted-by-nclt.html"}
+      ]
+    },
+    {
+      "id": "ruchi-soya",
+      "company": "Ruchi Soya Industries Ltd",
+      "industry": "Edible oils",
+      "rbi_first_list": false,
+      "admitted": "2017-12",
+      "outcome": "acquired",
+      "outcome_event": "Patanjali completed the acquisition",
+      "outcome_date": "2019-12-18",
+      "acquirer": "Patanjali Ayurved consortium",
+      "recovery_pct": 45,
+      "recovery_note": "Key lenders reported to recover a little over 45%; SBI received ₹883 crore on claims of over ₹1,800 crore.",
+      "summary": "Adani Wilmar was the top bidder but withdrew. The company now trades as Patanjali Foods Ltd, a member of today's Nifty LargeMidcap 250.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "BloombergQuint: Patanjali completes acquisition of Ruchi Soya", "url": "https://www.bloombergquint.com/business/patanjali-completes-acquisition-of-ruchi-soya"},
+        {"label": "Business Today: lenders approve Patanjali's bid", "url": "https://www.businesstoday.in/latest/story/lenders-approve-ramdev-led-patanjali-rs-4325-crore-bid-for-ruchi-soya-188644-2019-04-30"}
+      ]
+    },
+    {
+      "id": "videocon-industries",
+      "company": "Videocon Industries Ltd",
+      "industry": "Consumer electronics",
+      "rbi_first_list": false,
+      "admitted": "2018-06-06",
+      "outcome": "ongoing",
+      "outcome_event": "Twin Star's approved plan set aside by the NCLAT; back to creditors",
+      "outcome_date": null,
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": "Twin Star Technologies' set-aside plan offered ₹2,962 crore, about 4.15% of admitted claims.",
+      "summary": "The NCLT approved Twin Star's plan in June 2021; the NCLAT set it aside in January 2022 and sent the case back for fresh bids. In May 2026 the NCLAT kept Videocon Industries' and Videocon Oil Ventures' processes separate.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "Business Standard: NCLAT sets aside Twin Star's plan", "url": "https://business-standard.com/article/companies/nclat-sets-aside-nclt-approval-of-twin-star-s-resolution-plan-for-videocon-122010500960_1.html"},
+        {"label": "The Week: NCLAT upholds separate insolvency processes (May 2026)", "url": "https://www.theweek.in/wire-updates/business/2026/05/17/nclat-upholds-separate-insolvency-processes-for-videocon-industries-and-videocon-oil-ventures.html"}
+      ]
+    },
+    {
+      "id": "jet-airways",
+      "company": "Jet Airways (India) Ltd",
+      "industry": "Aviation",
+      "rbi_first_list": false,
+      "admitted": "2019-06-20",
+      "outcome": "liquidated",
+      "outcome_event": "Supreme Court ordered liquidation",
+      "outcome_date": "2024-11-07",
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "The Jalan Kalrock Consortium won in 2021 but never implemented its plan. The Supreme Court used Article 142 to order liquidation and forfeit about ₹200 crore the consortium had paid.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "Bar & Bench: Supreme Court orders liquidation of Jet Airways", "url": "https://barandbench.com/news/supreme-court-orders-liquidation-jet-airways-sets-aside-transfer-ownership-jkc"},
+        {"label": "Scroll: Supreme Court orders liquidation of Jet Airways", "url": "https://scroll.in/latest/1075384/supreme-court-orders-liquidation-of-jet-airways"}
+      ]
+    },
+    {
+      "id": "reliance-communications",
+      "company": "Reliance Communications Ltd",
+      "industry": "Telecommunications",
+      "rbi_first_list": false,
+      "admitted": "2018-05-15",
+      "outcome": "ongoing",
+      "outcome_event": "Creditors approved the UV ARC plan in 2020; final NCLT approval still pending in the latest source found",
+      "outcome_date": null,
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "Admitted in May 2018 but stayed by the NCLAT until 30 April 2019. The tower unit Reliance Infratel was resolved separately (to Jio, NCLT approval December 2020). The resolution applicant was substituted in December 2023 after RBI's ARC rules changed.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "IBBI: NCLT order recording the 2018 commencement and 2019 stay", "url": "https://www.ibbi.gov.in/uploads/order/30fc4fa42ca4e83f41a15d7b2a56806f.pdf"},
+        {"label": "Insolvency Tracker: NCLT allows substitution of resolution applicant", "url": "https://insolvencytracker.in/?p=4320"}
+      ]
+    },
+    {
+      "id": "dhfl",
+      "company": "Dewan Housing Finance Corporation Ltd",
+      "industry": "Housing finance (NBFC)",
+      "rbi_first_list": false,
+      "admitted": "2019-12-03",
+      "outcome": "acquired",
+      "outcome_event": "NCLT Mumbai approved Piramal's resolution plan",
+      "outcome_date": "2021-06-07",
+      "acquirer": "Piramal Group",
+      "recovery_pct": 40,
+      "recovery_note": "Reported as about 40% of ₹87,082 crore admitted claims at approval, and up to 46% at completion.",
+      "summary": "The first financial services company taken to the NCLT by the RBI under special IBC rules for large NBFCs.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "Business Standard: Piramal's plan for DHFL gets NCLT nod", "url": "https://www.business-standard.com/amp/article/finance/nclt-approves-piramal-group-s-resolution-plan-for-bankrupt-financier-dhfl-121060700449_1.html"},
+        {"label": "Bar & Bench: NCLT admits RBI plea against DHFL", "url": "https://www.barandbench.com/news/nclt-admits-rbi-plea-seeking-insolvency-resolution-against-dhfl"}
+      ]
+    },
+    {
+      "id": "reliance-capital",
+      "company": "Reliance Capital Ltd",
+      "industry": "Financial services (NBFC)",
+      "rbi_first_list": false,
+      "admitted": "2021-12-06",
+      "outcome": "acquired",
+      "outcome_event": "NCLT approved IndusInd International Holdings' plan (implemented March 2025)",
+      "outcome_date": "2024-02-27",
+      "acquirer": "IndusInd International Holdings (Hinduja Group)",
+      "recovery_pct": 37,
+      "recovery_note": "₹9,661 crore against ₹26,087 crore of admitted claims.",
+      "summary": "Implementation took more than a year after approval, with deadlines extended; completion recorded by the NCLT on 25 March 2025.",
+      "in_training_labels": true,
+      "sources": [
+        {"label": "Reliance Capital: about us (implementation)", "url": "https://reliancecapital.co.in/aboutus.aspx"},
+        {"label": "Insolvency Tracker: IIHL's ₹9,661 crore plan", "url": "https://insolvencytracker.in/?p=4460"}
+      ]
+    },
+    {
+      "id": "future-retail",
+      "company": "Future Retail Ltd",
+      "industry": "Retail",
+      "rbi_first_list": false,
+      "admitted": "2022-07-20",
+      "outcome": "liquidated",
+      "outcome_event": "NCLT Mumbai ordered liquidation",
+      "outcome_date": "2024-07-29",
+      "acquirer": null,
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "Admission was delayed by Amazon's intervention. With no viable plan, creditors voted to liquidate; claims exceeded ₹17,000 crore.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Business Today: NCLT admits Bank of India's petition", "url": "https://www.businesstoday.in/latest/corporate/story/future-retail-saga-nclt-admits-bank-of-indias-petition-to-initiate-insolvency-proceedings-342101-2022-07-20"},
+        {"label": "Bar & Bench: NCLT orders liquidation of Future Retail", "url": "https://www.barandbench.com/news/nclt-orders-liquidation-of-future-retail"}
+      ]
+    },
+    {
+      "id": "sintex-industries",
+      "company": "Sintex Industries Ltd",
+      "industry": "Textiles",
+      "rbi_first_list": false,
+      "admitted": "2021-04-06",
+      "outcome": "acquired",
+      "outcome_event": "NCLT Ahmedabad approved the Reliance Industries-ACRE plan",
+      "outcome_date": "2023-02-10",
+      "acquirer": "Reliance Industries and Assets Care & Reconstruction Enterprise",
+      "recovery_pct": null,
+      "recovery_note": null,
+      "summary": "A ₹3,651 crore joint bid approved by all creditors; existing shares were cancelled and the company delisted.",
+      "in_training_labels": false,
+      "sources": [
+        {"label": "Insolvency Tracker: NCLT approves RIL-ACRE bid for Sintex", "url": "https://insolvencytracker.in/2023/02/11/nclt-approves-reliance-industries-acres-rs-3651-cr-bid-for-sintex-industries/"},
+        {"label": "Latestly (PTI): NCLAT upholds the 6 April 2021 admission", "url": "https://www.latestly.com/agency-news/latest-news-nclat-dismisses-former-sintex-industries-cmd-rahul-patels-plea-against-companys-insolvency-4907158.html"}
+      ]
+    }
+  ]
+}

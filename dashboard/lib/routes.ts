@@ -20,7 +20,7 @@ export interface RouteDef {
 export const ROUTES: RouteDef[] = [
   { id: "score", label: "Company Score" },
   { id: "market", label: "Market Overview" },
-  { id: "insolvency", label: "Insolvency Watch", comingSoon: true },
+  { id: "insolvency", label: "Insolvency Watch" },
   { id: "model", label: "Model Info" },
 ];
 
