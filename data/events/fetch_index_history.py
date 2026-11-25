@@ -38,15 +38,27 @@ UA = {"User-Agent": "Mozilla/5.0 (research script; daily index closes)"}
 def parse_day(text: str, day: datetime.date) -> list[dict]:
     """Rows for our three indices from one ind_close_all file. The file's own
     'Index Date' must match the requested day (guards against NSE serving a
-    different day's file)."""
+    different day's file). Two NSE quirks are tolerated:
+      * a few files write the date month-first (06-Apr-2023's file says
+        04-06-2023), so a day/month swap that matches is accepted;
+      * India VIX rows with no open/high/low ('-', change 0: not published
+        that day, e.g. 2021-02-12) are skipped rather than invented."""
     rows = []
     for r in csv.DictReader(text.splitlines()):
         name = (r.get("Index Name") or "").strip()
         if name not in INDICES:
             continue
-        file_day = datetime.datetime.strptime(r["Index Date"].strip(), "%d-%m-%Y").date()
+        raw = r["Index Date"].strip()
+        file_day = datetime.datetime.strptime(raw, "%d-%m-%Y").date()
         if file_day != day:
-            raise ValueError(f"{day}: file says {file_day}")
+            try:
+                swapped = datetime.datetime.strptime(raw, "%m-%d-%Y").date()
+            except ValueError:
+                swapped = None
+            if swapped != day:
+                raise ValueError(f"{day}: file says {file_day}")
+        if "-" in (r["Open Index Value"].strip(), r["High Index Value"].strip(), r["Low Index Value"].strip()):
+            continue
         rows.append({
             "date": day.isoformat(), "index": INDICES[name],
             "open": float(r["Open Index Value"]), "high": float(r["High Index Value"]),
@@ -85,7 +97,7 @@ def main(argv=None):
             existing = list(csv.DictReader(f))
     have = {r["date"] for r in existing}
 
-    new, missing, errors = [], 0, []
+    new, missing, errors, partial = [], 0, [], []
     for day in wanted_days(start, end):
         if day.isoformat() in have:
             continue
@@ -94,7 +106,7 @@ def main(argv=None):
             text = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
             rows = parse_day(text, day)
             if len(rows) != len(INDICES):
-                errors.append(f"{day}: {len(rows)} of {len(INDICES)} indices")
+                partial.append(f"{day}: {sorted(r['index'] for r in rows)}")
             new += rows
         except urllib.error.HTTPError as e:
             if e.code == 404:
@@ -114,6 +126,8 @@ def main(argv=None):
     days = len({r["date"] for r in all_rows})
     print(f"{len(new)} new rows ({len(new) // len(INDICES)} days); {missing} non-trading days skipped; "
           f"{days} trading days in {OUT}")
+    if partial:
+        print(f"{len(partial)} days with an index not published:", *partial[:20], sep="\n  ")
     if errors:
         print(f"{len(errors)} errors:", *errors[:20], sep="\n  ")
     return 1 if errors else 0

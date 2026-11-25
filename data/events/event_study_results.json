@@ -1,0 +1,1339 @@
+{
+  "generated_from": {
+    "events": 90,
+    "price_days": {
+      "INDIAVIX": 1476,
+      "NIFTY50": 1478,
+      "NIFTYBANK": 1478
+    },
+    "span": [
+      "2020-12-01",
+      "2026-11-23"
+    ]
+  },
+  "questions": {
+    "q1_size": {
+      "NIFTY50": {
+        "fomc": {
+          "n": 47,
+          "mean_abs_ret": 0.007,
+          "baseline_mean_abs_ret": 0.0065,
+          "ratio_ret": 1.076,
+          "p_ret_bigger": 0.2732,
+          "mean_abs_range": 0.0105,
+          "baseline_mean_abs_range": 0.0102,
+          "ratio_range": 1.0297,
+          "p_range_bigger": 0.3312
+        },
+        "rbi_mpc": {
+          "n": 36,
+          "mean_abs_ret": 0.0072,
+          "baseline_mean_abs_ret": 0.0065,
+          "ratio_ret": 1.1091,
+          "p_ret_bigger": 0.2274,
+          "mean_abs_range": 0.0105,
+          "baseline_mean_abs_range": 0.0102,
+          "ratio_range": 1.0276,
+          "p_range_bigger": 0.3544
+        },
+        "union_budget": {
+          "n": 7,
+          "mean_abs_ret": 0.0124,
+          "baseline_mean_abs_ret": 0.0065,
+          "ratio_ret": 1.9146,
+          "p_ret_bigger": 0.016,
+          "mean_abs_range": 0.0261,
+          "baseline_mean_abs_range": 0.0102,
+          "ratio_range": 2.5671,
+          "p_range_bigger": 0.0
+        }
+      },
+      "NIFTYBANK": {
+        "fomc": {
+          "n": 47,
+          "mean_abs_ret": 0.0083,
+          "baseline_mean_abs_ret": 0.008,
+          "ratio_ret": 1.0364,
+          "p_ret_bigger": 0.3806,
+          "mean_abs_range": 0.0143,
+          "baseline_mean_abs_range": 0.0134,
+          "ratio_range": 1.0616,
+          "p_range_bigger": 0.2172
+        },
+        "rbi_mpc": {
+          "n": 36,
+          "mean_abs_ret": 0.0085,
+          "baseline_mean_abs_ret": 0.008,
+          "ratio_ret": 1.0675,
+          "p_ret_bigger": 0.323,
+          "mean_abs_range": 0.0155,
+          "baseline_mean_abs_range": 0.0134,
+          "ratio_range": 1.1506,
+          "p_range_bigger": 0.0538
+        },
+        "union_budget": {
+          "n": 7,
+          "mean_abs_ret": 0.0193,
+          "baseline_mean_abs_ret": 0.008,
+          "ratio_ret": 2.4245,
+          "p_ret_bigger": 0.002,
+          "mean_abs_range": 0.0377,
+          "baseline_mean_abs_range": 0.0134,
+          "ratio_range": 2.8007,
+          "p_range_bigger": 0.0
+        }
+      }
+    },
+    "q2_follow": {
+      "NIFTY50": {
+        "fomc": {
+          "n": 47,
+          "continue_next1": 0.5957,
+          "baseline_continue_next1": 0.5641,
+          "continue_next5": 0.5106,
+          "baseline_continue_next5": 0.5153
+        },
+        "rbi_mpc": {
+          "n": 36,
+          "continue_next1": 0.5,
+          "baseline_continue_next1": 0.5641,
+          "continue_next5": 0.4722,
+          "baseline_continue_next5": 0.5153
+        },
+        "union_budget": {
+          "n": 7,
+          "continue_next1": 0.7143,
+          "baseline_continue_next1": 0.5641,
+          "continue_next5": 0.1429,
+          "baseline_continue_next5": 0.5153
+        }
+      },
+      "NIFTYBANK": {
+        "fomc": {
+          "n": 47,
+          "continue_next1": 0.5532,
+          "baseline_continue_next1": 0.5261,
+          "continue_next5": 0.6383,
+          "baseline_continue_next5": 0.5012
+        },
+        "rbi_mpc": {
+          "n": 36,
+          "continue_next1": 0.4722,
+          "baseline_continue_next1": 0.5261,
+          "continue_next5": 0.5278,
+          "baseline_continue_next5": 0.5012
+        },
+        "union_budget": {
+          "n": 7,
+          "continue_next1": 0.5714,
+          "baseline_continue_next1": 0.5261,
+          "continue_next5": 0.2857,
+          "baseline_continue_next5": 0.5012
+        }
+      }
+    },
+    "q3_gap_and_go": {
+      "NIFTY50": {
+        "n_events": 47,
+        "n_big_gap": 24,
+        "gap_and_go": 8,
+        "gap_fade": 16,
+        "go_rate": 0.3333,
+        "baseline_n_big_gap": 284,
+        "baseline_go_rate": 0.5387,
+        "events": [
+          {
+            "event": "fomc-2021-01-27",
+            "gap": -0.0112,
+            "intraday": 0.0005
+          },
+          {
+            "event": "fomc-2021-03-17",
+            "gap": 0.0091,
+            "intraday": -0.02
+          },
+          {
+            "event": "fomc-2021-04-28",
+            "gap": 0.0077,
+            "intraday": -0.0056
+          },
+          {
+            "event": "fomc-2021-06-16",
+            "gap": -0.0076,
+            "intraday": 0.0028
+          },
+          {
+            "event": "fomc-2021-09-22",
+            "gap": 0.0071,
+            "intraday": 0.0086
+          },
+          {
+            "event": "fomc-2021-11-03",
+            "gap": 0.0059,
+            "intraday": -0.001
+          },
+          {
+            "event": "fomc-2021-12-15",
+            "gap": 0.0088,
+            "intraday": -0.0072
+          },
+          {
+            "event": "fomc-2022-01-26",
+            "gap": -0.0125,
+            "intraday": 0.0028
+          },
+          {
+            "event": "fomc-2022-03-16",
+            "gap": 0.0134,
+            "intraday": 0.0049
+          },
+          {
+            "event": "fomc-2022-05-04",
+            "gap": 0.0106,
+            "intraday": -0.0102
+          },
+          {
+            "event": "fomc-2022-06-15",
+            "gap": 0.0089,
+            "intraday": -0.0298
+          },
+          {
+            "event": "fomc-2022-07-27",
+            "gap": 0.008,
+            "intraday": 0.0092
+          },
+          {
+            "event": "fomc-2022-09-21",
+            "gap": -0.0061,
+            "intraday": 0.0011
+          },
+          {
+            "event": "fomc-2022-11-02",
+            "gap": -0.0063,
+            "intraday": 0.0047
+          },
+          {
+            "event": "fomc-2023-02-01",
+            "gap": -0.0056,
+            "intraday": 0.0053
+          },
+          {
+            "event": "fomc-2023-11-01",
+            "gap": 0.0069,
+            "intraday": 0.0007
+          },
+          {
+            "event": "fomc-2023-12-13",
+            "gap": 0.0088,
+            "intraday": 0.0034
+          },
+          {
+            "event": "fomc-2024-03-20",
+            "gap": 0.0069,
+            "intraday": 0.001
+          },
+          {
+            "event": "fomc-2024-06-12",
+            "gap": 0.0068,
+            "intraday": -0.0035
+          },
+          {
+            "event": "fomc-2024-12-18",
+            "gap": -0.0133,
+            "intraday": 0.0031
+          },
+          {
+            "event": "fomc-2025-03-19",
+            "gap": 0.0056,
+            "intraday": 0.0067
+          },
+          {
+            "event": "fomc-2025-07-30",
+            "gap": -0.0086,
+            "intraday": 0.0051
+          },
+          {
+            "event": "fomc-2026-03-18",
+            "gap": -0.0244,
+            "intraday": -0.0084
+          },
+          {
+            "event": "fomc-2026-04-29",
+            "gap": -0.0075,
+            "intraday": 0.0
+          }
+        ]
+      },
+      "NIFTYBANK": {
+        "n_events": 47,
+        "n_big_gap": 25,
+        "gap_and_go": 9,
+        "gap_fade": 16,
+        "go_rate": 0.36,
+        "baseline_n_big_gap": 367,
+        "baseline_go_rate": 0.4687,
+        "events": [
+          {
+            "event": "fomc-2021-01-27",
+            "gap": -0.0156,
+            "intraday": 0.0183
+          },
+          {
+            "event": "fomc-2021-03-17",
+            "gap": 0.0102,
+            "intraday": -0.0208
+          },
+          {
+            "event": "fomc-2021-04-28",
+            "gap": 0.0053,
+            "intraday": -0.0055
+          },
+          {
+            "event": "fomc-2021-06-16",
+            "gap": -0.011,
+            "intraday": -0.0004
+          },
+          {
+            "event": "fomc-2021-07-28",
+            "gap": 0.006,
+            "intraday": -0.0014
+          },
+          {
+            "event": "fomc-2021-09-22",
+            "gap": 0.008,
+            "intraday": 0.0142
+          },
+          {
+            "event": "fomc-2021-11-03",
+            "gap": 0.0068,
+            "intraday": -0.0024
+          },
+          {
+            "event": "fomc-2021-12-15",
+            "gap": 0.0082,
+            "intraday": -0.0147
+          },
+          {
+            "event": "fomc-2022-01-26",
+            "gap": -0.0172,
+            "intraday": 0.0249
+          },
+          {
+            "event": "fomc-2022-03-16",
+            "gap": 0.0155,
+            "intraday": 0.0035
+          },
+          {
+            "event": "fomc-2022-05-04",
+            "gap": 0.0125,
+            "intraday": -0.0132
+          },
+          {
+            "event": "fomc-2022-06-15",
+            "gap": 0.0093,
+            "intraday": -0.0307
+          },
+          {
+            "event": "fomc-2022-07-27",
+            "gap": 0.0087,
+            "intraday": 0.0074
+          },
+          {
+            "event": "fomc-2022-09-21",
+            "gap": -0.0076,
+            "intraday": -0.0063
+          },
+          {
+            "event": "fomc-2022-11-02",
+            "gap": -0.0066,
+            "intraday": 0.0104
+          },
+          {
+            "event": "fomc-2023-02-01",
+            "gap": -0.0141,
+            "intraday": 0.0182
+          },
+          {
+            "event": "fomc-2023-11-01",
+            "gap": 0.0074,
+            "intraday": -0.0
+          },
+          {
+            "event": "fomc-2023-12-13",
+            "gap": 0.0101,
+            "intraday": 0.0035
+          },
+          {
+            "event": "fomc-2024-03-20",
+            "gap": 0.0079,
+            "intraday": 0.0002
+          },
+          {
+            "event": "fomc-2024-06-12",
+            "gap": 0.0057,
+            "intraday": -0.0066
+          },
+          {
+            "event": "fomc-2024-12-18",
+            "gap": -0.0136,
+            "intraday": 0.0029
+          },
+          {
+            "event": "fomc-2025-07-30",
+            "gap": -0.0075,
+            "intraday": 0.0042
+          },
+          {
+            "event": "fomc-2025-09-17",
+            "gap": 0.0055,
+            "intraday": -0.0012
+          },
+          {
+            "event": "fomc-2026-03-18",
+            "gap": -0.0335,
+            "intraday": -0.0004
+          },
+          {
+            "event": "fomc-2026-04-29",
+            "gap": -0.0094,
+            "intraday": -0.0003
+          }
+        ]
+      }
+    },
+    "q4_budget": {
+      "NIFTY50": {
+        "n": 7,
+        "mean_range": 0.0261,
+        "mean_abs_close": 0.0124,
+        "close_to_range": 0.4755,
+        "baseline_close_to_range": 0.6375,
+        "days": [
+          {
+            "event": "budget-2021-02-01",
+            "ret": 0.0474,
+            "range": 0.0495,
+            "next5": 0.0584
+          },
+          {
+            "event": "budget-2022-02-01",
+            "ret": 0.0137,
+            "range": 0.0218,
+            "next5": -0.0176
+          },
+          {
+            "event": "budget-2023-02-01",
+            "ret": -0.0026,
+            "range": 0.035,
+            "next5": 0.0145
+          },
+          {
+            "event": "budget-2024-02-01",
+            "ret": -0.0013,
+            "range": 0.008,
+            "next5": 0.0009
+          },
+          {
+            "event": "budget-2024-07-23",
+            "ret": -0.0012,
+            "range": 0.0207,
+            "next5": 0.0155
+          },
+          {
+            "event": "budget-2025-02-01",
+            "ret": -0.0011,
+            "range": 0.0134,
+            "next5": 0.0033
+          },
+          {
+            "event": "budget-2026-02-01",
+            "ret": -0.0196,
+            "range": 0.0343,
+            "next5": 0.035
+          }
+        ]
+      },
+      "NIFTYBANK": {
+        "n": 7,
+        "mean_range": 0.0377,
+        "mean_abs_close": 0.0193,
+        "close_to_range": 0.5138,
+        "baseline_close_to_range": 0.5935,
+        "days": [
+          {
+            "event": "budget-2021-02-01",
+            "ret": 0.0826,
+            "range": 0.0785,
+            "next5": 0.0875
+          },
+          {
+            "event": "budget-2022-02-01",
+            "ret": 0.014,
+            "range": 0.0293,
+            "next5": -0.0124
+          },
+          {
+            "event": "budget-2023-02-01",
+            "ret": -0.0035,
+            "range": 0.0621,
+            "next5": 0.0253
+          },
+          {
+            "event": "budget-2024-02-01",
+            "ret": 0.0042,
+            "range": 0.0139,
+            "next5": -0.0255
+          },
+          {
+            "event": "budget-2024-07-23",
+            "ret": -0.0096,
+            "range": 0.023,
+            "next5": -0.0054
+          },
+          {
+            "event": "budget-2025-02-01",
+            "ret": -0.0016,
+            "range": 0.0219,
+            "next5": 0.0132
+          },
+          {
+            "event": "budget-2026-02-01",
+            "ret": -0.02,
+            "range": 0.0349,
+            "next5": 0.0292
+          }
+        ]
+      }
+    },
+    "q5_vix": {
+      "fomc": {
+        "n": 47,
+        "mean_vix_change_on_day": -0.0154,
+        "baseline_mean_vix_change": 0.0039,
+        "p_falls_on_day": 0.0044,
+        "mean_vix_change_3d_before": 0.0186,
+        "baseline_mean_vix_3d": 0.0037,
+        "p_rises_before": 0.1188
+      },
+      "rbi_mpc": {
+        "n": 36,
+        "mean_vix_change_on_day": -0.0206,
+        "baseline_mean_vix_change": 0.0039,
+        "p_falls_on_day": 0.0026,
+        "mean_vix_change_3d_before": 0.0026,
+        "baseline_mean_vix_3d": 0.0037,
+        "p_rises_before": 0.5228
+      },
+      "union_budget": {
+        "n": 7,
+        "mean_vix_change_on_day": -0.0676,
+        "baseline_mean_vix_change": 0.0039,
+        "p_falls_on_day": 0.0006,
+        "mean_vix_change_3d_before": 0.0497,
+        "baseline_mean_vix_3d": 0.0037,
+        "p_rises_before": 0.074
+      }
+    }
+  },
+  "trades": {
+    "NIFTY50": {
+      "fomc": {
+        "trades": 24,
+        "wins": 8,
+        "losses": 16,
+        "win_rate": 0.3333,
+        "avg_return": -0.003,
+        "worst": -0.0303,
+        "best": 0.0087,
+        "each": [
+          {
+            "event": "fomc-2021-01-27",
+            "date": "2021-01-28",
+            "return": -0.001
+          },
+          {
+            "event": "fomc-2021-03-17",
+            "date": "2021-03-18",
+            "return": -0.0205
+          },
+          {
+            "event": "fomc-2021-04-28",
+            "date": "2021-04-29",
+            "return": -0.0061
+          },
+          {
+            "event": "fomc-2021-06-16",
+            "date": "2021-06-17",
+            "return": -0.0033
+          },
+          {
+            "event": "fomc-2021-09-22",
+            "date": "2021-09-23",
+            "return": 0.0081
+          },
+          {
+            "event": "fomc-2021-11-03",
+            "date": "2021-11-04",
+            "return": -0.0015
+          },
+          {
+            "event": "fomc-2021-12-15",
+            "date": "2021-12-16",
+            "return": -0.0077
+          },
+          {
+            "event": "fomc-2022-01-26",
+            "date": "2022-01-27",
+            "return": -0.0033
+          },
+          {
+            "event": "fomc-2022-03-16",
+            "date": "2022-03-17",
+            "return": 0.0044
+          },
+          {
+            "event": "fomc-2022-05-04",
+            "date": "2022-05-05",
+            "return": -0.0107
+          },
+          {
+            "event": "fomc-2022-06-15",
+            "date": "2022-06-16",
+            "return": -0.0303
+          },
+          {
+            "event": "fomc-2022-07-27",
+            "date": "2022-07-28",
+            "return": 0.0087
+          },
+          {
+            "event": "fomc-2022-09-21",
+            "date": "2022-09-22",
+            "return": -0.0016
+          },
+          {
+            "event": "fomc-2022-11-02",
+            "date": "2022-11-03",
+            "return": -0.0052
+          },
+          {
+            "event": "fomc-2023-02-01",
+            "date": "2023-02-02",
+            "return": -0.0058
+          },
+          {
+            "event": "fomc-2023-11-01",
+            "date": "2023-11-02",
+            "return": 0.0002
+          },
+          {
+            "event": "fomc-2023-12-13",
+            "date": "2023-12-14",
+            "return": 0.0029
+          },
+          {
+            "event": "fomc-2024-03-20",
+            "date": "2024-03-21",
+            "return": 0.0005
+          },
+          {
+            "event": "fomc-2024-06-12",
+            "date": "2024-06-13",
+            "return": -0.004
+          },
+          {
+            "event": "fomc-2024-12-18",
+            "date": "2024-12-19",
+            "return": -0.0036
+          },
+          {
+            "event": "fomc-2025-03-19",
+            "date": "2025-03-20",
+            "return": 0.0062
+          },
+          {
+            "event": "fomc-2025-07-30",
+            "date": "2025-07-31",
+            "return": -0.0056
+          },
+          {
+            "event": "fomc-2026-03-18",
+            "date": "2026-03-19",
+            "return": 0.0079
+          },
+          {
+            "event": "fomc-2026-04-29",
+            "date": "2026-04-30",
+            "return": -0.0005
+          }
+        ],
+        "rule": "gap_and_go",
+        "proxy": "daily",
+        "cost_per_trade": 0.0005,
+        "baseline": {
+          "trades": 284,
+          "win_rate": 0.5035,
+          "avg_return": -0.0004
+        },
+        "p_avg_beats_baseline": 0.9418
+      },
+      "rbi_mpc": {
+        "trades": 36,
+        "wins": 17,
+        "losses": 19,
+        "win_rate": 0.4722,
+        "avg_return": -0.0011,
+        "worst": -0.0197,
+        "best": 0.0159,
+        "each": [
+          {
+            "event": "rbi-2021-02-05",
+            "date": "2021-02-05",
+            "return": 0.0123
+          },
+          {
+            "event": "rbi-2021-04-07",
+            "date": "2021-04-07",
+            "return": 0.0032
+          },
+          {
+            "event": "rbi-2021-06-04",
+            "date": "2021-06-04",
+            "return": -0.0057
+          },
+          {
+            "event": "rbi-2021-08-06",
+            "date": "2021-08-06",
+            "return": -0.0017
+          },
+          {
+            "event": "rbi-2021-10-08",
+            "date": "2021-10-08",
+            "return": 0.0023
+          },
+          {
+            "event": "rbi-2021-12-08",
+            "date": "2021-12-08",
+            "return": 0.0022
+          },
+          {
+            "event": "rbi-2022-02-10",
+            "date": "2022-02-10",
+            "return": -0.0136
+          },
+          {
+            "event": "rbi-2022-04-08",
+            "date": "2022-04-08",
+            "return": -0.0067
+          },
+          {
+            "event": "rbi-2022-05-04",
+            "date": "2022-05-04",
+            "return": -0.0008
+          },
+          {
+            "event": "rbi-2022-06-08",
+            "date": "2022-06-08",
+            "return": -0.0079
+          },
+          {
+            "event": "rbi-2022-08-05",
+            "date": "2022-08-05",
+            "return": 0.0068
+          },
+          {
+            "event": "rbi-2022-09-30",
+            "date": "2022-09-30",
+            "return": -0.0126
+          },
+          {
+            "event": "rbi-2022-12-07",
+            "date": "2022-12-07",
+            "return": -0.0031
+          },
+          {
+            "event": "rbi-2023-02-08",
+            "date": "2023-02-08",
+            "return": 0.0007
+          },
+          {
+            "event": "rbi-2023-04-06",
+            "date": "2023-04-06",
+            "return": 0.0009
+          },
+          {
+            "event": "rbi-2023-06-08",
+            "date": "2023-06-08",
+            "return": 0.0033
+          },
+          {
+            "event": "rbi-2023-08-10",
+            "date": "2023-08-10",
+            "return": 0.0054
+          },
+          {
+            "event": "rbi-2023-10-06",
+            "date": "2023-10-06",
+            "return": -0.0077
+          },
+          {
+            "event": "rbi-2023-12-08",
+            "date": "2023-12-08",
+            "return": 0.0008
+          },
+          {
+            "event": "rbi-2024-02-08",
+            "date": "2024-02-08",
+            "return": -0.0035
+          },
+          {
+            "event": "rbi-2024-04-05",
+            "date": "2024-04-05",
+            "return": -0.0073
+          },
+          {
+            "event": "rbi-2024-06-07",
+            "date": "2024-06-07",
+            "return": -0.0018
+          },
+          {
+            "event": "rbi-2024-08-08",
+            "date": "2024-08-08",
+            "return": -0.0109
+          },
+          {
+            "event": "rbi-2024-10-09",
+            "date": "2024-10-09",
+            "return": -0.0012
+          },
+          {
+            "event": "rbi-2024-12-06",
+            "date": "2024-12-06",
+            "return": 0.0019
+          },
+          {
+            "event": "rbi-2025-02-07",
+            "date": "2025-02-07",
+            "return": 0.0071
+          },
+          {
+            "event": "rbi-2025-04-09",
+            "date": "2025-04-09",
+            "return": -0.0197
+          },
+          {
+            "event": "rbi-2025-06-06",
+            "date": "2025-06-06",
+            "return": 0.0035
+          },
+          {
+            "event": "rbi-2025-08-06",
+            "date": "2025-08-06",
+            "return": -0.0014
+          },
+          {
+            "event": "rbi-2025-10-01",
+            "date": "2025-10-01",
+            "return": 0.0018
+          },
+          {
+            "event": "rbi-2025-12-05",
+            "date": "2025-12-05",
+            "return": -0.0091
+          },
+          {
+            "event": "rbi-2026-02-06",
+            "date": "2026-02-06",
+            "return": 0.0063
+          },
+          {
+            "event": "rbi-2026-04-08",
+            "date": "2026-04-08",
+            "return": -0.0098
+          },
+          {
+            "event": "rbi-2026-06-05",
+            "date": "2026-06-05",
+            "return": 0.0099
+          },
+          {
+            "event": "rbi-2026-08-05",
+            "date": "2026-08-05",
+            "return": -0.0
+          },
+          {
+            "event": "rbi-2026-10-07",
+            "date": "2026-10-07",
+            "return": 0.0159
+          }
+        ],
+        "rule": "follow_through",
+        "proxy": "daily",
+        "cost_per_trade": 0.0005,
+        "baseline": {
+          "trades": 1208,
+          "win_rate": 0.5306,
+          "avg_return": 0.0004
+        },
+        "p_avg_beats_baseline": 0.8592
+      },
+      "union_budget": {
+        "trades": 7,
+        "wins": 4,
+        "losses": 3,
+        "win_rate": 0.5714,
+        "avg_return": 0.0034,
+        "worst": -0.0111,
+        "best": 0.0252,
+        "each": [
+          {
+            "event": "budget-2021-02-01",
+            "date": "2021-02-01",
+            "return": 0.0252
+          },
+          {
+            "event": "budget-2022-02-01",
+            "date": "2022-02-01",
+            "return": 0.0111
+          },
+          {
+            "event": "budget-2023-02-01",
+            "date": "2023-02-01",
+            "return": -0.0002
+          },
+          {
+            "event": "budget-2024-02-01",
+            "date": "2024-02-01",
+            "return": -0.0077
+          },
+          {
+            "event": "budget-2024-07-23",
+            "date": "2024-07-23",
+            "return": 0.0022
+          },
+          {
+            "event": "budget-2025-02-01",
+            "date": "2025-02-01",
+            "return": 0.0047
+          },
+          {
+            "event": "budget-2026-02-01",
+            "date": "2026-02-01",
+            "return": -0.0111
+          }
+        ],
+        "rule": "follow_through",
+        "proxy": "daily",
+        "cost_per_trade": 0.0005,
+        "baseline": {
+          "trades": 1208,
+          "win_rate": 0.5306,
+          "avg_return": 0.0004
+        },
+        "p_avg_beats_baseline": 0.1636
+      }
+    },
+    "NIFTYBANK": {
+      "fomc": {
+        "trades": 25,
+        "wins": 5,
+        "losses": 20,
+        "win_rate": 0.2,
+        "avg_return": -0.0061,
+        "worst": -0.0312,
+        "best": 0.0137,
+        "each": [
+          {
+            "event": "fomc-2021-01-27",
+            "date": "2021-01-28",
+            "return": -0.0188
+          },
+          {
+            "event": "fomc-2021-03-17",
+            "date": "2021-03-18",
+            "return": -0.0213
+          },
+          {
+            "event": "fomc-2021-04-28",
+            "date": "2021-04-29",
+            "return": -0.006
+          },
+          {
+            "event": "fomc-2021-06-16",
+            "date": "2021-06-17",
+            "return": -0.0001
+          },
+          {
+            "event": "fomc-2021-07-28",
+            "date": "2021-07-29",
+            "return": -0.0019
+          },
+          {
+            "event": "fomc-2021-09-22",
+            "date": "2021-09-23",
+            "return": 0.0137
+          },
+          {
+            "event": "fomc-2021-11-03",
+            "date": "2021-11-04",
+            "return": -0.0029
+          },
+          {
+            "event": "fomc-2021-12-15",
+            "date": "2021-12-16",
+            "return": -0.0152
+          },
+          {
+            "event": "fomc-2022-01-26",
+            "date": "2022-01-27",
+            "return": -0.0254
+          },
+          {
+            "event": "fomc-2022-03-16",
+            "date": "2022-03-17",
+            "return": 0.003
+          },
+          {
+            "event": "fomc-2022-05-04",
+            "date": "2022-05-05",
+            "return": -0.0137
+          },
+          {
+            "event": "fomc-2022-06-15",
+            "date": "2022-06-16",
+            "return": -0.0312
+          },
+          {
+            "event": "fomc-2022-07-27",
+            "date": "2022-07-28",
+            "return": 0.0069
+          },
+          {
+            "event": "fomc-2022-09-21",
+            "date": "2022-09-22",
+            "return": 0.0058
+          },
+          {
+            "event": "fomc-2022-11-02",
+            "date": "2022-11-03",
+            "return": -0.0109
+          },
+          {
+            "event": "fomc-2023-02-01",
+            "date": "2023-02-02",
+            "return": -0.0187
+          },
+          {
+            "event": "fomc-2023-11-01",
+            "date": "2023-11-02",
+            "return": -0.0005
+          },
+          {
+            "event": "fomc-2023-12-13",
+            "date": "2023-12-14",
+            "return": 0.003
+          },
+          {
+            "event": "fomc-2024-03-20",
+            "date": "2024-03-21",
+            "return": -0.0003
+          },
+          {
+            "event": "fomc-2024-06-12",
+            "date": "2024-06-13",
+            "return": -0.0071
+          },
+          {
+            "event": "fomc-2024-12-18",
+            "date": "2024-12-19",
+            "return": -0.0034
+          },
+          {
+            "event": "fomc-2025-07-30",
+            "date": "2025-07-31",
+            "return": -0.0047
+          },
+          {
+            "event": "fomc-2025-09-17",
+            "date": "2025-09-18",
+            "return": -0.0017
+          },
+          {
+            "event": "fomc-2026-03-18",
+            "date": "2026-03-19",
+            "return": -0.0001
+          },
+          {
+            "event": "fomc-2026-04-29",
+            "date": "2026-04-30",
+            "return": -0.0002
+          }
+        ],
+        "rule": "gap_and_go",
+        "proxy": "daily",
+        "cost_per_trade": 0.0005,
+        "baseline": {
+          "trades": 367,
+          "win_rate": 0.4496,
+          "avg_return": -0.0005
+        },
+        "p_avg_beats_baseline": 0.9958
+      },
+      "rbi_mpc": {
+        "trades": 36,
+        "wins": 15,
+        "losses": 21,
+        "win_rate": 0.4167,
+        "avg_return": -0.0027,
+        "worst": -0.0163,
+        "best": 0.0132,
+        "each": [
+          {
+            "event": "rbi-2021-02-05",
+            "date": "2021-02-05",
+            "return": 0.0087
+          },
+          {
+            "event": "rbi-2021-04-07",
+            "date": "2021-04-07",
+            "return": -0.0068
+          },
+          {
+            "event": "rbi-2021-06-04",
+            "date": "2021-06-04",
+            "return": -0.0048
+          },
+          {
+            "event": "rbi-2021-08-06",
+            "date": "2021-08-06",
+            "return": -0.0066
+          },
+          {
+            "event": "rbi-2021-10-08",
+            "date": "2021-10-08",
+            "return": 0.0132
+          },
+          {
+            "event": "rbi-2021-12-08",
+            "date": "2021-12-08",
+            "return": -0.0059
+          },
+          {
+            "event": "rbi-2022-02-10",
+            "date": "2022-02-10",
+            "return": -0.0132
+          },
+          {
+            "event": "rbi-2022-04-08",
+            "date": "2022-04-08",
+            "return": -0.0042
+          },
+          {
+            "event": "rbi-2022-05-04",
+            "date": "2022-05-04",
+            "return": 0.0004
+          },
+          {
+            "event": "rbi-2022-06-08",
+            "date": "2022-06-08",
+            "return": -0.0045
+          },
+          {
+            "event": "rbi-2022-08-05",
+            "date": "2022-08-05",
+            "return": 0.0079
+          },
+          {
+            "event": "rbi-2022-09-30",
+            "date": "2022-09-30",
+            "return": -0.0161
+          },
+          {
+            "event": "rbi-2022-12-07",
+            "date": "2022-12-07",
+            "return": -0.0121
+          },
+          {
+            "event": "rbi-2023-02-08",
+            "date": "2023-02-08",
+            "return": -0.0001
+          },
+          {
+            "event": "rbi-2023-04-06",
+            "date": "2023-04-06",
+            "return": -0.0055
+          },
+          {
+            "event": "rbi-2023-06-08",
+            "date": "2023-06-08",
+            "return": -0.0004
+          },
+          {
+            "event": "rbi-2023-08-10",
+            "date": "2023-08-10",
+            "return": 0.0072
+          },
+          {
+            "event": "rbi-2023-10-06",
+            "date": "2023-10-06",
+            "return": -0.0112
+          },
+          {
+            "event": "rbi-2023-12-08",
+            "date": "2023-12-08",
+            "return": 0.0006
+          },
+          {
+            "event": "rbi-2024-02-08",
+            "date": "2024-02-08",
+            "return": -0.0143
+          },
+          {
+            "event": "rbi-2024-04-05",
+            "date": "2024-04-05",
+            "return": 0.0013
+          },
+          {
+            "event": "rbi-2024-06-07",
+            "date": "2024-06-07",
+            "return": -0.0009
+          },
+          {
+            "event": "rbi-2024-08-08",
+            "date": "2024-08-08",
+            "return": 0.006
+          },
+          {
+            "event": "rbi-2024-10-09",
+            "date": "2024-10-09",
+            "return": -0.0108
+          },
+          {
+            "event": "rbi-2024-12-06",
+            "date": "2024-12-06",
+            "return": 0.0014
+          },
+          {
+            "event": "rbi-2025-02-07",
+            "date": "2025-02-07",
+            "return": 0.003
+          },
+          {
+            "event": "rbi-2025-04-09",
+            "date": "2025-04-09",
+            "return": -0.0157
+          },
+          {
+            "event": "rbi-2025-06-06",
+            "date": "2025-06-06",
+            "return": 0.0041
+          },
+          {
+            "event": "rbi-2025-08-06",
+            "date": "2025-08-06",
+            "return": 0.0015
+          },
+          {
+            "event": "rbi-2025-10-01",
+            "date": "2025-10-01",
+            "return": 0.0039
+          },
+          {
+            "event": "rbi-2025-12-05",
+            "date": "2025-12-05",
+            "return": -0.0095
+          },
+          {
+            "event": "rbi-2026-02-06",
+            "date": "2026-02-06",
+            "return": 0.0086
+          },
+          {
+            "event": "rbi-2026-04-08",
+            "date": "2026-04-08",
+            "return": -0.0163
+          },
+          {
+            "event": "rbi-2026-06-05",
+            "date": "2026-06-05",
+            "return": -0.0084
+          },
+          {
+            "event": "rbi-2026-08-05",
+            "date": "2026-08-05",
+            "return": -0.0061
+          },
+          {
+            "event": "rbi-2026-10-07",
+            "date": "2026-10-07",
+            "return": 0.0093
+          }
+        ],
+        "rule": "follow_through",
+        "proxy": "daily",
+        "cost_per_trade": 0.0005,
+        "baseline": {
+          "trades": 1209,
+          "win_rate": 0.5029,
+          "avg_return": 0.0004
+        },
+        "p_avg_beats_baseline": 0.9564
+      },
+      "union_budget": {
+        "trades": 7,
+        "wins": 4,
+        "losses": 3,
+        "win_rate": 0.5714,
+        "avg_return": 0.0081,
+        "worst": -0.0052,
+        "best": 0.0351,
+        "each": [
+          {
+            "event": "budget-2021-02-01",
+            "date": "2021-02-01",
+            "return": 0.0351
+          },
+          {
+            "event": "budget-2022-02-01",
+            "date": "2022-02-01",
+            "return": 0.0209
+          },
+          {
+            "event": "budget-2023-02-01",
+            "date": "2023-02-01",
+            "return": -0.0044
+          },
+          {
+            "event": "budget-2024-02-01",
+            "date": "2024-02-01",
+            "return": -0.0052
+          },
+          {
+            "event": "budget-2024-07-23",
+            "date": "2024-07-23",
+            "return": 0.0084
+          },
+          {
+            "event": "budget-2025-02-01",
+            "date": "2025-02-01",
+            "return": 0.0055
+          },
+          {
+            "event": "budget-2026-02-01",
+            "date": "2026-02-01",
+            "return": -0.004
+          }
+        ],
+        "rule": "follow_through",
+        "proxy": "daily",
+        "cost_per_trade": 0.0005,
+        "baseline": {
+          "trades": 1209,
+          "win_rate": 0.5029,
+          "avg_return": 0.0004
+        },
+        "p_avg_beats_baseline": 0.0344
+      }
+    }
+  }
+}

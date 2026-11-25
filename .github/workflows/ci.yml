@@ -73,6 +73,9 @@ jobs:
       - name: Validate the macro event calendar (rate paths, DST-aware FOMC times, sources)
         run: python tests/test_macro_events.py
 
+      - name: Run the event study tests (reaction-day mapping, metrics, trade outcomes)
+        run: python tests/test_event_study.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

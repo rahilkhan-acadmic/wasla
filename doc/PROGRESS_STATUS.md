@@ -396,7 +396,14 @@ authenticated routes manually via the dashboard.
     sources. Network: rbi.org.in, rbidocs, fbil, nseindia, nsearchives,
     niftyindices, sebi, kite/zerodha/upstox docs are allowed in the
     environment; use `www.rbi.org.in`, as bare `rbi.org.in` is refused.
-    Next: the daily-data study (gaps, ranges,
+    Daily-data study done (2026-11-25): see doc/event-breakout-strategy.md
+    §6a. Headlines: only the Budget moves Nifty more than an ordinary day;
+    India VIX falls on event days (crush); FOMC -> Nifty gap-and-go lost
+    8W/16L (drop it); RBI follow-through no edge. Data:
+    data/events/index_daily.csv (NSE files, refresh with
+    data/events/fetch_index_history.py). Next: Event Watch dashboard
+    section (strategy trade outcome = success/failure), then FBIL surprise.
+    Superseded next step: the daily-data study (gaps, ranges,
     follow-through vs non-event days). Data plan: daily Nifty/Bank Nifty/
     VIX from NSE (bhavcopy; NSE also has an official MCP server, EOD 5 yrs
     + delayed live, not reachable from this sandbox), BTC minute data from
