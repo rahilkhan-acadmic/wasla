@@ -108,9 +108,28 @@ def test_bootstrap_is_deterministic_and_directional():
     print("PASS: bootstrap p-values deterministic and in the right direction")
 
 
+def test_trade_outcomes_daily_proxies():
+    m = lambda **k: {"event": "e", "date": "d", "gap": 0.0, "intraday": 0.0, "ret": 0.0, "next1": 0.0, **k}  # noqa: E731
+    ev = [m(gap=0.01, intraday=0.004),    # gap up, kept going: win
+          m(gap=-0.008, intraday=0.003),  # gap down, faded: loss
+          m(gap=0.002, intraday=0.01)]    # gap < 0.5%: no trade
+    t = es.trade_outcomes(ev, [m(gap=0.006, intraday=-0.001)], "gap_and_go")
+    assert (t["trades"], t["wins"], t["losses"]) == (2, 1, 1), t
+    assert abs(t["each"][0]["return"] - (0.004 - es.COST)) < 1e-4
+    assert t["baseline"]["trades"] == 1 and t["proxy"] == "daily"
+    ft = es.trade_outcomes([m(ret=0.01, next1=0.002), m(ret=-0.01, next1=0.004), m(ret=0.0, next1=0.05)],
+                           [], "follow_through")
+    assert (ft["trades"], ft["wins"]) == (2, 1), ft   # flat day -> no trade
+    # A tiny gain smaller than the cost is a loss.
+    tiny = es.trade_outcomes([m(gap=0.01, intraday=0.0003)], [], "gap_and_go")
+    assert tiny["wins"] == 0
+    print("PASS: trade outcomes: gap-and-go and follow-through daily proxies, costs, no-trade days")
+
+
 if __name__ == "__main__":
     test_reaction_day_mapping()
     test_day_metrics_math()
     test_study_detects_bigger_moves_and_gap_and_go()
     test_bootstrap_is_deterministic_and_directional()
+    test_trade_outcomes_daily_proxies()
     print("\nAll event study tests passed.")

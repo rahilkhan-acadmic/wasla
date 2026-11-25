@@ -40,6 +40,7 @@ RESULTS_PATH = os.path.join(_ROOT, "data", "events", "event_study_results.json")
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 SESSION_CLOSE = datetime.time(15, 30)
 GAP_THRESHOLD = 0.005  # 0.5%, the FOMC -> Nifty "gap and go" rule
+COST = 0.0005  # 5 bp round trip (futures brokerage, STT, slippage), per trade
 BOOTSTRAP_REPS = 5000
 SEED = 20261125
 
@@ -208,6 +209,57 @@ def q5_vix(ev, base):
             "p_rises_before": r4(bootstrap_p(obs_pre, [m["pre3"] for m in base], len(ev)))}
 
 
+# ---------------------------------------------------------- trade outcomes
+#
+# "Success / failure" on the dashboard = the strategy's trade outcome. Daily
+# data can't run the intraday v1 rules (ranges built over 10:00-12:30, 15-min
+# closes), so these are DAILY PROXIES, labelled as such everywhere:
+#   gap_and_go     (FOMC -> Nifty): |open gap| > 0.5% -> enter at the open in
+#                  the gap's direction, exit at the close.
+#   follow_through (RBI, Budget): enter at the event day's close in that day's
+#                  direction (the post-news move), exit next day's close.
+# Win = positive return after COST. The same rule on ordinary days is the
+# baseline: an event edge must beat it, not just be positive.
+
+def _trade(m, rule):
+    if rule == "gap_and_go":
+        if abs(m["gap"]) <= GAP_THRESHOLD:
+            return None
+        side = 1 if m["gap"] > 0 else -1
+        return side * m["intraday"] - COST
+    if rule == "follow_through":
+        if m["ret"] == 0:
+            return None
+        side = 1 if m["ret"] > 0 else -1
+        return side * m["next1"] - COST
+    raise ValueError(rule)
+
+
+def trade_outcomes(ev, base, rule):
+    def summary(ms, keep_days=False):
+        trades = [(m, r) for m in ms if (r := _trade(m, rule)) is not None]
+        rets = [r for _, r in trades]
+        wins = sum(1 for r in rets if r > 0)
+        out = {"trades": len(rets), "wins": wins, "losses": len(rets) - wins,
+               "win_rate": r4(wins / len(rets)) if rets else None,
+               "avg_return": r4(mean(rets)) if rets else None,
+               "worst": r4(min(rets)) if rets else None, "best": r4(max(rets)) if rets else None}
+        if keep_days:
+            out["each"] = [{"event": m["event"], "date": m["date"], "return": r4(r)} for m, r in trades]
+        return out, rets
+    ev_sum, ev_rets = summary(ev, keep_days=True)
+    base_sum, base_rets = summary(base)
+    ev_sum["rule"] = rule
+    ev_sum["proxy"] = "daily"
+    ev_sum["cost_per_trade"] = COST
+    ev_sum["baseline"] = {k: base_sum[k] for k in ("trades", "win_rate", "avg_return")}
+    ev_sum["p_avg_beats_baseline"] = r4(bootstrap_p(mean(ev_rets), base_rets, len(ev_rets))) if ev_rets else None
+    return ev_sum
+
+
+RULES = {"fomc": "gap_and_go", "rbi_mpc": "follow_through", "union_budget": "follow_through"}
+
+
 def run(prices=None, events=None) -> dict:
     prices = prices if prices is not None else load_prices()
     events = events if events is not None else load_events()
@@ -229,6 +281,9 @@ def run(prices=None, events=None) -> dict:
             q.setdefault("q3_gap_and_go", {})[index] = q3_gap_and_go(d["events"]["fomc"], d["baseline"])
         if "union_budget" in d["events"]:
             q.setdefault("q4_budget", {})[index] = q4_budget(d["events"]["union_budget"], d["baseline"])
+        for etype, ev in sorted(d["events"].items()):
+            results.setdefault("trades", {}).setdefault(index, {})[etype] = trade_outcomes(
+                ev, d["baseline"], RULES[etype])
     if "INDIAVIX" in days:
         d = days["INDIAVIX"]
         q["q5_vix"] = {etype: q5_vix(ev, d["baseline"]) for etype, ev in sorted(d["events"].items())}
