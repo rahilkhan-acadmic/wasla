@@ -1709,3 +1709,168 @@ form textarea {
     animation: none;
   }
 }
+
+/* ---------- Event Watch ---------- */
+.ew-upcoming h2 {
+  margin: 0;
+}
+
+.ew-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.ew-block h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.35rem;
+}
+
+.ew-big {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+}
+
+.ew-big .muted-cell {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.ew-chart {
+  margin: 0.4rem 0 0;
+}
+
+.ew-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ew-band {
+  fill: var(--hairline);
+}
+
+.ew-zero {
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+}
+
+.ew-dot {
+  fill: var(--brand);
+  stroke: var(--surface-raised);
+  stroke-width: 2;
+}
+
+.ew-dot:hover {
+  r: 6.5;
+}
+
+.ew-tick {
+  font-size: 9px;
+  fill: var(--text-secondary);
+}
+
+.ew-caption {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.ew-squares {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: 0.4rem 0;
+}
+
+.ew-sq {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.ew-win {
+  background: var(--status-good);
+}
+
+.ew-loss {
+  background: var(--status-critical);
+}
+
+.ew-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  font-size: 0.85rem;
+  align-items: center;
+}
+
+.ew-score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.ew-score-of {
+  color: var(--text-secondary);
+}
+
+.ew-label-low {
+  border-color: var(--status-critical);
+}
+
+.ew-label-moderate {
+  border-color: var(--status-warning);
+}
+
+.ew-label-high {
+  border-color: var(--status-good);
+}
+
+.ew-verdict {
+  margin: 0.4rem 0 0.6rem;
+  font-size: 0.9rem;
+}
+
+.ew-components {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ew-components li {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 2.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+}
+
+.ew-comp-name {
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.ew-comp-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--hairline);
+  overflow: hidden;
+}
+
+.ew-comp-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--brand);
+}
+
+.ew-comp-val {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

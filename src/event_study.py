@@ -156,8 +156,28 @@ def build_days(prices: dict[str, list[dict]], events: list[dict]):
     return out
 
 
+def percentile(xs, q):
+    """Linear-interpolated percentile, q in [0, 1]."""
+    xs = sorted(xs)
+    if not xs:
+        return None
+    k = (len(xs) - 1) * q
+    lo, hi = math.floor(k), math.ceil(k)
+    return xs[lo] + (xs[hi] - xs[lo]) * (k - lo)
+
+
 def q1_size(ev, base):
     res = {"n": len(ev)}
+    # "Probable movement": the spread of past event-day moves, against ordinary days.
+    res["abs_ret_p50"] = r4(percentile([abs(m["ret"]) for m in ev], 0.5))
+    res["abs_ret_p80"] = r4(percentile([abs(m["ret"]) for m in ev], 0.8))
+    res["baseline_abs_ret_p50"] = r4(percentile([abs(m["ret"]) for m in base], 0.5))
+    res["baseline_abs_ret_p80"] = r4(percentile([abs(m["ret"]) for m in base], 0.8))
+    res["range_p50"] = r4(percentile([m["range"] for m in ev], 0.5))
+    res["up"] = sum(1 for m in ev if m["ret"] > 0)
+    res["down"] = sum(1 for m in ev if m["ret"] < 0)
+    res["each"] = [{"event": m["event"], "date": m["date"], "ret": r4(m["ret"]), "range": r4(m["range"])}
+                   for m in ev]
     for key in ("ret", "range"):
         obs = mean(abs(m[key]) for m in ev)
         pool = [abs(m[key]) for m in base]

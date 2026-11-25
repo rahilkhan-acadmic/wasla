@@ -230,7 +230,22 @@ event pay for volatility that then drops.
    adopted.
 5. Bitcoin and intraday Nifty are still untested (steps 4-5).
 
-## 7. In the project: proposed "Event Watch" page
+## 7. In the project: the "Event Watch" page
+
+**Built (2026-11-25).** `GET /events/watch` (`src/event_watch.py`) + the
+dashboard page `#/events`. Per upcoming event (and per event type, Nifty
+50 or Nifty Bank): probable movement (median and 80% band of past
+event-day moves vs ordinary days, dot strip of every past event), the
+strategy rule's win/loss record (daily proxy, after costs), a 0-100
+confidence score with its components (evidence, edge, significance,
+stability; no edge -> 0), the India VIX pattern, and a history table.
+The confidence formula is documented in `src/event_watch.py`.
+
+Upkeep: after each event, add its decision to `macro_events.json`, run
+`data/events/fetch_index_history.py` and `src/event_study.py`, commit;
+the page updates on the next deploy.
+
+### Original proposal
 A fifth dashboard page, separate from the distress model:
 - **Upcoming events:** RBI, FOMC, Budget, with countdown and IST time.
 - **Event history:** per event, how Nifty / Bank Nifty / BTC moved: gap,

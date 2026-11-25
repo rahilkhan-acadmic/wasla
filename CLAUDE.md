@@ -35,6 +35,7 @@ python tests/test_us_universe.py
 python tests/test_market_refresh.py
 python tests/test_macro_events.py
 python tests/test_event_study.py
+python tests/test_event_watch.py
 cfn-lint aws/*-stack.json aws/infrastructure.json
 cd dashboard && npm ci && npm run build && cd ..
 ```

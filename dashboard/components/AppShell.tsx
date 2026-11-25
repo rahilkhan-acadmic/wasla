@@ -6,6 +6,7 @@ import ModelStatusPanel from "./ModelStatusPanel";
 import { useSignOut } from "./AuthGate";
 import {
   ChevronIcon,
+  EventIcon,
   InsolvencyIcon,
   MarketIcon,
   MenuIcon,
@@ -18,6 +19,7 @@ import { ROUTES, RouteId, routeHref } from "../lib/routes";
 const ROUTE_ICONS: Record<RouteId, React.ComponentType<{ size?: number }>> = {
   score: ScoreIcon,
   market: MarketIcon,
+  events: EventIcon,
   insolvency: InsolvencyIcon,
   model: ModelIcon,
 };

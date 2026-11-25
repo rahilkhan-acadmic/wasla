@@ -401,8 +401,11 @@ authenticated routes manually via the dashboard.
     India VIX falls on event days (crush); FOMC -> Nifty gap-and-go lost
     8W/16L (drop it); RBI follow-through no edge. Data:
     data/events/index_daily.csv (NSE files, refresh with
-    data/events/fetch_index_history.py). Next: Event Watch dashboard
-    section (strategy trade outcome = success/failure), then FBIL surprise.
+    data/events/fetch_index_history.py). Event Watch section built
+    (dashboard #/events, GET /events/watch, 2026-11-25): upcoming RBI Dec 4
+    and FOMC Dec 9 show 0/100 confidence (no edge / avoid); Budget is the
+    only type with a positive score (3-6/100, 7 events). Next: FBIL
+    surprise measure (step 3), Bitcoin intraday (4), live agent (5).
     Superseded next step: the daily-data study (gaps, ranges,
     follow-through vs non-event days). Data plan: daily Nifty/Bank Nifty/
     VIX from NSE (bhavcopy; NSE also has an official MCP server, EOD 5 yrs

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import AppShell from "../components/AppShell";
 import CompanyScorePage from "../components/CompanyScorePage";
+import EventWatchPage from "../components/EventWatchPage";
 import InsolvencyWatchPage from "../components/InsolvencyWatchPage";
 import MarketOverviewPage from "../components/MarketOverviewPage";
 import ModelInfoPage from "../components/ModelInfoPage";
@@ -23,6 +24,7 @@ export default function Page() {
         />
       )}
       {route === "market" && <MarketOverviewPage universe={isUniverse(param) ? param : "nse"} />}
+      {route === "events" && <EventWatchPage />}
       {route === "insolvency" && <InsolvencyWatchPage />}
       {route === "model" && <ModelInfoPage />}
     </AppShell>
