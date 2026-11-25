@@ -163,6 +163,15 @@ manually via the dashboard's login flow.
   dataset size). Treat any single retrain's `auc_improvement` with real
   skepticism; see `src/cross_validate.py` for a more trustworthy check
   before concluding a model is actually better.
+- **The promotion gate only compares against a model it can trust.** The
+  registry records each promoted model's training provenance (`eval_mode`,
+  `trained_before`). A current model without it (anything promoted before
+  2026-11-25), or one that may have trained on this run's held-out
+  companies, is not used as the bar; the candidate must instead reach
+  `PROMOTION_MIN_AUC` (0.85) on the held-out companies. Why: the
+  2026-09-28 model scored a perfect 1.000 on the held-out set every week
+  (it had trained on it), so no candidate could ever be promoted. Each
+  run's `decision`/`decision_reason` says which rule applied.
 - **NSE and Companies House are undocumented APIs.** If
   `data/sources/nse_gsm_labels.py` or `uk_companies_house_labels.py` starts
   failing, that's the likely cause, not a bug in this codebase — check their

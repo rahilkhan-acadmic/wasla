@@ -121,6 +121,62 @@ def run_test():
     print(f"PASSED: both models scored on the same {result7['test_set_size']} held-out records "
           f"(not all {len(y_all)})\n")
 
+    retrain_handler._evaluate_existing_model = real_eval
+
+    print("=== Test 8: incumbent_comparable -- when the current model is a fair bar ===")
+    ic = retrain_handler.incumbent_comparable
+    assert ic(None, "time", "2023-01-01")[0] is False
+    legacy = {"version": "v1790617273", "s3_key": "x"}  # promoted before provenance existed
+    ok, why = ic(legacy, "time", "2023-01-01")
+    assert not ok and "before training provenance" in why, why
+    assert ic(legacy, "random", None)[0] is False
+    timed = {"version": "v2", "eval_mode": "time", "trained_before": "2023-01-01"}
+    assert ic(timed, "time", "2023-01-01")[0] is True
+    assert ic(timed, "time", "2024-01-01")[0] is True       # trained on less than this run's train side
+    assert ic(timed, "time", "2022-01-01")[0] is False      # trained on companies this run tests on
+    assert ic(timed, "random", None)[0] is False
+    assert ic({"version": "v3", "eval_mode": "random"}, "random", None)[0] is True
+    assert ic({"version": "v3", "eval_mode": "random"}, "time", "2023-01-01")[0] is False
+    print("PASSED: legacy/unknown/overlapping models are not comparable; time- and random-split "
+          "models are, against runs that can't contain their training data\n")
+
+    print("=== Test 9: the 2026-11 bug -- a legacy model trained on ALL data no longer blocks every candidate ===")
+    from train_classifier import make_model
+    import tempfile as _tf
+    legacy_model = make_model()
+    legacy_model.fit(X_all, y_all)  # saw every company, including the held-out ones
+    with _tf.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
+        legacy_model.save_model(tmp.name)
+        boto3.client("s3", region_name="ap-south-1").upload_file(
+            tmp.name, "test-distress-model-bucket", "models/distress-classifier/v1790617273/model.json")
+    table = boto3.resource("dynamodb", region_name="ap-south-1").Table("test-distress-model-registry")
+    table.put_item(Item={"model_name": "distress-classifier", "version": "v1790617273",
+                         "s3_key": "models/distress-classifier/v1790617273/model.json",
+                         "promoted_at": "2026-09-28T17:41:14Z"})
+    r9 = retrain_handler.train_and_evaluate_handler({}, None)
+    print(json.dumps(r9, indent=2))
+    assert r9["current_auc"] >= r9["new_auc"], "a model that saw the test set should look at least as good"
+    assert r9["decision"] == "minimum_bar" and "before training provenance" in r9["decision_reason"]
+    assert r9["promote"] == (r9["new_auc"] >= retrain_handler.PROMOTION_MIN_AUC)
+    assert str(retrain_handler.PROMOTION_MIN_AUC) in r9["decision_reason"]
+    print(f"PASSED: judged on the minimum bar (AUC {r9['new_auc']} vs {retrain_handler.PROMOTION_MIN_AUC}), "
+          f"promote={r9['promote']}, despite the legacy model's {r9['current_auc']}\n")
+
+    print("=== Test 10: promotion records provenance; the next run compares fairly ===")
+    reg = retrain_handler.register_model_handler(r9, None)
+    item = table.get_item(Key={"model_name": "distress-classifier"})["Item"]
+    assert item["eval_mode"] == "random" and "trained_before" not in item, item
+    assert item["decision"] == "minimum_bar" and item["new_auc"] == str(r9["new_auc"]), item
+    r10 = retrain_handler.train_and_evaluate_handler({}, None)
+    assert r10["decision"] == "compared", r10
+    assert r10["promote"] == (r10["auc_improvement"] > retrain_handler.PROMOTION_AUC_MARGIN)
+    # A time-split promotion stores its cutoff.
+    retrain_handler.register_model_handler({**r9, "eval_mode": "time", "trained_before": "2023-01-01"}, None)
+    item = table.get_item(Key={"model_name": "distress-classifier"})["Item"]
+    assert item["eval_mode"] == "time" and item["trained_before"] == "2023-01-01", item
+    print(f"PASSED: registry stores eval_mode/trained_before; next run 'compared' "
+          f"(improvement {r10['auc_improvement']}, promote={r10['promote']})\n")
+
     print("ALL TESTS PASSED")
 
 
