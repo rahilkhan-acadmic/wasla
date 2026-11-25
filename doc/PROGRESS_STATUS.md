@@ -3,6 +3,33 @@
 Scratch file for session handoff. Read this first when picking the
 session back up.
 
+## 2026-11-25: retrain could never promote -- fixed (this PR)
+
+Looked at the weekly retrain's numbers (step 6) for the first time. All 8
+runs from 2026-10-06 to 11-24 were **rejected**: candidate AUC 0.86-0.98 on
+the 13 held-out (2023+) companies, but the live model `v1790617273`
+(promoted 2026-09-28) scored **1.000 every week**. It predates the time
+split (enabled 2026-10-10), so it almost certainly trained on those
+companies; it may also predate the headline-leak fix. The gate needed
+candidate - 1.000 > 0.01, which can't happen.
+
+Fix: the registry now stores each promoted model's training provenance
+(`eval_mode`, `trained_before`). A current model without it, or one that
+may have trained on this run's held-out companies, isn't used as the bar;
+the candidate must instead reach **AUC >= 0.85** (`PROMOTION_MIN_AUC`, set
+on the train Lambda). The state machine branches on an explicit `promote`
+flag, and both notifications carry `decision_reason`.
+
+**Expected at the next retrain (Tue 18:10 UTC):** promotion on the minimum
+bar if the candidate scores like the last runs (Nov 24: 0.976). Then check:
+the registry item has `eval_mode: time`, `trained_before: 2023-01-01`;
+`/health` shows the new version; and whether live scores are less
+polarised than the old model's ~2% / ~98%.
+
+Also checked: **Infosys is fixed** in `datasets/real_companies.json` (market
+cap dropped by the currency guard, book value used). The training set has
+been the same **51 records since 2026-10-13** (US 17/15, India 15/4).
+
 ## Where things stand (end of 2026-11-15 session)
 
 All work from this session is merged and deployed (PRs #37-#50). Nothing is
@@ -337,10 +364,9 @@ authenticated routes manually via the dashboard.
    #44-#46).
 5. Check the live Yahoo search on the dashboard (see "Not verified yet" at
    the top).
-6. Look at the weekly retrain's actual eval numbers per run (still only
-   checked that executions `SUCCEEDED`; last one 2026-11-10). After Sunday's
-   run, confirm Infosys's market value / liabilities ratio in
-   `datasets/real_companies.json` is ~1.5, not ~700.
+6. ~~Look at the weekly retrain's eval numbers.~~ **Done 2026-11-25:**
+   found the gate could never promote; fixed (see the top section). Left:
+   confirm the next retrain promotes and the registry records provenance.
 7. **US universe:** shipped (#48), first snapshot done (450/503 complete).
    Left: look at the live S&P 500 donut, and consider 1 shard instead of 4
    (see the timing note above).

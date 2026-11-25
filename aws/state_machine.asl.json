@@ -36,11 +36,11 @@
 
     "ShouldPromote": {
       "Type": "Choice",
-      "Comment": "Only promote if the new model is a real improvement, not just noise -- 0.01 AUC margin is a starting point, tune to your data.",
+      "Comment": "train_and_evaluate decides: beat a comparable current model by PROMOTION_AUC_MARGIN, or, when the current model may have trained on the held-out companies, reach PROMOTION_MIN_AUC. Its decision_reason says which.",
       "Choices": [
         {
-          "Variable": "$.evaluation.auc_improvement",
-          "NumericGreaterThan": 0.01,
+          "Variable": "$.evaluation.promote",
+          "BooleanEquals": true,
           "Next": "RegisterModel"
         }
       ],
@@ -62,7 +62,7 @@
       "Parameters": {
         "TopicArn": "<your SNS topic ARN>",
         "Subject": "Distress model retrained and promoted",
-        "Message.$": "States.Format('New model {} promoted. AUC improved by {}.', $.registration.version, $.evaluation.auc_improvement)"
+        "Message.$": "States.Format('New model {} promoted. {}', $.registration.version, $.evaluation.decision_reason)"
       },
       "End": true
     },
@@ -73,7 +73,7 @@
       "Parameters": {
         "TopicArn": "<your SNS topic ARN>",
         "Subject": "Distress model retrain did not improve -- kept current model",
-        "Message.$": "States.Format('Retrain finished but AUC change was {}, below the promotion threshold. Current model unchanged.', $.evaluation.auc_improvement)"
+        "Message.$": "States.Format('Retrain finished, current model kept. {}', $.evaluation.decision_reason)"
       },
       "End": true
     }

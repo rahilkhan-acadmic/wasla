@@ -64,6 +64,14 @@ SAMPLE_DATA_PATH = os.environ.get(
 # noise in a small dataset. Tune once real data makes AUC deltas meaningful.
 PROMOTION_AUC_MARGIN = float(os.environ.get("PROMOTION_AUC_MARGIN", "0.01"))
 
+# When the current model can't be compared fairly (see incumbent_comparable:
+# it may have been trained on the very companies the candidate is tested
+# on), the candidate must instead reach this AUC on the held-out companies.
+# Found 2026-11-25: the model promoted 2026-09-28 predates the time split and
+# scored a perfect 1.000 on the held-out set every week, so no candidate
+# (0.86-0.98) could ever be promoted.
+PROMOTION_MIN_AUC = float(os.environ.get("PROMOTION_MIN_AUC", "0.85"))
+
 # If set (YYYY-MM-DD), evaluation uses train_classifier.time_split_dataset
 # instead of a random split -- train on companies dated before this, test on
 # companies dated at/after it. Left unset by default: at the current real
@@ -112,11 +120,41 @@ def _load_dataset_arrays():
     return X, y
 
 
+def _current_registry_item():
+    ddb = boto3.resource("dynamodb").Table(MODEL_REGISTRY_TABLE)
+    return ddb.get_item(Key={"model_name": MODEL_REGISTRY_KEY}).get("Item")
+
+
+def incumbent_comparable(item, eval_mode: str, cutoff) -> tuple[bool, str]:
+    """Whether the current model's AUC on this run's held-out companies is a
+    fair bar. It is only if that model never trained on them:
+      * time split: it must record trained_before (the cutoff its own
+        training stopped at) no later than this run's cutoff;
+      * random split: it must come from a random-split run (trained on the
+        same deterministic 75% of the data, not all of it).
+    Models promoted before this metadata existed are not comparable."""
+    if item is None:
+        return False, "no current model"
+    if not item.get("eval_mode"):
+        return False, (f"current model {item.get('version', '?')} was promoted before training provenance "
+                       "was recorded, so it may have trained on the held-out companies")
+    if eval_mode == "time":
+        trained_before = item.get("trained_before")
+        if not trained_before:
+            return False, f"current model {item.get('version', '?')} was not trained on a time split"
+        if cutoff and str(trained_before) > str(cutoff):
+            return False, (f"current model {item.get('version', '?')} trained on companies up to "
+                           f"{trained_before}, after this run's cutoff {cutoff}")
+        return True, f"current model trained only on companies before {trained_before}"
+    if item.get("eval_mode") != "random":
+        return False, "current model came from a time-split run; this run fell back to a random split"
+    return True, "current model trained on the same random split"
+
+
 def _evaluate_existing_model(X, y) -> float:
     """Downloads and scores the currently-registered model on the given
     data, for a fair comparison against the freshly trained candidate."""
-    ddb = boto3.resource("dynamodb").Table(MODEL_REGISTRY_TABLE)
-    item = ddb.get_item(Key={"model_name": MODEL_REGISTRY_KEY}).get("Item")
+    item = _current_registry_item()
     if item is None:
         return 0.0  # no current model -- any real candidate beats "nothing"
 
@@ -170,6 +208,21 @@ def train_and_evaluate_handler(event, context):
 
     current_auc = _evaluate_existing_model(X_test, y_test)
 
+    # Promote on a fair comparison when there is one; otherwise on an
+    # absolute bar (a model that may have seen the test companies scores
+    # ~1.0 on them and would block every candidate forever).
+    comparable, why = incumbent_comparable(_current_registry_item(), eval_mode, EVAL_SPLIT_CUTOFF_DATE)
+    if comparable:
+        promote = new_auc - current_auc > PROMOTION_AUC_MARGIN
+        decision = "compared"
+        reason = (f"Candidate AUC {new_auc:.4f} vs current {current_auc:.4f} on {len(y_test)} held-out "
+                  f"companies ({why}); needs an improvement above {PROMOTION_AUC_MARGIN}.")
+    else:
+        promote = new_auc >= PROMOTION_MIN_AUC
+        decision = "minimum_bar"
+        reason = (f"Not compared with the current model ({why}). Candidate AUC {new_auc:.4f} on "
+                  f"{len(y_test)} held-out companies vs the minimum {PROMOTION_MIN_AUC}.")
+
     candidate_key = f"models/{MODEL_REGISTRY_KEY}/candidate/model-{int(time.time())}.json"
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
         new_model.save_model(tmp.name)
@@ -181,6 +234,13 @@ def train_and_evaluate_handler(event, context):
         "current_auc": round(current_auc, 4),
         "auc_improvement": round(new_auc - current_auc, 4),
         "eval_mode": eval_mode,
+        # The cutoff the candidate's training stopped at (time split only):
+        # stored in the registry on promotion, so the next run knows this
+        # model never saw companies dated at/after it.
+        "trained_before": EVAL_SPLIT_CUTOFF_DATE if eval_mode == "time" else None,
+        "promote": bool(promote),
+        "decision": decision,
+        "decision_reason": reason,
         # How many records both AUCs were computed on. With a small dataset
         # this is tiny, and the AUCs are correspondingly noisy -- surfaced
         # here so it's visible next to the numbers rather than buried.
@@ -205,11 +265,19 @@ def register_model_handler(event, context):
         Key=promoted_key,
     )
 
-    boto3.resource("dynamodb").Table(MODEL_REGISTRY_TABLE).put_item(Item={
+    item = {
         "model_name": MODEL_REGISTRY_KEY,
         "s3_key": promoted_key,
         "version": version,
         "promoted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    })
+        # Training provenance, read by incumbent_comparable() next week.
+        "eval_mode": event.get("eval_mode") or "random",
+    }
+    if event.get("trained_before"):
+        item["trained_before"] = str(event["trained_before"])
+    for k in ("new_auc", "test_set_size", "decision"):
+        if event.get(k) is not None:
+            item[k] = str(event[k])  # strings: DynamoDB rejects Python floats
+    boto3.resource("dynamodb").Table(MODEL_REGISTRY_TABLE).put_item(Item=item)
 
     return {"version": version, "s3_key": promoted_key}
