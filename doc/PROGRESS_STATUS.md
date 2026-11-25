@@ -3,7 +3,7 @@
 Scratch file for session handoff. Read this first when picking the
 session back up.
 
-## 2026-11-25: retrain could never promote -- fixed (this PR)
+## 2026-11-25: retrain could never promote -- fixed (#52, deployed)
 
 Looked at the weekly retrain's numbers (step 6) for the first time. All 8
 runs from 2026-10-06 to 11-24 were **rejected**: candidate AUC 0.86-0.98 on
@@ -20,7 +20,14 @@ the candidate must instead reach **AUC >= 0.85** (`PROMOTION_MIN_AUC`, set
 on the train Lambda). The state machine branches on an explicit `promote`
 flag, and both notifications carry `decision_reason`.
 
-**Expected at the next retrain (Tue 18:10 UTC):** promotion on the minimum
+**Deployed and verified 2026-11-25 10:19 UTC** (deploy run 57): the live
+state machine's `ShouldPromote` branches on `$.evaluation.promote`, the
+"kept" notification carries `decision_reason`, and
+`distress-model-train-evaluate` has `PROMOTION_MIN_AUC=0.85` with
+`EVAL_SPLIT_CUTOFF_DATE=2023-01-01`. No retrain was started by hand; the
+live model is still `v1790617273` until the scheduled run.
+
+**Expected at the next retrain (Tue 2026-12-01 18:10 UTC):** promotion on the minimum
 bar if the candidate scores like the last runs (Nov 24: 0.976). Then check:
 the registry item has `eval_mode: time`, `trained_before: 2023-01-01`;
 `/health` shows the new version; and whether live scores are less
@@ -32,7 +39,7 @@ been the same **51 records since 2026-10-13** (US 17/15, India 15/4).
 
 ## Where things stand (end of 2026-11-15 session)
 
-All work from this session is merged and deployed (PRs #37-#50). Nothing is
+All work up to 2026-11-25 is merged and deployed (PRs #37-#52). Nothing is
 open. #48 added the S&P 500, #49 fixed the market status column's universe,
 #50 added a manual "Refresh now" for market data (deployed 13:17 UTC;
 `/health` 200, API role has the new `market-data-manual-refresh` policy). The dashboard has four pages: Company Score, Market Overview,
