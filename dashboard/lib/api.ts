@@ -263,3 +263,97 @@ export interface SearchResponse {
 export function searchCompanies(q: string): Promise<SearchResponse> {
   return request<SearchResponse>(`/search?q=${encodeURIComponent(q)}`);
 }
+
+// --- Event Watch (RBI / FOMC / Union Budget; src/event_watch.py) ---
+
+export type EventType = "rbi_mpc" | "fomc" | "union_budget";
+export type IndexId = "NIFTY50" | "NIFTYBANK";
+
+export interface EventMove {
+  event: string;
+  date: string;
+  ret: number;
+  range: number;
+}
+
+export interface EventTrade {
+  event: string;
+  date: string;
+  return: number;
+}
+
+export interface EventIndexStats {
+  name: string;
+  movement: {
+    n: number;
+    abs_ret_p50: number;
+    abs_ret_p80: number;
+    baseline_abs_ret_p50: number;
+    baseline_abs_ret_p80: number;
+    range_p50: number;
+    mean_abs_range: number;
+    baseline_mean_abs_range: number;
+    up: number;
+    down: number;
+    each: EventMove[];
+  };
+  record: {
+    trades: number;
+    wins: number;
+    losses: number;
+    win_rate: number | null;
+    avg_return: number | null;
+    worst: number | null;
+    best: number | null;
+    baseline: { trades: number; win_rate: number | null; avg_return: number | null };
+    each: EventTrade[];
+    proxy: string;
+    cost_per_trade: number;
+  };
+  confidence: {
+    score: number;
+    label: "low" | "moderate" | "high";
+    verdict: string;
+    components: { evidence: number; edge: number; significance: number; stability: number };
+  };
+}
+
+export interface EventTypeCard {
+  type: EventType;
+  label: string;
+  rule: string;
+  nse_note: string;
+  by_index: Partial<Record<IndexId, EventIndexStats>>;
+  vix: {
+    n: number;
+    mean_vix_change_on_day: number;
+    baseline_mean_vix_change: number;
+    mean_vix_change_3d_before: number;
+  } | null;
+}
+
+export interface UpcomingEvent {
+  id: string;
+  type: EventType;
+  label: string;
+  date: string;
+  release_ist: string;
+  second_stage_ist: string | null;
+  nse_session: string;
+  hours_away: number;
+  source: string;
+}
+
+export interface EventWatchResponse {
+  generated_at: string;
+  calendar_as_of: string;
+  study_span: [string, string];
+  upcoming: UpcomingEvent[];
+  cards: Record<EventType, EventTypeCard>;
+  latest_vix: { date: string; close: number; percentile_5y: number } | null;
+  disclaimer: string;
+}
+
+export function getEventWatch(): Promise<EventWatchResponse> {
+  return request<EventWatchResponse>("/events/watch");
+}

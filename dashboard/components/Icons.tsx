@@ -63,6 +63,16 @@ export function MarketIcon(props: IconProps) {
   );
 }
 
+export function EventIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M16 3v4M8 3v4M3 10h18" />
+      <path d="M12 13v3l2 1" />
+    </Svg>
+  );
+}
+
 export function InsolvencyIcon(props: IconProps) {
   return (
     <Svg {...props}>

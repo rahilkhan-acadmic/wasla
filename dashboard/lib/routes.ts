@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from "react";
 
-export type RouteId = "score" | "market" | "insolvency" | "model";
+export type RouteId = "score" | "market" | "events" | "insolvency" | "model";
 
 export interface RouteDef {
   id: RouteId;
@@ -20,6 +20,7 @@ export interface RouteDef {
 export const ROUTES: RouteDef[] = [
   { id: "score", label: "Company Score" },
   { id: "market", label: "Market Overview" },
+  { id: "events", label: "Event Watch" },
   { id: "insolvency", label: "Insolvency Watch" },
   { id: "model", label: "Model Info" },
 ];

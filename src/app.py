@@ -19,6 +19,7 @@ Endpoints:
                                  loss-making count (?universe= as above)
     GET  /market/refresh         State of the index's data refresh (?universe= as above)
     POST /market/refresh         Start a refresh now instead of waiting for Sunday (409 if one is running)
+    GET  /events/watch           Event Watch: upcoming RBI/FOMC/Budget events + historical stats
 
 Run locally:
     uvicorn app:app --host 0.0.0.0 --port 8000 --app-dir src
@@ -544,6 +545,19 @@ def start_market_refresh(universe: str = UniverseParam, claims: dict = Depends(a
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Could not start the refresh: {type(e).__name__}")
     return _refresh_out(u, status)
+
+
+# --- Event Watch (scheduled macro events: RBI, FOMC, Union Budget) ------------
+
+@app.get("/events/watch")
+def events_watch(claims: dict = Depends(auth.require_auth)):
+    """Upcoming RBI / FOMC / Budget events and, per event type, the
+    historical picture from the daily-data study: probable movement, the
+    strategy rule's win/loss record, a confidence score with its
+    components, and India VIX behaviour. See src/event_watch.py and
+    doc/event-breakout-strategy.md. Research only, not investment advice."""
+    import event_watch
+    return event_watch.build()
 
 
 # --- AWS Lambda entry point -------------------------------------------------

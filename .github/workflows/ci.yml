@@ -76,6 +76,9 @@ jobs:
       - name: Run the event study tests (reaction-day mapping, metrics, trade outcomes)
         run: python tests/test_event_study.py
 
+      - name: Run Event Watch tests (confidence score, upcoming events, /events/watch)
+        run: python tests/test_event_watch.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \
