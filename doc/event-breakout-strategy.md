@@ -171,6 +171,65 @@ there and the strategy is shelved.
 4. **Paper trade** at least one quarter (2 RBI, 2-3 FOMC, maybe the
    Budget) before any real money.
 
+## 6a. Daily-data study: results (2026-11-25)
+
+Data: NSE's own daily index files, 2020-12-01 to 2026-11-23 (1,478 trading
+days; Nifty 50, Nifty Bank, India VIX; `data/events/index_daily.csv`,
+cross-checked against NSE's bhavcopy MCP). 90 past events. Code:
+`src/event_study.py`; numbers: `data/events/event_study_results.json`.
+Each event is compared with ordinary days (event days ±1 excluded); "p"
+is how often random ordinary days look as extreme (bootstrap).
+
+**Q1 size: only the Budget moves the market more than an ordinary day.**
+
+| Nifty 50 | events | avg move | vs ordinary | avg range | vs ordinary |
+|---|---|---|---|---|---|
+| FOMC (next session) | 47 | 0.70% | ×1.08 (p 0.27) | 1.05% | ×1.03 |
+| RBI | 36 | 0.72% | ×1.11 (p 0.23) | 1.05% | ×1.03 |
+| **Budget** | 7 | **1.24%** | **×1.91 (p 0.02)** | **2.61%** | **×2.57 (p<0.001)** |
+
+Bank Nifty is the same picture (Budget range ×2.8; RBI range ×1.15, p 0.05).
+RBI and FOMC days are, on daily data, ordinary days.
+
+**Q3: after the Fed, Nifty's opening gap mostly faded, not followed.** Of
+47 FOMC mornings, 24 gapped by more than 0.5%; the rest of the day went
+*against* the gap 16 times and with it 8 (ordinary days: about 50/50). But
+the fade is almost all 2021-2023 (12 of 17); 2024-2026 is 3 fade / 4 go of
+7. **Not a reliable edge either way**, and picking "fade" after seeing it
+would be fitting noise.
+
+**Q4 Budget: big range, small close.** Average range 2.61% against a 1.24%
+close; 4 of the last 5 Budgets closed within ±0.3% after ranges of
+0.8-3.5%. The exception is 2021 (+4.7%, then +5.8% more over 5 days).
+
+**Q5 India VIX: the volatility crush is real.** On the reaction day VIX
+falls on average −1.5% (FOMC, p 0.004), −2.1% (RBI, p 0.003) and **−6.8%
+(Budget, p<0.001)**, against +0.4% on ordinary days. Before the Budget VIX
+rises ~5% over 3 days (p 0.07). Options bought into or right after an
+event pay for volatility that then drops.
+
+**Strategy trade outcomes (daily proxies, after 5 bp costs):**
+
+| Rule (daily proxy) | Nifty 50 | Bank Nifty | Ordinary days |
+|---|---|---|---|
+| FOMC gap-and-go | **8 W / 16 L**, avg −0.30% | **5 W / 20 L**, avg −0.61% | ~50% win, ~0% avg |
+| RBI follow-through (next day) | 17 W / 19 L, avg −0.11% | 15 W / 21 L, avg −0.27% | ~52% win |
+| Budget follow-through (next day) | 4 W / 3 L, avg +0.34% | 4 W / 3 L, avg +0.81% (p 0.03) | ~52% win |
+
+**What this means for v1:**
+1. **Drop "FOMC → Nifty gap and go".** It lost on daily data in both
+   indices. Its fade looks tempting but isn't stable across periods.
+2. **RBI: no daily edge.** Any edge would have to be intraday (around the
+   10:00 and 12:00 releases), which needs intraday data, or come from
+   *surprise* decisions only (step 3, FBIL).
+3. **Budget is the one event with an unusual daily footprint**: a wide
+   range and a tendency to give back the move by the close. Only 7 events:
+   promising, not proven.
+4. **Volatility selling, not buying, is what the data favours around
+   events** (VIX crush). That's a different, riskier strategy; noted, not
+   adopted.
+5. Bitcoin and intraday Nifty are still untested (steps 4-5).
+
 ## 7. In the project: proposed "Event Watch" page
 A fifth dashboard page, separate from the distress model:
 - **Upcoming events:** RBI, FOMC, Budget, with countdown and IST time.
