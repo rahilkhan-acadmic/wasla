@@ -157,8 +157,10 @@ there and the strategy is shelved.
    (DST-aware for the Fed), decision, rate after the decision and a source;
    validated by `tests/test_macro_events.py`. Still open: a sourced
    **consensus/surprise** per event. Only two RBI surprises are flagged so
-   far, and `null` means "not assessed", not "no surprise". Also, 25 RBI
-   entries rest on a consolidated rate table rather than RBI's own pages.
+   far, and `null` means "not assessed", not "no surprise". All 36 past RBI
+   decisions were checked against RBI's own Governor's Statements
+   (2026-11-25): dates and rates match, and each entry now links its
+   statement.
 2. **Daily-data study (no new data source needed):** for each event,
    Nifty, Bank Nifty and BTC open/close gap, intraday range, and
    close-to-close moves for 1 and 5 days, against non-event days.

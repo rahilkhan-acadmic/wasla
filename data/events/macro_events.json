@@ -7,7 +7,7 @@
     "second_stage_ist": "RBI press conference 12:00; FOMC Chair press conference 30 min after the statement; null for the Budget (the speech itself is the release).",
     "decision.new_rate": "Repo rate (RBI) or upper bound of the federal funds target range (FOMC), percent, after the decision. Checked for continuity by the test.",
     "surprise": "Only set where a cited source calls the decision a surprise; null means not yet assessed, NOT 'no surprise'.",
-    "source.quality": "official = central bank page; press = news report of that decision; consolidated = a secondary rate-history table (verify against RBI before relying on it)."
+    "source.quality": "official = the central bank's own page (RBI Governor's Statement / Fed press release); press = news report of that decision; consolidated = a secondary rate-history table."
   },
   "events": [
     {
@@ -63,8 +63,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=51076",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -103,8 +104,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=51380",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -143,8 +145,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=51682",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -204,8 +207,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://www.business-standard.com/amp/article/news-cm/rbi-keeps-repo-rate-unchanged-at-4-121080600354_1.html",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=52008",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -244,8 +248,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://coalitiongreenwichuat.crisil.com/content/crisil/en/home/our-analysis/views-and-commentaries/2021/10/emergency-exit.html",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=52367",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -284,8 +289,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=52686",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -362,8 +368,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53249",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -402,8 +409,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53535",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -446,8 +454,9 @@
         "source": "https://freefincal.com/rbi-repo-rate-history/"
       },
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53652",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       },
       "note": "Unscheduled (off-cycle) meeting; release time not verified."
     },
@@ -466,8 +475,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53833",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -527,8 +537,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54150",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -567,8 +578,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54464",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -607,8 +619,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54817",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -685,8 +698,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=55177",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -729,8 +743,9 @@
         "source": "https://www.aljazeera.com/economy/2023/4/6/india-central-bank-surprises-by-holding-rates-steady"
       },
       "source": {
-        "url": "https://www.aljazeera.com/economy/2023/4/6/india-central-bank-surprises-by-holding-rates-steady",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=55471",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -769,8 +784,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://business-standard.com/finance/news/rbi-policy-rbi-mpc-unanimously-decides-to-keep-repo-rate-unchanged-at-6-5-123060800234_1.html",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=55816",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -830,8 +846,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://www.onmanorama.com/news/business/2023/08/10/rbi-keeps-repo-rate-unchanged.html",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=56175",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -870,8 +887,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=56501",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -910,8 +928,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=56887",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -988,8 +1007,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=57277",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1028,8 +1048,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=57638",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1068,8 +1089,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58049",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1147,8 +1169,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58448",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1187,8 +1210,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58851",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1228,8 +1252,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=59246",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1306,8 +1331,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://www.business-standard.com/finance/news/rbi-s-monetary-policy-committee-cuts-repo-rate-by-25-bps-to-6-25-125020700384_1.html",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=59694",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       },
       "note": "Rate cut expected; market fell on the lower growth forecast (guidance surprise)."
     },
@@ -1347,8 +1373,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://www.business-standard.com/amp/finance/news/rbi-rate-cut-april-2025-governor-sanjay-malhotra-repo-rate-125040900306_1.html",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=60177",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1387,8 +1414,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=60605",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1448,8 +1476,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=60958",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1488,8 +1517,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61333",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1528,8 +1558,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61750",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1606,8 +1637,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://freefincal.com/rbi-repo-rate-history/",
-        "quality": "consolidated"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62170",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1646,8 +1678,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://tradingeconomics.com/india/interest-rate/news/539984",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62515",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1686,8 +1719,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://www.forbesindia.com/article/forbesindiablogs/rbi-mpc-june-2026-live-repo-rate-decision-governor-sanjay-malhotra-gdp-data-updates-liveblog/2994645/1",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62864",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1747,8 +1781,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://www.indiainfoline.com/news/economy/rbi-policy-update-august-2026-repo-rate-unchanged-at-5-25-fy27-gdp-growth-raised-to-6-7-inflation-forecast-cut",
-        "quality": "press"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63288",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1787,8 +1822,9 @@
       },
       "surprise": null,
       "source": {
-        "url": "https://rbi.org.in/Scripts/BS_ViewBulletin.aspx?Id=24511",
-        "quality": "official"
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63744",
+        "quality": "official",
+        "title": "RBI Governor's Statement"
       }
     },
     {
@@ -1844,5 +1880,9 @@
         "quality": "official"
       }
     }
-  ]
+  ],
+  "verification": {
+    "rbi_mpc": "2026-11-25: every past RBI decision checked against RBI's own Governor's Statement (rbi.org.in Annualpolicy.aspx, FY2020-21..FY2026-27): date and resulting repo rate match for all 36. RBI's only other statement in the period, 2021-05-05, is a Governor's address with no rate decision.",
+    "fomc": "Dates and decisions cross-checked via search results against Fed press releases and minutes; federalreserve.gov itself was not reachable from the checking session."
+  }
 }
