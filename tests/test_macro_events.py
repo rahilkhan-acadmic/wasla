@@ -79,6 +79,14 @@ def test_rbi_decisions_follow_on_from_each_other():
         assert wd < 5, f"{e['id']}: RBI decision on a weekend"
         if e["scheduled"]:
             assert e["release_ist"].endswith("T10:00:00+05:30") and e["second_stage_ist"].endswith("T12:00:00+05:30")
+    # Every past decision is sourced to RBI's own Governor's Statement
+    # (verified 2026-11-25 against rbi.org.in; see "verification" in the JSON).
+    for e in rbi:
+        if e["status"] == "past":
+            assert e["source"]["quality"] == "official", e["id"]
+            assert e["source"]["url"].startswith("https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid="), e["id"]
+    prids = [e["source"]["url"] for e in rbi if e["status"] == "past"]
+    assert len(prids) == len(set(prids)), "two RBI decisions share one statement"
     unscheduled = [e["id"] for e in rbi if not e["scheduled"]]
     assert unscheduled == ["rbi-2022-05-04"], unscheduled
     print(f"PASS: {len(rbi)} RBI decisions; repo path 4.00% -> {final}% adds up; one off-cycle meeting")

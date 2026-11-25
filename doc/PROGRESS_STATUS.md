@@ -391,7 +391,12 @@ authenticated routes manually via the dashboard.
     done: `data/events/macro_events.json` (92 events 2021-2026, incl. the
     upcoming RBI Dec 4 and FOMC Dec 9, 2026), `tests/test_macro_events.py`.
     Notable: RBI **hiked** to 5.50% on 2026-10-07 and the Fed **hiked** to
-    3.75-4.00% on 2026-09-16. Next: the daily-data study (gaps, ranges,
+    3.75-4.00% on 2026-09-16. **All 36 past RBI entries verified against
+    RBI's own Governor's Statements (2026-11-25)**, now linked as official
+    sources. Network: rbi.org.in, rbidocs, fbil, nseindia, nsearchives,
+    niftyindices, sebi, kite/zerodha/upstox docs are allowed in the
+    environment; use `www.rbi.org.in`, as bare `rbi.org.in` is refused.
+    Next: the daily-data study (gaps, ranges,
     follow-through vs non-event days). Data plan: daily Nifty/Bank Nifty/
     VIX from NSE (bhavcopy; NSE also has an official MCP server, EOD 5 yrs
     + delayed live, not reachable from this sandbox), BTC minute data from
