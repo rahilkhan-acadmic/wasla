@@ -1,0 +1,1848 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-25",
+  "description": "Scheduled macro events for the Event Breakout study (doc/event-breakout-strategy.md): RBI MPC decisions, US FOMC decisions, Union Budgets, 2021 onwards. Facts only; validated by tests/test_macro_events.py.",
+  "conventions": {
+    "release_ist": "When the decision becomes public, IST. RBI 10:00 (Governor's statement), FOMC 14:00 US Eastern (converted per date, DST-aware), Budget speech 11:00.",
+    "second_stage_ist": "RBI press conference 12:00; FOMC Chair press conference 30 min after the statement; null for the Budget (the speech itself is the release).",
+    "decision.new_rate": "Repo rate (RBI) or upper bound of the federal funds target range (FOMC), percent, after the decision. Checked for continuity by the test.",
+    "surprise": "Only set where a cited source calls the decision a surprise; null means not yet assessed, NOT 'no surprise'.",
+    "source.quality": "official = central bank page; press = news report of that decision; consolidated = a secondary rate-history table (verify against RBI before relying on it)."
+  },
+  "events": [
+    {
+      "id": "fomc-2021-01-27",
+      "type": "fomc",
+      "date": "2021-01-27",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-01-27T14:00:00-05:00",
+      "release_ist": "2021-01-28T00:30:00+05:30",
+      "second_stage_ist": "2021-01-28T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20210127a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2021-02-01",
+      "type": "union_budget",
+      "date": "2021-02-01",
+      "scheduled": true,
+      "status": "past",
+      "kind": "full",
+      "release_ist": "2021-02-01T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": false,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "rbi-2021-02-05",
+      "type": "rbi_mpc",
+      "date": "2021-02-05",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2021-02-05T10:00:00+05:30",
+      "second_stage_ist": "2021-02-05T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2021-03-17",
+      "type": "fomc",
+      "date": "2021-03-17",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-03-17T14:00:00-04:00",
+      "release_ist": "2021-03-17T23:30:00+05:30",
+      "second_stage_ist": "2021-03-18T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20210317a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2021-04-07",
+      "type": "rbi_mpc",
+      "date": "2021-04-07",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2021-04-07T10:00:00+05:30",
+      "second_stage_ist": "2021-04-07T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2021-04-28",
+      "type": "fomc",
+      "date": "2021-04-28",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-04-28T14:00:00-04:00",
+      "release_ist": "2021-04-28T23:30:00+05:30",
+      "second_stage_ist": "2021-04-29T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20210428a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2021-06-04",
+      "type": "rbi_mpc",
+      "date": "2021-06-04",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2021-06-04T10:00:00+05:30",
+      "second_stage_ist": "2021-06-04T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2021-06-16",
+      "type": "fomc",
+      "date": "2021-06-16",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-06-16T14:00:00-04:00",
+      "release_ist": "2021-06-16T23:30:00+05:30",
+      "second_stage_ist": "2021-06-17T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20210616a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2021-07-28",
+      "type": "fomc",
+      "date": "2021-07-28",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-07-28T14:00:00-04:00",
+      "release_ist": "2021-07-28T23:30:00+05:30",
+      "second_stage_ist": "2021-07-29T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20210728a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2021-08-06",
+      "type": "rbi_mpc",
+      "date": "2021-08-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2021-08-06T10:00:00+05:30",
+      "second_stage_ist": "2021-08-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.business-standard.com/amp/article/news-cm/rbi-keeps-repo-rate-unchanged-at-4-121080600354_1.html",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2021-09-22",
+      "type": "fomc",
+      "date": "2021-09-22",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-09-22T14:00:00-04:00",
+      "release_ist": "2021-09-22T23:30:00+05:30",
+      "second_stage_ist": "2021-09-23T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20210922a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2021-10-08",
+      "type": "rbi_mpc",
+      "date": "2021-10-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2021-10-08T10:00:00+05:30",
+      "second_stage_ist": "2021-10-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://coalitiongreenwichuat.crisil.com/content/crisil/en/home/our-analysis/views-and-commentaries/2021/10/emergency-exit.html",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2021-11-03",
+      "type": "fomc",
+      "date": "2021-11-03",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-11-03T14:00:00-04:00",
+      "release_ist": "2021-11-03T23:30:00+05:30",
+      "second_stage_ist": "2021-11-04T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20211103a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2021-12-08",
+      "type": "rbi_mpc",
+      "date": "2021-12-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2021-12-08T10:00:00+05:30",
+      "second_stage_ist": "2021-12-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2021-12-15",
+      "type": "fomc",
+      "date": "2021-12-15",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2021-12-15T14:00:00-05:00",
+      "release_ist": "2021-12-16T00:30:00+05:30",
+      "second_stage_ist": "2021-12-16T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20211215a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2022-01-26",
+      "type": "fomc",
+      "date": "2022-01-26",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-01-26T14:00:00-05:00",
+      "release_ist": "2022-01-27T00:30:00+05:30",
+      "second_stage_ist": "2022-01-27T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 0.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20220126a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2022-02-01",
+      "type": "union_budget",
+      "date": "2022-02-01",
+      "scheduled": true,
+      "status": "past",
+      "kind": "full",
+      "release_ist": "2022-02-01T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": false,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "rbi-2022-02-10",
+      "type": "rbi_mpc",
+      "date": "2022-02-10",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2022-02-10T10:00:00+05:30",
+      "second_stage_ist": "2022-02-10T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2022-03-16",
+      "type": "fomc",
+      "date": "2022-03-16",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-03-16T14:00:00-04:00",
+      "release_ist": "2022-03-16T23:30:00+05:30",
+      "second_stage_ist": "2022-03-17T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 25,
+        "new_rate": 0.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20220316a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2022-04-08",
+      "type": "rbi_mpc",
+      "date": "2022-04-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2022-04-08T10:00:00+05:30",
+      "second_stage_ist": "2022-04-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2022-05-04",
+      "type": "fomc",
+      "date": "2022-05-04",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-05-04T14:00:00-04:00",
+      "release_ist": "2022-05-04T23:30:00+05:30",
+      "second_stage_ist": "2022-05-05T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 50,
+        "new_rate": 1.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20220504a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2022-05-04",
+      "type": "rbi_mpc",
+      "date": "2022-05-04",
+      "scheduled": false,
+      "status": "past",
+      "release_ist": null,
+      "second_stage_ist": null,
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 40,
+        "new_rate": 4.4
+      },
+      "surprise": {
+        "flag": true,
+        "basis": "Off-cycle hike between scheduled meetings.",
+        "source": "https://freefincal.com/rbi-repo-rate-history/"
+      },
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      },
+      "note": "Unscheduled (off-cycle) meeting; release time not verified."
+    },
+    {
+      "id": "rbi-2022-06-08",
+      "type": "rbi_mpc",
+      "date": "2022-06-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2022-06-08T10:00:00+05:30",
+      "second_stage_ist": "2022-06-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 50,
+        "new_rate": 4.9
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2022-06-15",
+      "type": "fomc",
+      "date": "2022-06-15",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-06-15T14:00:00-04:00",
+      "release_ist": "2022-06-15T23:30:00+05:30",
+      "second_stage_ist": "2022-06-16T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 75,
+        "new_rate": 1.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2022-07-27",
+      "type": "fomc",
+      "date": "2022-07-27",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-07-27T14:00:00-04:00",
+      "release_ist": "2022-07-27T23:30:00+05:30",
+      "second_stage_ist": "2022-07-28T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 75,
+        "new_rate": 2.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20220727a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2022-08-05",
+      "type": "rbi_mpc",
+      "date": "2022-08-05",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2022-08-05T10:00:00+05:30",
+      "second_stage_ist": "2022-08-05T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 50,
+        "new_rate": 5.4
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2022-09-21",
+      "type": "fomc",
+      "date": "2022-09-21",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-09-21T14:00:00-04:00",
+      "release_ist": "2022-09-21T23:30:00+05:30",
+      "second_stage_ist": "2022-09-22T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 75,
+        "new_rate": 3.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20220921a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2022-09-30",
+      "type": "rbi_mpc",
+      "date": "2022-09-30",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2022-09-30T10:00:00+05:30",
+      "second_stage_ist": "2022-09-30T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 50,
+        "new_rate": 5.9
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2022-11-02",
+      "type": "fomc",
+      "date": "2022-11-02",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-11-02T14:00:00-04:00",
+      "release_ist": "2022-11-02T23:30:00+05:30",
+      "second_stage_ist": "2022-11-03T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 75,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20221102a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2022-12-07",
+      "type": "rbi_mpc",
+      "date": "2022-12-07",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2022-12-07T10:00:00+05:30",
+      "second_stage_ist": "2022-12-07T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 35,
+        "new_rate": 6.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2022-12-14",
+      "type": "fomc",
+      "date": "2022-12-14",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2022-12-14T14:00:00-05:00",
+      "release_ist": "2022-12-15T00:30:00+05:30",
+      "second_stage_ist": "2022-12-15T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 50,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20221214a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2023-02-01",
+      "type": "fomc",
+      "date": "2023-02-01",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-02-01T14:00:00-05:00",
+      "release_ist": "2023-02-02T00:30:00+05:30",
+      "second_stage_ist": "2023-02-02T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 25,
+        "new_rate": 4.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230201a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2023-02-01",
+      "type": "union_budget",
+      "date": "2023-02-01",
+      "scheduled": true,
+      "status": "past",
+      "kind": "full",
+      "release_ist": "2023-02-01T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": false,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "rbi-2023-02-08",
+      "type": "rbi_mpc",
+      "date": "2023-02-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2023-02-08T10:00:00+05:30",
+      "second_stage_ist": "2023-02-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 25,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2023-03-22",
+      "type": "fomc",
+      "date": "2023-03-22",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-03-22T14:00:00-04:00",
+      "release_ist": "2023-03-22T23:30:00+05:30",
+      "second_stage_ist": "2023-03-23T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 25,
+        "new_rate": 5.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230322a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2023-04-06",
+      "type": "rbi_mpc",
+      "date": "2023-04-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2023-04-06T10:00:00+05:30",
+      "second_stage_ist": "2023-04-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": {
+        "flag": true,
+        "basis": "Hold when a 25 bp hike was widely expected ('pause, not a pivot').",
+        "source": "https://www.aljazeera.com/economy/2023/4/6/india-central-bank-surprises-by-holding-rates-steady"
+      },
+      "source": {
+        "url": "https://www.aljazeera.com/economy/2023/4/6/india-central-bank-surprises-by-holding-rates-steady",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2023-05-03",
+      "type": "fomc",
+      "date": "2023-05-03",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-05-03T14:00:00-04:00",
+      "release_ist": "2023-05-03T23:30:00+05:30",
+      "second_stage_ist": "2023-05-04T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 25,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230503a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2023-06-08",
+      "type": "rbi_mpc",
+      "date": "2023-06-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2023-06-08T10:00:00+05:30",
+      "second_stage_ist": "2023-06-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://business-standard.com/finance/news/rbi-policy-rbi-mpc-unanimously-decides-to-keep-repo-rate-unchanged-at-6-5-123060800234_1.html",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2023-06-14",
+      "type": "fomc",
+      "date": "2023-06-14",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-06-14T14:00:00-04:00",
+      "release_ist": "2023-06-14T23:30:00+05:30",
+      "second_stage_ist": "2023-06-15T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230614a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2023-07-26",
+      "type": "fomc",
+      "date": "2023-07-26",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-07-26T14:00:00-04:00",
+      "release_ist": "2023-07-26T23:30:00+05:30",
+      "second_stage_ist": "2023-07-27T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 25,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230726a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2023-08-10",
+      "type": "rbi_mpc",
+      "date": "2023-08-10",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2023-08-10T10:00:00+05:30",
+      "second_stage_ist": "2023-08-10T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.onmanorama.com/news/business/2023/08/10/rbi-keeps-repo-rate-unchanged.html",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2023-09-20",
+      "type": "fomc",
+      "date": "2023-09-20",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-09-20T14:00:00-04:00",
+      "release_ist": "2023-09-20T23:30:00+05:30",
+      "second_stage_ist": "2023-09-21T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20230920a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2023-10-06",
+      "type": "rbi_mpc",
+      "date": "2023-10-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2023-10-06T10:00:00+05:30",
+      "second_stage_ist": "2023-10-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2023-11-01",
+      "type": "fomc",
+      "date": "2023-11-01",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-11-01T14:00:00-04:00",
+      "release_ist": "2023-11-01T23:30:00+05:30",
+      "second_stage_ist": "2023-11-02T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20231101a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2023-12-08",
+      "type": "rbi_mpc",
+      "date": "2023-12-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2023-12-08T10:00:00+05:30",
+      "second_stage_ist": "2023-12-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2023-12-13",
+      "type": "fomc",
+      "date": "2023-12-13",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2023-12-13T14:00:00-05:00",
+      "release_ist": "2023-12-14T00:30:00+05:30",
+      "second_stage_ist": "2023-12-14T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20231213a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2024-01-31",
+      "type": "fomc",
+      "date": "2024-01-31",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-01-31T14:00:00-05:00",
+      "release_ist": "2024-02-01T00:30:00+05:30",
+      "second_stage_ist": "2024-02-01T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240131a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2024-02-01",
+      "type": "union_budget",
+      "date": "2024-02-01",
+      "scheduled": true,
+      "status": "past",
+      "kind": "interim",
+      "release_ist": "2024-02-01T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": false,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "rbi-2024-02-08",
+      "type": "rbi_mpc",
+      "date": "2024-02-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2024-02-08T10:00:00+05:30",
+      "second_stage_ist": "2024-02-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2024-03-20",
+      "type": "fomc",
+      "date": "2024-03-20",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-03-20T14:00:00-04:00",
+      "release_ist": "2024-03-20T23:30:00+05:30",
+      "second_stage_ist": "2024-03-21T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240320a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2024-04-05",
+      "type": "rbi_mpc",
+      "date": "2024-04-05",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2024-04-05T10:00:00+05:30",
+      "second_stage_ist": "2024-04-05T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2024-05-01",
+      "type": "fomc",
+      "date": "2024-05-01",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-05-01T14:00:00-04:00",
+      "release_ist": "2024-05-01T23:30:00+05:30",
+      "second_stage_ist": "2024-05-02T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2024-06-07",
+      "type": "rbi_mpc",
+      "date": "2024-06-07",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2024-06-07T10:00:00+05:30",
+      "second_stage_ist": "2024-06-07T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2024-06-12",
+      "type": "fomc",
+      "date": "2024-06-12",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-06-12T14:00:00-04:00",
+      "release_ist": "2024-06-12T23:30:00+05:30",
+      "second_stage_ist": "2024-06-13T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240612a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2024-07-23",
+      "type": "union_budget",
+      "date": "2024-07-23",
+      "scheduled": true,
+      "status": "past",
+      "kind": "full",
+      "release_ist": "2024-07-23T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": false,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      },
+      "note": "Full Budget after the 2024 general election (interim Budget was 2024-02-01)."
+    },
+    {
+      "id": "fomc-2024-07-31",
+      "type": "fomc",
+      "date": "2024-07-31",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-07-31T14:00:00-04:00",
+      "release_ist": "2024-07-31T23:30:00+05:30",
+      "second_stage_ist": "2024-08-01T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240731a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2024-08-08",
+      "type": "rbi_mpc",
+      "date": "2024-08-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2024-08-08T10:00:00+05:30",
+      "second_stage_ist": "2024-08-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2024-09-18",
+      "type": "fomc",
+      "date": "2024-09-18",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-09-18T14:00:00-04:00",
+      "release_ist": "2024-09-18T23:30:00+05:30",
+      "second_stage_ist": "2024-09-19T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": -50,
+        "new_rate": 5.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2024-10-09",
+      "type": "rbi_mpc",
+      "date": "2024-10-09",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2024-10-09T10:00:00+05:30",
+      "second_stage_ist": "2024-10-09T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2024-11-07",
+      "type": "fomc",
+      "date": "2024-11-07",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-11-07T14:00:00-05:00",
+      "release_ist": "2024-11-08T00:30:00+05:30",
+      "second_stage_ist": "2024-11-08T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": -25,
+        "new_rate": 4.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20241107a.htm",
+        "quality": "official"
+      },
+      "note": "Thursday decision (US election week)."
+    },
+    {
+      "id": "rbi-2024-12-06",
+      "type": "rbi_mpc",
+      "date": "2024-12-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2024-12-06T10:00:00+05:30",
+      "second_stage_ist": "2024-12-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 6.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2024-12-18",
+      "type": "fomc",
+      "date": "2024-12-18",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2024-12-18T14:00:00-05:00",
+      "release_ist": "2024-12-19T00:30:00+05:30",
+      "second_stage_ist": "2024-12-19T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": -25,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20241218a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2025-01-29",
+      "type": "fomc",
+      "date": "2025-01-29",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-01-29T14:00:00-05:00",
+      "release_ist": "2025-01-30T00:30:00+05:30",
+      "second_stage_ist": "2025-01-30T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20250129a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2025-02-01",
+      "type": "union_budget",
+      "date": "2025-02-01",
+      "scheduled": true,
+      "status": "past",
+      "kind": "full",
+      "release_ist": "2025-02-01T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": true,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "rbi-2025-02-07",
+      "type": "rbi_mpc",
+      "date": "2025-02-07",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2025-02-07T10:00:00+05:30",
+      "second_stage_ist": "2025-02-07T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": -25,
+        "new_rate": 6.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.business-standard.com/finance/news/rbi-s-monetary-policy-committee-cuts-repo-rate-by-25-bps-to-6-25-125020700384_1.html",
+        "quality": "press"
+      },
+      "note": "Rate cut expected; market fell on the lower growth forecast (guidance surprise)."
+    },
+    {
+      "id": "fomc-2025-03-19",
+      "type": "fomc",
+      "date": "2025-03-19",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-03-19T14:00:00-04:00",
+      "release_ist": "2025-03-19T23:30:00+05:30",
+      "second_stage_ist": "2025-03-20T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20250319a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2025-04-09",
+      "type": "rbi_mpc",
+      "date": "2025-04-09",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2025-04-09T10:00:00+05:30",
+      "second_stage_ist": "2025-04-09T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": -25,
+        "new_rate": 6.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.business-standard.com/amp/finance/news/rbi-rate-cut-april-2025-governor-sanjay-malhotra-repo-rate-125040900306_1.html",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2025-05-07",
+      "type": "fomc",
+      "date": "2025-05-07",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-05-07T14:00:00-04:00",
+      "release_ist": "2025-05-07T23:30:00+05:30",
+      "second_stage_ist": "2025-05-08T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20250507a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2025-06-06",
+      "type": "rbi_mpc",
+      "date": "2025-06-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2025-06-06T10:00:00+05:30",
+      "second_stage_ist": "2025-06-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": -50,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2025-06-18",
+      "type": "fomc",
+      "date": "2025-06-18",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-06-18T14:00:00-04:00",
+      "release_ist": "2025-06-18T23:30:00+05:30",
+      "second_stage_ist": "2025-06-19T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20250618a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2025-07-30",
+      "type": "fomc",
+      "date": "2025-07-30",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-07-30T14:00:00-04:00",
+      "release_ist": "2025-07-30T23:30:00+05:30",
+      "second_stage_ist": "2025-07-31T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 4.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20250730a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2025-08-06",
+      "type": "rbi_mpc",
+      "date": "2025-08-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2025-08-06T10:00:00+05:30",
+      "second_stage_ist": "2025-08-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2025-09-17",
+      "type": "fomc",
+      "date": "2025-09-17",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-09-17T14:00:00-04:00",
+      "release_ist": "2025-09-17T23:30:00+05:30",
+      "second_stage_ist": "2025-09-18T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": -25,
+        "new_rate": 4.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20250917a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2025-10-01",
+      "type": "rbi_mpc",
+      "date": "2025-10-01",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2025-10-01T10:00:00+05:30",
+      "second_stage_ist": "2025-10-01T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2025-10-29",
+      "type": "fomc",
+      "date": "2025-10-29",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-10-29T14:00:00-04:00",
+      "release_ist": "2025-10-29T23:30:00+05:30",
+      "second_stage_ist": "2025-10-30T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": -25,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20251029a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2025-12-05",
+      "type": "rbi_mpc",
+      "date": "2025-12-05",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2025-12-05T10:00:00+05:30",
+      "second_stage_ist": "2025-12-05T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": -25,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2025-12-10",
+      "type": "fomc",
+      "date": "2025-12-10",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2025-12-10T14:00:00-05:00",
+      "release_ist": "2025-12-11T00:30:00+05:30",
+      "second_stage_ist": "2025-12-11T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": -25,
+        "new_rate": 3.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20251210a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2026-01-28",
+      "type": "fomc",
+      "date": "2026-01-28",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-01-28T14:00:00-05:00",
+      "release_ist": "2026-01-29T00:30:00+05:30",
+      "second_stage_ist": "2026-01-29T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 3.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260128a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "budget-2026-02-01",
+      "type": "union_budget",
+      "date": "2026-02-01",
+      "scheduled": true,
+      "status": "past",
+      "kind": "full",
+      "release_ist": "2026-02-01T11:00:00+05:30",
+      "second_stage_ist": null,
+      "special_session": true,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.businesstoday.in/markets/stocks/story/nifty-bank-nifty-budget-day-stock-market-returns-since-2010-full-table-512707-2026-01-23",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "rbi-2026-02-06",
+      "type": "rbi_mpc",
+      "date": "2026-02-06",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2026-02-06T10:00:00+05:30",
+      "second_stage_ist": "2026-02-06T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://freefincal.com/rbi-repo-rate-history/",
+        "quality": "consolidated"
+      }
+    },
+    {
+      "id": "fomc-2026-03-18",
+      "type": "fomc",
+      "date": "2026-03-18",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-03-18T14:00:00-04:00",
+      "release_ist": "2026-03-18T23:30:00+05:30",
+      "second_stage_ist": "2026-03-19T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 3.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260318a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2026-04-08",
+      "type": "rbi_mpc",
+      "date": "2026-04-08",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2026-04-08T10:00:00+05:30",
+      "second_stage_ist": "2026-04-08T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://tradingeconomics.com/india/interest-rate/news/539984",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2026-04-29",
+      "type": "fomc",
+      "date": "2026-04-29",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-04-29T14:00:00-04:00",
+      "release_ist": "2026-04-29T23:30:00+05:30",
+      "second_stage_ist": "2026-04-30T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 3.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2026-06-05",
+      "type": "rbi_mpc",
+      "date": "2026-06-05",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2026-06-05T10:00:00+05:30",
+      "second_stage_ist": "2026-06-05T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.forbesindia.com/article/forbesindiablogs/rbi-mpc-june-2026-live-repo-rate-decision-governor-sanjay-malhotra-gdp-data-updates-liveblog/2994645/1",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2026-06-17",
+      "type": "fomc",
+      "date": "2026-06-17",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-06-17T14:00:00-04:00",
+      "release_ist": "2026-06-17T23:30:00+05:30",
+      "second_stage_ist": "2026-06-18T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 3.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2026-07-29",
+      "type": "fomc",
+      "date": "2026-07-29",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-07-29T14:00:00-04:00",
+      "release_ist": "2026-07-29T23:30:00+05:30",
+      "second_stage_ist": "2026-07-30T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 3.75
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2026-08-05",
+      "type": "rbi_mpc",
+      "date": "2026-08-05",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2026-08-05T10:00:00+05:30",
+      "second_stage_ist": "2026-08-05T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 0,
+        "new_rate": 5.25
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.indiainfoline.com/news/economy/rbi-policy-update-august-2026-repo-rate-unchanged-at-5-25-fy27-gdp-growth-raised-to-6-7-inflation-forecast-cut",
+        "quality": "press"
+      }
+    },
+    {
+      "id": "fomc-2026-09-16",
+      "type": "fomc",
+      "date": "2026-09-16",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-09-16T14:00:00-04:00",
+      "release_ist": "2026-09-16T23:30:00+05:30",
+      "second_stage_ist": "2026-09-17T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 25,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2026-10-07",
+      "type": "rbi_mpc",
+      "date": "2026-10-07",
+      "scheduled": true,
+      "status": "past",
+      "release_ist": "2026-10-07T10:00:00+05:30",
+      "second_stage_ist": "2026-10-07T12:00:00+05:30",
+      "decision": {
+        "instrument": "repo_rate",
+        "change_bps": 25,
+        "new_rate": 5.5
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://rbi.org.in/Scripts/BS_ViewBulletin.aspx?Id=24511",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2026-10-28",
+      "type": "fomc",
+      "date": "2026-10-28",
+      "scheduled": true,
+      "status": "past",
+      "release_et": "2026-10-28T14:00:00-04:00",
+      "release_ist": "2026-10-28T23:30:00+05:30",
+      "second_stage_ist": "2026-10-29T00:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": {
+        "instrument": "fed_funds_upper",
+        "change_bps": 0,
+        "new_rate": 4.0
+      },
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "rbi-2026-12-04",
+      "type": "rbi_mpc",
+      "date": "2026-12-04",
+      "scheduled": true,
+      "status": "upcoming",
+      "release_ist": "2026-12-04T10:00:00+05:30",
+      "second_stage_ist": "2026-12-04T12:00:00+05:30",
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62422",
+        "quality": "official"
+      }
+    },
+    {
+      "id": "fomc-2026-12-09",
+      "type": "fomc",
+      "date": "2026-12-09",
+      "scheduled": true,
+      "status": "upcoming",
+      "release_et": "2026-12-09T14:00:00-05:00",
+      "release_ist": "2026-12-10T00:30:00+05:30",
+      "second_stage_ist": "2026-12-10T01:00:00+05:30",
+      "nse_open_at_release": false,
+      "decision": null,
+      "surprise": null,
+      "source": {
+        "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+        "quality": "official"
+      }
+    }
+  ]
+}

@@ -387,10 +387,15 @@ authenticated routes manually via the dashboard.
     Amtek Auto move; `tests/test_insolvency_data.py` validates edits.
 11. **New section: Event Breakout** (trading momentum after RBI / FOMC /
     Union Budget, Nifty and Bitcoin). Research, gap analysis and strategy
-    v1 in `doc/event-breakout-strategy.md` (2026-11-25). Next: curated
-    event calendar 2021-2026 with a validation test, then the daily-data
-    study (gaps, ranges, follow-through vs non-event days). **Open
-    decision:** where 5 years of Nifty intraday data comes from.
+    v1 in `doc/event-breakout-strategy.md` (2026-11-25). Event calendar
+    done: `data/events/macro_events.json` (92 events 2021-2026, incl. the
+    upcoming RBI Dec 4 and FOMC Dec 9, 2026), `tests/test_macro_events.py`.
+    Notable: RBI **hiked** to 5.50% on 2026-10-07 and the Fed **hiked** to
+    3.75-4.00% on 2026-09-16. Next: the daily-data study (gaps, ranges,
+    follow-through vs non-event days). Data plan: daily Nifty/Bank Nifty/
+    VIX from NSE (bhavcopy; NSE also has an official MCP server, EOD 5 yrs
+    + delayed live, not reachable from this sandbox), BTC minute data from
+    a public exchange API, Nifty intraday collected going forward.
 
 ## TODO -- 2026-10-22
 

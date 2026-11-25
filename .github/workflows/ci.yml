@@ -70,6 +70,9 @@ jobs:
       - name: Run manual market refresh tests (status file, 409 while running, chained US parts)
         run: python tests/test_market_refresh.py
 
+      - name: Validate the macro event calendar (rate paths, DST-aware FOMC times, sources)
+        run: python tests/test_macro_events.py
+
       - name: Validate all CloudFormation templates
         run: |
           cfn-lint aws/infrastructure.json aws/ecr-stack.json aws/lambda-stack.json \

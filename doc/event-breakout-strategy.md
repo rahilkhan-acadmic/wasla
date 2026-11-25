@@ -152,9 +152,13 @@ over the 2021-2024 events, and then hold up on 2025-2026, the edge isn't
 there and the strategy is shelved.
 
 ## 6. Validation plan
-1. **Event calendar** 2021-2026: date, time, decision, consensus,
-   surprise flag, source link. Curated by hand like
-   `dashboard/data/insolvency_cases.json`, with a validation test.
+1. **Event calendar** 2021-2026. **Done:** `data/events/macro_events.json`
+   lists 92 events (37 RBI, 48 FOMC, 7 Budgets), each with its time in IST
+   (DST-aware for the Fed), decision, rate after the decision and a source;
+   validated by `tests/test_macro_events.py`. Still open: a sourced
+   **consensus/surprise** per event. Only two RBI surprises are flagged so
+   far, and `null` means "not assessed", not "no surprise". Also, 25 RBI
+   entries rest on a consolidated rate table rather than RBI's own pages.
 2. **Daily-data study (no new data source needed):** for each event,
    Nifty, Bank Nifty and BTC open/close gap, intraday range, and
    close-to-close moves for 1 and 5 days, against non-event days.
