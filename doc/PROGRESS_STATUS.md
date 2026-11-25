@@ -385,6 +385,12 @@ authenticated routes manually via the dashboard.
    notice).
 10. Refresh `dashboard/data/insolvency_cases.json` as RCom, Videocon and
     Amtek Auto move; `tests/test_insolvency_data.py` validates edits.
+11. **New section: Event Breakout** (trading momentum after RBI / FOMC /
+    Union Budget, Nifty and Bitcoin). Research, gap analysis and strategy
+    v1 in `doc/event-breakout-strategy.md` (2026-11-25). Next: curated
+    event calendar 2021-2026 with a validation test, then the daily-data
+    study (gaps, ranges, follow-through vs non-event days). **Open
+    decision:** where 5 years of Nifty intraday data comes from.
 
 ## TODO -- 2026-10-22
 
